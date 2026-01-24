@@ -329,7 +329,6 @@ const Checkbox = styled.input.attrs({ type: 'checkbox' })`
 `
 
 const LabelWithTooltip = styled.div`
-  display: flex;
   align-items: center;
   gap: ${props => props.theme.spacing.xs};
   color: ${props => props.theme.colors.textSecondary};
@@ -612,9 +611,7 @@ export const Home = () => {
       <CollapsibleSection>
         <summary>{t('algorithm:section_title')}</summary>
         <DescriptionContent>
-          <p>
-            {t('algorithm:intro')}
-          </p>
+          <p>{t('algorithm:intro')}</p>
 
           <DescriptionSubtitle>{t('algorithm:problem.title')}</DescriptionSubtitle>
           <p>{t('algorithm:problem.description')}</p>
@@ -652,18 +649,34 @@ export const Home = () => {
           <DescriptionSubtitle>{t('algorithm:understanding_data.title')}</DescriptionSubtitle>
           <p>{t('algorithm:understanding_data.description')}</p>
           <DescriptionList>
-            <li><strong>{t('algorithm:understanding_data.rsid')}</strong></li>
-            <li><strong>{t('algorithm:understanding_data.chromosome')}</strong></li>
-            <li><strong>{t('algorithm:understanding_data.position')}</strong></li>
-            <li><strong>{t('algorithm:understanding_data.genotype')}</strong></li>
+            <li>
+              <strong>{t('algorithm:understanding_data.rsid')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:understanding_data.chromosome')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:understanding_data.position')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:understanding_data.genotype')}</strong>
+            </li>
           </DescriptionList>
 
           <DescriptionSubtitle>{t('algorithm:why_matters.title')}</DescriptionSubtitle>
           <DescriptionList>
-            <li><strong>{t('algorithm:why_matters.list.matches')}</strong></li>
-            <li><strong>{t('algorithm:why_matters.list.gaps')}</strong></li>
-            <li><strong>{t('algorithm:why_matters.list.accuracy')}</strong></li>
-            <li><strong>{t('algorithm:why_matters.list.tools')}</strong></li>
+            <li>
+              <strong>{t('algorithm:why_matters.list.matches')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:why_matters.list.gaps')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:why_matters.list.accuracy')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:why_matters.list.tools')}</strong>
+            </li>
           </DescriptionList>
 
           <p style={{ marginTop: '1rem', fontSize: '0.9rem', fontStyle: 'italic' }}>
@@ -743,23 +756,33 @@ export const Home = () => {
       {mergedCsv && stats && (
         <ResultsSection>
           <SuccessMessage>
-            {isSingleFileMode
-              ? t('common:success.convert')
-              : t('common:success.merge')}
+            {isSingleFileMode ? t('common:success.convert') : t('common:success.merge')}
           </SuccessMessage>
           <StatsList>
             <li>
-              {t('common:stats.total_snps', { mode: t(`common:modes.${isSingleFileMode ? 'converted' : 'merged'}`) })}{' '}
+              {t('common:stats.total_snps', {
+                mode: t(`common:modes.${isSingleFileMode ? 'converted' : 'merged'}`),
+              })}{' '}
               {stats.totalSnps.toLocaleString()}
             </li>
-            <li>{t('common:stats.conflicts')} {stats.conflicts}</li>
-            <li>{t('common:stats.skipped')} {stats.skipped}</li>
+            <li>
+              {t('common:stats.conflicts')} {stats.conflicts}
+            </li>
+            <li>
+              {t('common:stats.skipped')} {stats.skipped}
+            </li>
           </StatsList>
           <DownloadButtonsContainer>
             <DownloadButton onClick={handleDownloadCsv}>
-              {t(isSingleFileMode ? 'common:buttons.download_converted_dna' : 'common:buttons.download_merged_dna')}
+              {t(
+                isSingleFileMode
+                  ? 'common:buttons.download_converted_dna'
+                  : 'common:buttons.download_merged_dna'
+              )}
             </DownloadButton>
-            <DownloadButton onClick={handleDownloadLog}>{t('common:buttons.download_log')}</DownloadButton>
+            <DownloadButton onClick={handleDownloadLog}>
+              {t('common:buttons.download_log')}
+            </DownloadButton>
           </DownloadButtonsContainer>
           <ResetButton onClick={handleReset}>
             {t(isSingleFileMode ? 'common:buttons.convert_more' : 'common:buttons.merge_more')}
