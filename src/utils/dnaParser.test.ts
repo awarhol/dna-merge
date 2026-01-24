@@ -2,9 +2,6 @@ import { describe, it, expect } from 'vitest'
 import {
   detectFormat,
   validateGenotype,
-  parseAncestryFile,
-  parseMyHeritageFile,
-  parseLivingDNAFile,
   parseAncestryFileAsync,
   parseMyHeritageFileAsync,
   parseLivingDNAFileAsync,
@@ -50,55 +47,55 @@ AX-33748877	22	51162850	CT
 rs143357798	22	51193012	CC`
 
 describe('detectFormat', () => {
-  it('should detect Ancestry format from sample file', () => {
+  it('should detect Ancestry format from sample file', async () => {
     expect(detectFormat(ANCESTRY_SAMPLE)).toBe('ancestry')
   })
 
-  it('should detect MyHeritage format from sample file', () => {
+  it('should detect MyHeritage format from sample file', async () => {
     expect(detectFormat(MYHERITAGE_SAMPLE)).toBe('myheritage')
   })
 
-  it('should detect LivingDNA format from sample file', () => {
+  it('should detect LivingDNA format from sample file', async () => {
     expect(detectFormat(LIVINGDNA_SAMPLE)).toBe('livingdna')
   })
 
-  it('should return unknown for empty content', () => {
+  it('should return unknown for empty content', async () => {
     expect(detectFormat('')).toBe('unknown')
   })
 
-  it('should return unknown for invalid format', () => {
+  it('should return unknown for invalid format', async () => {
     expect(detectFormat('random text\nno valid format')).toBe('unknown')
   })
 })
 
 describe('validateGenotype', () => {
-  it('should validate standard nucleotide pairs', () => {
+  it('should validate standard nucleotide pairs', async () => {
     expect(validateGenotype('AA')).toBe(true)
     expect(validateGenotype('AT')).toBe(true)
     expect(validateGenotype('CG')).toBe(true)
     expect(validateGenotype('TT')).toBe(true)
   })
 
-  it('should validate special markers (lenient mode)', () => {
+  it('should validate special markers (lenient mode)', async () => {
     expect(validateGenotype('--')).toBe(true)
     expect(validateGenotype('00')).toBe(true)
     expect(validateGenotype('DD')).toBe(true)
     expect(validateGenotype('II')).toBe(true)
   })
 
-  it('should reject invalid genotypes', () => {
+  it('should reject invalid genotypes', async () => {
     expect(validateGenotype('XY')).toBe(false)
     expect(validateGenotype('ZZ')).toBe(false)
     expect(validateGenotype('12')).toBe(false)
     expect(validateGenotype('A')).toBe(false)
   })
 
-  it('should be case insensitive', () => {
+  it('should be case insensitive', async () => {
     expect(validateGenotype('aa')).toBe(true)
     expect(validateGenotype('Tc')).toBe(true)
   })
 
-  it('should validate DI and ID genotypes', () => {
+  it('should validate DI and ID genotypes', async () => {
     expect(validateGenotype('DI')).toBe(true)
     expect(validateGenotype('ID')).toBe(true)
     expect(validateGenotype('di')).toBe(true)
@@ -106,118 +103,12 @@ describe('validateGenotype', () => {
   })
 })
 
-describe('parseAncestryFile', () => {
-  it('should parse Ancestry format correctly', () => {
-    const result = parseAncestryFile(ANCESTRY_SAMPLE, 1)
-
-    expect(result.format).toBe('ancestry')
-    expect(result.snps).toHaveLength(5)
-    expect(result.errors).toHaveLength(0)
-
-    expect(result.snps[0]).toEqual({
-      rsid: 'rs3131972',
-      chromosome: '1',
-      position: '752721',
-      genotype: 'GG',
-      sourceFile: 1,
-    })
-  })
-
-  it('should skip comment lines and header', () => {
-    const result = parseAncestryFile(ANCESTRY_SAMPLE, 1)
-    expect(result.snps.every(snp => !snp.rsid.startsWith('#'))).toBe(true)
-  })
-
-  it('should handle invalid rows', () => {
-    const invalidData = `rsid	chromosome	position	allele1	allele2
-rs123	1	100	X	Y
-rs456	1	200	A	A`
-
-    const result = parseAncestryFile(invalidData, 1)
-    expect(result.snps).toHaveLength(1)
-    expect(result.errors).toHaveLength(1)
-    expect(result.errors[0].reason).toContain('Invalid genotype')
-  })
-
-  it('should handle missing columns', () => {
-    const invalidData = `rsid	chromosome	position
-rs123	1`
-
-    const result = parseAncestryFile(invalidData, 1)
-    expect(result.errors.length).toBeGreaterThan(0)
-  })
-
-  it('should reject invalid chromosomes for Ancestry format', () => {
-    const invalidData = `rsid	chromosome	position	allele1	allele2
-rs789	99	300	C	C
-rs000	0	400	A	A`
-
-    const result = parseAncestryFile(invalidData, 1)
-    expect(result.snps).toHaveLength(0)
-    expect(result.errors).toHaveLength(2)
-    expect(result.errors[0].reason).toContain('Invalid chromosome: 99')
-    expect(result.errors[1].reason).toContain('Invalid chromosome: 0')
-  })
-
-  it('should accept valid chromosomes 1-22, X, Y, MT and normalize Ancestry 23-26', () => {
-    const validData = `rsid	chromosome	position	allele1	allele2
-rs1	1	100	A	A
-rs22	22	200	T	T
-rs23	23	300	C	C
-rs24	24	400	G	G
-rs25	25	500	A	A
-rs26	26	600	T	T
-rsX	X	700	C	C
-rsY	Y	800	G	G
-rsMT	MT	900	A	A`
-
-    const result = parseAncestryFile(validData, 1)
-    expect(result.snps).toHaveLength(9)
-    expect(result.errors).toHaveLength(0)
-
-    // Check that Ancestry numeric chromosomes are kept as-is
-    const chr23 = result.snps.find(s => s.rsid === 'rs23')
-    const chr24 = result.snps.find(s => s.rsid === 'rs24')
-    const chr25 = result.snps.find(s => s.rsid === 'rs25')
-    const chr26 = result.snps.find(s => s.rsid === 'rs26')
-
-    expect(chr23?.chromosome).toBe('23') // X chromosome in Ancestry format
-    expect(chr24?.chromosome).toBe('24') // Y chromosome in Ancestry format
-    expect(chr25?.chromosome).toBe('25') // PAR region in Ancestry format
-    expect(chr26?.chromosome).toBe('26') // MT chromosome in Ancestry format
-  })
-})
-
-describe('parseMyHeritageFile', () => {
-  it('should parse MyHeritage format correctly', () => {
-    const result = parseMyHeritageFile(MYHERITAGE_SAMPLE, 1)
-
-    expect(result.format).toBe('myheritage')
-    expect(result.snps).toHaveLength(5)
-    expect(result.errors).toHaveLength(0)
-
-    expect(result.snps[0]).toEqual({
-      rsid: 'rs3131972',
-      chromosome: '1',
-      position: '752721',
-      genotype: 'GG',
-      sourceFile: 1,
-    })
-  })
-
-  it('should handle quoted CSV values', () => {
-    const result = parseMyHeritageFile(MYHERITAGE_SAMPLE, 1)
-    expect(result.snps[0].rsid).toBe('rs3131972')
-    expect(result.snps[0].genotype).toBe('GG')
-  })
-})
-
 describe('mergeSnps', () => {
   const defaultOptions = { preferredFile: 1 as const, fillMissing: true }
 
-  it('should merge SNPs from two files without duplicates', () => {
-    const file1 = parseAncestryFile(ANCESTRY_SAMPLE, 1)
-    const file2 = parseMyHeritageFile(MYHERITAGE_SAMPLE, 2)
+  it('should merge SNPs from two files without duplicates', async () => {
+    const file1 = await parseAncestryFileAsync(ANCESTRY_SAMPLE, 1)
+    const file2 = await parseMyHeritageFileAsync(MYHERITAGE_SAMPLE, 2)
 
     const result = mergeSnps(file1.snps, file2.snps, defaultOptions)
 
@@ -225,7 +116,7 @@ describe('mergeSnps', () => {
     expect(result.mergedSnps.length).toBeLessThanOrEqual(file1.snps.length + file2.snps.length)
   })
 
-  it('should detect conflicts when same RSID has different genotypes', () => {
+  it('should detect conflicts when same RSID has different genotypes', async () => {
     const file1Snps = [
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AA', sourceFile: 1 as const },
     ]
@@ -242,7 +133,7 @@ describe('mergeSnps', () => {
     expect(result.conflicts[0].resolutionReason).toBe('Preferred File 1')
   })
 
-  it('should prioritize Ancestry when preferred', () => {
+  it('should prioritize Ancestry when preferred', async () => {
     const file1Snps = [
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AA', sourceFile: 1 as const },
     ]
@@ -257,7 +148,7 @@ describe('mergeSnps', () => {
     expect(result.conflicts[0].resolutionReason).toBe('Preferred File 1')
   })
 
-  it('should prioritize MyHeritage when preferred', () => {
+  it('should prioritize MyHeritage when preferred', async () => {
     const file1Snps = [
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AA', sourceFile: 1 as const },
     ]
@@ -272,7 +163,7 @@ describe('mergeSnps', () => {
     expect(result.conflicts[0].resolutionReason).toBe('Preferred File 2')
   })
 
-  it('should fill missing values when fillMissing is true', () => {
+  it('should fill missing values when fillMissing is true', async () => {
     const file1Snps = [
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: '--', sourceFile: 1 as const },
     ]
@@ -287,7 +178,7 @@ describe('mergeSnps', () => {
     expect(result.conflicts[0].resolutionReason).toBe('Filled Missing from File 2')
   })
 
-  it('should not fill missing values when fillMissing is false', () => {
+  it('should not fill missing values when fillMissing is false', async () => {
     const file1Snps = [
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: '--', sourceFile: 1 as const },
     ]
@@ -302,7 +193,7 @@ describe('mergeSnps', () => {
     expect(result.conflicts[0].resolutionReason).toBe('Preferred File 1')
   })
 
-  it('should sort by chromosome and position', () => {
+  it('should sort by chromosome and position', async () => {
     const file1Snps = [
       { rsid: 'rs2', chromosome: '2', position: '200', genotype: 'AA', sourceFile: 1 as const },
       { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'TT', sourceFile: 1 as const },
@@ -316,7 +207,7 @@ describe('mergeSnps', () => {
 })
 
 describe('generateMyHeritageCsv', () => {
-  it('should generate valid MyHeritage CSV format', () => {
+  it('should generate valid MyHeritage CSV format', async () => {
     const snps = [
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AA', sourceFile: 1 as const },
     ]
@@ -329,7 +220,7 @@ describe('generateMyHeritageCsv', () => {
     expect(result.excludedPAR).toBe(0)
   })
 
-  it('should exclude XY (Pseudoautosomal) chromosomes', () => {
+  it('should exclude XY (Pseudoautosomal) chromosomes', async () => {
     const snps = [
       { rsid: 'rs1', chromosome: 'X', position: '100', genotype: 'AA', sourceFile: 1 as const },
       { rsid: 'rs2', chromosome: 'XY', position: '200', genotype: 'TT', sourceFile: 1 as const },
@@ -346,14 +237,14 @@ describe('generateMyHeritageCsv', () => {
     expect(result.excludedPAR).toBe(2)
   })
 
-  it('should include timestamp in header', () => {
+  it('should include timestamp in header', async () => {
     const result = generateMyHeritageCsv([])
     expect(result.csv).toMatch(/##timestamp=.*UTC/)
   })
 })
 
 describe('generateAncestryTsv', () => {
-  it('should generate valid Ancestry TXT format', () => {
+  it('should generate valid Ancestry TXT format', async () => {
     const snps = [
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AA', sourceFile: 1 as const },
     ]
@@ -365,7 +256,7 @@ describe('generateAncestryTsv', () => {
     expect(tsv).toContain('rs123\t1\t100\tA\tA')
   })
 
-  it('should convert chromosomes to Ancestry numeric format', () => {
+  it('should convert chromosomes to Ancestry numeric format', async () => {
     const snps = [
       { rsid: 'rs1', chromosome: 'X', position: '100', genotype: 'AA', sourceFile: 1 as const },
       { rsid: 'rs2', chromosome: 'Y', position: '200', genotype: 'TT', sourceFile: 1 as const },
@@ -381,7 +272,7 @@ describe('generateAncestryTsv', () => {
     expect(tsv).toContain('rs4\t26\t400\tG\tG') // MT → 26
   })
 
-  it('should split genotype into two alleles', () => {
+  it('should split genotype into two alleles', async () => {
     const snps = [
       { rsid: 'rs456', chromosome: '2', position: '200', genotype: 'AC', sourceFile: 1 as const },
     ]
@@ -391,14 +282,14 @@ describe('generateAncestryTsv', () => {
     expect(tsv).toContain('rs456\t2\t200\tA\tC')
   })
 
-  it('should include timestamp in header', () => {
+  it('should include timestamp in header', async () => {
     const tsv = generateAncestryTsv([])
     expect(tsv).toMatch(/#Generated by MergeDNA at:.*UTC/)
   })
 })
 
 describe('generateLogFile', () => {
-  it('should generate log with conflicts and resolution reasons', () => {
+  it('should generate log with conflicts and resolution reasons', async () => {
     const conflicts = [
       {
         rsid: 'rs123',
@@ -420,7 +311,7 @@ describe('generateLogFile', () => {
     expect(log).toContain('Resolution Reason')
   })
 
-  it('should generate log with skipped rows', () => {
+  it('should generate log with skipped rows', async () => {
     const skipped = [
       {
         lineNumber: 10,
@@ -437,7 +328,7 @@ describe('generateLogFile', () => {
     expect(log).toContain('Invalid genotype')
   })
 
-  it('should include summary counts', () => {
+  it('should include summary counts', async () => {
     const conflicts = [
       {
         rsid: 'rs1',
@@ -460,23 +351,23 @@ describe('generateLogFile', () => {
 
 describe('normalizeGenotypeForFormat', () => {
   describe('converting to MyHeritage format', () => {
-    it('should convert "0 0" to "--"', () => {
+    it('should convert "0 0" to "--"', async () => {
       expect(normalizeGenotypeForFormat('0 0', 'myheritage')).toBe('--')
     })
 
-    it('should convert "00" to "--"', () => {
+    it('should convert "00" to "--"', async () => {
       expect(normalizeGenotypeForFormat('00', 'myheritage')).toBe('--')
     })
 
-    it('should handle whitespace around "0 0"', () => {
+    it('should handle whitespace around "0 0"', async () => {
       expect(normalizeGenotypeForFormat(' 0 0 ', 'myheritage')).toBe('--')
     })
 
-    it('should handle whitespace around "00"', () => {
+    it('should handle whitespace around "00"', async () => {
       expect(normalizeGenotypeForFormat(' 00 ', 'myheritage')).toBe('--')
     })
 
-    it('should leave other genotypes unchanged', () => {
+    it('should leave other genotypes unchanged', async () => {
       expect(normalizeGenotypeForFormat('AA', 'myheritage')).toBe('AA')
       expect(normalizeGenotypeForFormat('AT', 'myheritage')).toBe('AT')
       expect(normalizeGenotypeForFormat('CG', 'myheritage')).toBe('CG')
@@ -487,15 +378,15 @@ describe('normalizeGenotypeForFormat', () => {
   })
 
   describe('converting to Ancestry format', () => {
-    it('should convert "--" to "00"', () => {
+    it('should convert "--" to "00"', async () => {
       expect(normalizeGenotypeForFormat('--', 'ancestry')).toBe('00')
     })
 
-    it('should handle whitespace around "--"', () => {
+    it('should handle whitespace around "--"', async () => {
       expect(normalizeGenotypeForFormat(' -- ', 'ancestry')).toBe('00')
     })
 
-    it('should leave other genotypes unchanged', () => {
+    it('should leave other genotypes unchanged', async () => {
       expect(normalizeGenotypeForFormat('AA', 'ancestry')).toBe('AA')
       expect(normalizeGenotypeForFormat('AT', 'ancestry')).toBe('AT')
       expect(normalizeGenotypeForFormat('CG', 'ancestry')).toBe('CG')
@@ -507,14 +398,13 @@ describe('normalizeGenotypeForFormat', () => {
   })
 })
 
-describe('parseAncestryFileAsync', () => {
-  it('should parse ancestry file asynchronously with same results as sync version', async () => {
-    const syncResult = parseAncestryFile(ANCESTRY_SAMPLE, 1)
-    const asyncResult = await parseAncestryFileAsync(ANCESTRY_SAMPLE, 1)
+describe('parseAncestryFile', () => {
+  it('should parse ancestry file asynchronously', async () => {
+    const result = await parseAncestryFileAsync(ANCESTRY_SAMPLE, 1)
 
-    expect(asyncResult.snps).toEqual(syncResult.snps)
-    expect(asyncResult.errors).toEqual(syncResult.errors)
-    expect(asyncResult.format).toBe('ancestry')
+    expect(result.snps).toHaveLength(5)
+    expect(result.errors).toHaveLength(0)
+    expect(result.format).toBe('ancestry')
   })
 
   it('should handle large files with batching', async () => {
@@ -565,14 +455,13 @@ rs5	23	500	A	A`
   })
 })
 
-describe('parseMyHeritageFileAsync', () => {
-  it('should parse MyHeritage file asynchronously with same results as sync version', async () => {
-    const syncResult = parseMyHeritageFile(MYHERITAGE_SAMPLE, 1)
-    const asyncResult = await parseMyHeritageFileAsync(MYHERITAGE_SAMPLE, 1)
+describe('parseMyHeritageFile', () => {
+  it('should parse MyHeritage file asynchronously', async () => {
+    const result = await parseMyHeritageFileAsync(MYHERITAGE_SAMPLE, 1)
 
-    expect(asyncResult.snps).toEqual(syncResult.snps)
-    expect(asyncResult.errors).toEqual(syncResult.errors)
-    expect(asyncResult.format).toBe('myheritage')
+    expect(result.snps).toHaveLength(5)
+    expect(result.errors).toHaveLength(0)
+    expect(result.format).toBe('myheritage')
   })
 
   it('should handle large files with batching', async () => {
@@ -638,73 +527,6 @@ RSID,CHROMOSOME,POSITION,RESULT
 })
 
 describe('parseLivingDNAFile', () => {
-  it('should parse valid LivingDNA file', () => {
-    const result = parseLivingDNAFile(LIVINGDNA_SAMPLE, 1)
-
-    expect(result.snps).toHaveLength(5)
-    expect(result.format).toBe('livingdna')
-    expect(result.chip).toBe('Sirius')
-    expect(result.errors).toHaveLength(0)
-
-    expect(result.snps[0].rsid).toBe('rs3131972')
-    expect(result.snps[0].chromosome).toBe('1')
-    expect(result.snps[0].genotype).toBe('AG')
-  })
-
-  it('should handle AX-* identifiers correctly', () => {
-    const result = parseLivingDNAFile(LIVINGDNA_SAMPLE, 1)
-
-    const axSnp = result.snps.find(s => s.rsid.startsWith('AX-'))
-    expect(axSnp).toBeDefined()
-    expect(axSnp?.rsid).toBe('AX-33748877')
-    expect(axSnp?.genotype).toBe('CT')
-  })
-
-  it('should skip comment lines', () => {
-    const result = parseLivingDNAFile(LIVINGDNA_SAMPLE, 1)
-
-    // Should not count comment lines as errors
-    expect(result.errors).toHaveLength(0)
-  })
-
-  it('should validate chromosomes', () => {
-    const invalidContent = `# Living DNA
-# rsid chromosome position genotype
-rs123 99 100 AT`
-
-    const result = parseLivingDNAFile(invalidContent, 1)
-
-    expect(result.snps).toHaveLength(0)
-    expect(result.errors).toHaveLength(1)
-    expect(result.errors[0].reason).toContain('Invalid chromosome')
-  })
-
-  it('should validate genotypes', () => {
-    const invalidContent = `# Living DNA
-# rsid chromosome position genotype
-rs123 1 100 XY`
-
-    const result = parseLivingDNAFile(invalidContent, 1)
-
-    expect(result.snps).toHaveLength(0)
-    expect(result.errors).toHaveLength(1)
-    expect(result.errors[0].reason).toContain('Invalid genotype')
-  })
-
-  it('should handle missing fields', () => {
-    const invalidContent = `# Living DNA
-# rsid chromosome position genotype
-rs123 1`
-
-    const result = parseLivingDNAFile(invalidContent, 1)
-
-    expect(result.snps).toHaveLength(0)
-    expect(result.errors).toHaveLength(1)
-    expect(result.errors[0].reason).toContain('Insufficient columns')
-  })
-})
-
-describe('parseLivingDNAFileAsync', () => {
   it('should parse LivingDNA file asynchronously', async () => {
     const result = await parseLivingDNAFileAsync(LIVINGDNA_SAMPLE, 1)
 
@@ -733,8 +555,8 @@ describe('mergeSnpsAsync', () => {
   const defaultOptions = { preferredFile: 1 as const, fillMissing: true }
 
   it('should merge SNPs asynchronously with same results as sync version', async () => {
-    const file1 = parseAncestryFile(ANCESTRY_SAMPLE, 1)
-    const file2 = parseMyHeritageFile(MYHERITAGE_SAMPLE, 2)
+    const file1 = await parseAncestryFileAsync(ANCESTRY_SAMPLE, 1)
+    const file2 = await parseMyHeritageFileAsync(MYHERITAGE_SAMPLE, 2)
 
     const syncResult = mergeSnps(file1.snps, file2.snps, defaultOptions)
     const asyncResult = await mergeSnpsAsync(file1.snps, file2.snps, defaultOptions)

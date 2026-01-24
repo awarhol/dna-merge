@@ -346,6 +346,15 @@ const ProcessingContainer = styled.div`
   max-width: 400px;
 `
 
+const formatParsers: Record<
+  'ancestry' | 'myheritage' | 'livingdna',
+  typeof parseAncestryFileAsync
+> = {
+  ancestry: parseAncestryFileAsync,
+  myheritage: parseMyHeritageFileAsync,
+  livingdna: parseLivingDNAFileAsync,
+}
+
 export const Home = () => {
   const { t } = useTranslation(['home', 'common', 'algorithm'])
   const [dnaFiles, setDnaFiles] = useState<string[]>([])
@@ -401,20 +410,10 @@ export const Home = () => {
       }
 
       // Phase 1: Parse file 1 (0-35%)
-      const parsed1 =
-        format1 === 'ancestry'
-          ? await parseAncestryFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.35))
-          : format1 === 'myheritage'
-            ? await parseMyHeritageFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.35))
-            : await parseLivingDNAFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.35))
+      const parsed1 = await formatParsers[format1](dnaFiles[0], 1, p => setProgress(p * 0.35))
 
       // Phase 2: Parse file 2 (35-70%)
-      const parsed2 =
-        format2 === 'ancestry'
-          ? await parseAncestryFileAsync(dnaFiles[1], 2, p => setProgress(35 + p * 0.35))
-          : format2 === 'myheritage'
-            ? await parseMyHeritageFileAsync(dnaFiles[1], 2, p => setProgress(35 + p * 0.35))
-            : await parseLivingDNAFileAsync(dnaFiles[1], 2, p => setProgress(35 + p * 0.35))
+      const parsed2 = await formatParsers[format2](dnaFiles[1], 2, p => setProgress(35 + p * 0.35))
 
       // Phase 3: Merge SNPs (70-95%)
       const preferredFile = (preferredFileIndex + 1) as 1 | 2 // Convert to 1-based index
@@ -489,12 +488,7 @@ export const Home = () => {
       const targetFormat = outputFormat
 
       // Phase 1: Parse file (0-80%)
-      const parsed =
-        sourceFormat === 'ancestry'
-          ? await parseAncestryFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.8))
-          : sourceFormat === 'myheritage'
-            ? await parseMyHeritageFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.8))
-            : await parseLivingDNAFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.8))
+      const parsed = await formatParsers[sourceFormat](dnaFiles[0], 1, p => setProgress(p * 0.8))
 
       // Phase 2: Normalize (80%)
       setProgress(80)
