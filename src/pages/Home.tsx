@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { DNAFileUpload, type FileMetadata } from '../components/DNAFileUpload'
 import { Tooltip } from '../components/Tooltip'
@@ -346,6 +347,7 @@ const ProcessingContainer = styled.div`
 `
 
 export const Home = () => {
+  const { t } = useTranslation(['home', 'common', 'algorithm'])
   const [dnaFiles, setDnaFiles] = useState<string[]>([])
   const [fileMetadata, setFileMetadata] = useState<FileMetadata[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
@@ -388,9 +390,7 @@ export const Home = () => {
       const format2 = detectFormat(dnaFiles[1])
 
       if (format1 === 'unknown' || format2 === 'unknown') {
-        throw new Error(
-          'Unable to detect file format. Please ensure files are valid Ancestry or MyHeritage DNA files.'
-        )
+        throw new Error(t('common:errors.format_detection'))
       }
 
       // Phase 1: Parse file 1 (0-35%)
@@ -454,7 +454,7 @@ export const Home = () => {
         skipped: allSkipped.length,
       })
     } catch (err) {
-      setError((err as Error).message || 'An error occurred during merge')
+      setError((err as Error).message || t('common:errors.merge_error'))
     } finally {
       setIsProcessing(false)
     }
@@ -471,9 +471,7 @@ export const Home = () => {
       const sourceFormat = detectFormat(dnaFiles[0])
 
       if (sourceFormat === 'unknown') {
-        throw new Error(
-          'Unable to detect file format. Please ensure the file is a valid Ancestry or MyHeritage DNA file.'
-        )
+        throw new Error(t('common:errors.format_detection_single'))
       }
 
       const targetFormat = getOppositeFormat(sourceFormat)
@@ -524,7 +522,7 @@ export const Home = () => {
         skipped: parsed.errors.length,
       })
     } catch (err) {
-      setError((err as Error).message || 'An error occurred during conversion')
+      setError((err as Error).message || t('common:errors.convert_error'))
     } finally {
       setIsProcessing(false)
     }
@@ -593,7 +591,7 @@ export const Home = () => {
   return (
     <Container>
       <HeaderSection>
-        <Title>Merge DNA</Title>
+        <Title>{t('home:title')}</Title>
         <GitHubBadge
           href="https://github.com/awarhol/dna-merge"
           target="_blank"
@@ -602,83 +600,74 @@ export const Home = () => {
           <svg viewBox="0 0 16 16" fill="currentColor">
             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
           </svg>
-          View on GitHub
+          {t('home:github_badge')}
         </GitHubBadge>
       </HeaderSection>
-      <Subtitle>Upload 1 or 2 DNA files to convert or merge</Subtitle>
+      <Subtitle>{t('home:subtitle')}</Subtitle>
 
       <PrivacyNotice>
-        <strong>🔒 Your Privacy is Protected:</strong> All DNA file processing happens entirely in your browser on your computer.
-        No data is uploaded to any server. Your genetic information never leaves your device.
+        <strong>🔒 {t('home:privacy.title')}</strong> {t('home:privacy.message')}
       </PrivacyNotice>
 
       <CollapsibleSection>
-        <summary>How the Merge Algorithm Works</summary>
+        <summary>{t('algorithm:section_title')}</summary>
         <DescriptionContent>
           <p>
-            This tool helps you combine DNA raw data files from different testing companies (Ancestry and MyHeritage)
-            into a single, comprehensive genetic profile. Here's how the algorithm works:
+            {t('algorithm:intro')}
           </p>
 
-          <DescriptionSubtitle>What Problem Does This Solve?</DescriptionSubtitle>
-          <p>When you test with multiple DNA companies, each company may:</p>
+          <DescriptionSubtitle>{t('algorithm:problem.title')}</DescriptionSubtitle>
+          <p>{t('algorithm:problem.description')}</p>
           <DescriptionList>
-            <li>Test different SNPs (genetic markers)</li>
-            <li>Have gaps in their data (no-calls, shown as "--")</li>
-            <li>Occasionally produce conflicting results for the same SNP</li>
+            <li>{t('algorithm:problem.list.different_snps')}</li>
+            <li>{t('algorithm:problem.list.gaps')}</li>
+            <li>{t('algorithm:problem.list.conflicts')}</li>
           </DescriptionList>
-          <p>This algorithm intelligently combines your files to give you the most complete picture of your DNA.</p>
+          <p>{t('algorithm:problem.conclusion')}</p>
 
-          <DescriptionSubtitle>The Three-Step Merge Process</DescriptionSubtitle>
+          <DescriptionSubtitle>{t('algorithm:process.title')}</DescriptionSubtitle>
           <DescriptionList>
             <li>
-              <strong>Step 1: Load First File</strong> - The algorithm reads all SNPs from your first file and indexes them
-              by their RSID (the unique identifier like "rs3131972")
+              <strong>{t('algorithm:process.step1.title')}</strong> - {t('algorithm:process.step1.description')}
             </li>
             <li>
-              <strong>Step 2: Process Second File</strong> - For each SNP in your second file, the algorithm checks if the
-              RSID already exists. If it's new, it adds it. If it exists with a different genotype, it resolves the conflict
-              using your chosen strategy
+              <strong>{t('algorithm:process.step2.title')}</strong> - {t('algorithm:process.step2.description')}
             </li>
             <li>
-              <strong>Step 3: Sort by Genomic Position</strong> - The final merged file is sorted by chromosome number
-              (1, 2, 3... 22, X, Y, MT) and position, matching standard genome references
+              <strong>{t('algorithm:process.step3.title')}</strong> - {t('algorithm:process.step3.description')}
             </li>
           </DescriptionList>
 
-          <DescriptionSubtitle>Conflict Resolution Strategies</DescriptionSubtitle>
-          <p>When the same SNP has different genotypes in both files, you can choose:</p>
+          <DescriptionSubtitle>{t('algorithm:conflict_resolution.title')}</DescriptionSubtitle>
+          <p>{t('algorithm:conflict_resolution.description')}</p>
           <DescriptionList>
             <li>
-              <strong>"Fill Missing" (Recommended):</strong> If one file has missing data ("--" or "00") and the other has a value,
-              use the value. If both have values, use the preferred file. This maximizes coverage.
+              <strong>{t('algorithm:conflict_resolution.fill_missing.title')}</strong> {t('algorithm:conflict_resolution.fill_missing.description')}
             </li>
             <li>
-              <strong>"Prefer File":</strong> Always use the genotype from your preferred file, regardless of missing data.
-              Simpler but may lose valid data.
+              <strong>{t('algorithm:conflict_resolution.prefer_file.title')}</strong> {t('algorithm:conflict_resolution.prefer_file.description')}
             </li>
           </DescriptionList>
 
-          <DescriptionSubtitle>Understanding Your DNA Data</DescriptionSubtitle>
-          <p>Each SNP (Single Nucleotide Polymorphism) contains:</p>
+          <DescriptionSubtitle>{t('algorithm:understanding_data.title')}</DescriptionSubtitle>
+          <p>{t('algorithm:understanding_data.description')}</p>
           <DescriptionList>
-            <li><strong>RSID:</strong> Unique identifier (e.g., "rs3131972")</li>
-            <li><strong>Chromosome:</strong> Location (1-22, X, Y, or MT for mitochondrial)</li>
-            <li><strong>Position:</strong> Exact base pair location on that chromosome</li>
-            <li><strong>Genotype:</strong> Your two alleles at that position (e.g., "AA", "GC", "TT"). You inherit one from each parent</li>
+            <li><strong>{t('algorithm:understanding_data.rsid')}</strong></li>
+            <li><strong>{t('algorithm:understanding_data.chromosome')}</strong></li>
+            <li><strong>{t('algorithm:understanding_data.position')}</strong></li>
+            <li><strong>{t('algorithm:understanding_data.genotype')}</strong></li>
           </DescriptionList>
 
-          <DescriptionSubtitle>Why This Matters for Genealogy</DescriptionSubtitle>
+          <DescriptionSubtitle>{t('algorithm:why_matters.title')}</DescriptionSubtitle>
           <DescriptionList>
-            <li><strong>Maximize DNA matches:</strong> More SNPs tested means better matching accuracy with genetic relatives</li>
-            <li><strong>Fill testing gaps:</strong> Companies test different SNPs; merging gives you broader coverage</li>
-            <li><strong>Compare testing accuracy:</strong> The log file shows where companies disagreed</li>
-            <li><strong>Use specialized tools:</strong> Some genetic genealogy tools require specific SNPs that only certain companies test</li>
+            <li><strong>{t('algorithm:why_matters.list.matches')}</strong></li>
+            <li><strong>{t('algorithm:why_matters.list.gaps')}</strong></li>
+            <li><strong>{t('algorithm:why_matters.list.accuracy')}</strong></li>
+            <li><strong>{t('algorithm:why_matters.list.tools')}</strong></li>
           </DescriptionList>
 
           <p style={{ marginTop: '1rem', fontSize: '0.9rem', fontStyle: 'italic' }}>
-            The algorithm is designed to be conservative and transparent, giving you confidence that your merged DNA file
-            accurately represents your genetic data while maximizing completeness.
+            {t('algorithm:footer')}
           </p>
         </DescriptionContent>
       </CollapsibleSection>
@@ -690,7 +679,7 @@ export const Home = () => {
       {isMergeMode && !mergedCsv && !isProcessing && (
         <OptionsSection>
           <OptionRow>
-            <label>Output Format:</label>
+            <label>{t('home:options.output_format')}</label>
             <Select
               value={outputFormat}
               onChange={e => setOutputFormat(e.target.value as 'ancestry' | 'myheritage')}
@@ -701,8 +690,8 @@ export const Home = () => {
           </OptionRow>
           <OptionRow>
             <LabelWithTooltip>
-              <span>Prefer data source in case of conflicts:</span>
-              <Tooltip content="When both tests show different values for the same genetic marker (e.g., one shows 'AT' and the other shows 'GG'), use the result from this source." />
+              <span>{t('home:options.prefer_source')}</span>
+              <Tooltip content={t('home:options.tooltip_prefer')} />
             </LabelWithTooltip>
             <Select
               value={preferredFileIndex}
@@ -717,8 +706,8 @@ export const Home = () => {
           </OptionRow>
           <OptionRow>
             <LabelWithTooltip>
-              <span>Fill Missing Values:</span>
-              <Tooltip content="When enabled, fills gaps in one test with real data from the other test. When disabled, strictly follows your preferred source even if it has missing values (-- or 00)." />
+              <span>{t('home:options.fill_missing')}</span>
+              <Tooltip content={t('home:options.tooltip_fill')} />
             </LabelWithTooltip>
             <Checkbox checked={fillMissing} onChange={e => setFillMissing(e.target.checked)} />
           </OptionRow>
@@ -734,20 +723,20 @@ export const Home = () => {
             {isProcessing && <ButtonSpinner />}
             {isProcessing
               ? isSingleFileMode
-                ? 'Converting...'
-                : 'Merging...'
+                ? t('common:buttons.converting')
+                : t('common:buttons.merging')
               : isSingleFileMode
-                ? 'Convert'
-                : 'Merge'}
+                ? t('common:buttons.convert')
+                : t('common:buttons.merge')}
           </MergeButton>
-          {isProcessing && <ProgressBar progress={progress} label="Processing" />}
+          {isProcessing && <ProgressBar progress={progress} label={t('common:processing.label')} />}
         </ProcessingContainer>
       )}
 
       {error && (
         <ResultsSection>
           <ErrorMessage>{error}</ErrorMessage>
-          <ResetButton onClick={handleReset}>Try Again</ResetButton>
+          <ResetButton onClick={handleReset}>{t('common:buttons.try_again')}</ResetButton>
         </ResultsSection>
       )}
 
@@ -755,25 +744,25 @@ export const Home = () => {
         <ResultsSection>
           <SuccessMessage>
             {isSingleFileMode
-              ? 'Conversion completed successfully!'
-              : 'Merge completed successfully!'}
+              ? t('common:success.convert')
+              : t('common:success.merge')}
           </SuccessMessage>
           <StatsList>
             <li>
-              Total SNPs {isSingleFileMode ? 'converted' : 'merged'}:{' '}
+              {t('common:stats.total_snps', { mode: isSingleFileMode ? 'converted' : 'merged' })}{' '}
               {stats.totalSnps.toLocaleString()}
             </li>
-            <li>Conflicts detected: {stats.conflicts}</li>
-            <li>Invalid rows skipped: {stats.skipped}</li>
+            <li>{t('common:stats.conflicts')} {stats.conflicts}</li>
+            <li>{t('common:stats.skipped')} {stats.skipped}</li>
           </StatsList>
           <DownloadButtonsContainer>
             <DownloadButton onClick={handleDownloadCsv}>
-              Download {isSingleFileMode ? 'Converted' : 'Merged'} DNA
+              {t('common:buttons.download_dna', { mode: isSingleFileMode ? 'Converted' : 'Merged' })}
             </DownloadButton>
-            <DownloadButton onClick={handleDownloadLog}>Download Log File</DownloadButton>
+            <DownloadButton onClick={handleDownloadLog}>{t('common:buttons.download_log')}</DownloadButton>
           </DownloadButtonsContainer>
           <ResetButton onClick={handleReset}>
-            {isSingleFileMode ? 'Convert More Files' : 'Merge More Files'}
+            {t('common:buttons.process_more', { mode: isSingleFileMode ? 'Convert' : 'Merge' })}
           </ResetButton>
         </ResultsSection>
       )}

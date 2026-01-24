@@ -1,0 +1,16 @@
+{
+  "title": "Merge DNA",
+  "subtitle": "Upload 1 or 2 DNA files to convert or merge",
+  "github_badge": "View on GitHub",
+  "privacy": {
+    "title": "Your Privacy is Protected:",
+    "message": "All DNA file processing happens entirely in your browser on your computer. No data is uploaded to any server. Your genetic information never leaves your device."
+  },
+  "options": {
+    "output_format": "Output Format:",
+    "prefer_source": "Prefer data source in case of conflicts:",
+    "fill_missing": "Fill Missing Values:",
+    "tooltip_prefer": "When both tests show different values for the same genetic marker (e.g., one shows 'AT' and the other shows 'GG'), use the result from this source.",
+    "tooltip_fill": "When enabled, fills gaps in one test with real data from the other test. When disabled, strictly follows your preferred source even if it has missing values (-- or 00)."
+  }
+}

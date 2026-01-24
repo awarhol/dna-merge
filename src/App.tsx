@@ -3,16 +3,16 @@ import { ThemeProvider } from 'styled-components'
 import { GlobalStyles } from '@/styles/GlobalStyles'
 import { theme } from '@/styles/theme'
 import { Home } from '@/pages/Home'
-import { About } from '@/pages/About'
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
+      <LanguageSwitcher />
       <BrowserRouter basename="/dna-merge">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

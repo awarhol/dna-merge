@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { detectFormat } from '../utils/dnaParser'
 import { Tag } from './Tag'
@@ -89,6 +90,7 @@ interface DNAFileUploadProps {
 }
 
 export const DNAFileUpload = ({ onFilesChange, resetTrigger }: DNAFileUploadProps) => {
+  const { t } = useTranslation('common')
   const [files, setFiles] = useState<FileWithFormat[]>([])
 
   useEffect(() => {
@@ -165,12 +167,12 @@ export const DNAFileUpload = ({ onFilesChange, resetTrigger }: DNAFileUploadProp
           <input {...getInputProps()} />
           <DropzoneText>
             {isDragActive ? (
-              'Drop the files here...'
+              t('upload.drop_here')
             ) : (
               <>
-                Drag & drop DNA files here, or click to select files
+                {t('upload.drag_and_drop')}
                 <br />
-                (Upload up to 2 files - .txt or .csv)
+                {t('upload.file_format_info')}
               </>
             )}
           </DropzoneText>
@@ -184,7 +186,7 @@ export const DNAFileUpload = ({ onFilesChange, resetTrigger }: DNAFileUploadProp
               <FileInfo>
                 <FileName>{item.file.name}</FileName>
                 <Tag variant={item.format}>
-                  {item.format === 'unknown' ? 'Unknown' : item.format}
+                  {item.format === 'unknown' ? t('upload.unknown_format') : item.format}
                 </Tag>
               </FileInfo>
               <RemoveButton onClick={() => removeFile(index)}>×</RemoveButton>

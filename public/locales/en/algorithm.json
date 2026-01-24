@@ -1,0 +1,59 @@
+{
+  "section_title": "How the Merge Algorithm Works",
+  "intro": "This tool helps you combine DNA raw data files from different testing companies (Ancestry and MyHeritage) into a single, comprehensive genetic profile. Here's how the algorithm works:",
+  "problem": {
+    "title": "What Problem Does This Solve?",
+    "description": "When you test with multiple DNA companies, each company may:",
+    "list": {
+      "different_snps": "Test different SNPs (genetic markers)",
+      "gaps": "Have gaps in their data (no-calls, shown as \"--\")",
+      "conflicts": "Occasionally produce conflicting results for the same SNP"
+    },
+    "conclusion": "This algorithm intelligently combines your files to give you the most complete picture of your DNA."
+  },
+  "process": {
+    "title": "The Three-Step Merge Process",
+    "step1": {
+      "title": "Step 1: Load First File",
+      "description": "The algorithm reads all SNPs from your first file and indexes them by their RSID (the unique identifier like \"rs3131972\")"
+    },
+    "step2": {
+      "title": "Step 2: Process Second File",
+      "description": "For each SNP in your second file, the algorithm checks if the RSID already exists. If it's new, it adds it. If it exists with a different genotype, it resolves the conflict using your chosen strategy"
+    },
+    "step3": {
+      "title": "Step 3: Sort by Genomic Position",
+      "description": "The final merged file is sorted by chromosome number (1, 2, 3... 22, X, Y, MT) and position, matching standard genome references"
+    }
+  },
+  "conflict_resolution": {
+    "title": "Conflict Resolution Strategies",
+    "description": "When the same SNP has different genotypes in both files, you can choose:",
+    "fill_missing": {
+      "title": "\"Fill Missing\" (Recommended):",
+      "description": "If one file has missing data (\"--\" or \"00\") and the other has a value, use the value. If both have values, use the preferred file. This maximizes coverage."
+    },
+    "prefer_file": {
+      "title": "\"Prefer File\":",
+      "description": "Always use the genotype from your preferred file, regardless of missing data. Simpler but may lose valid data."
+    }
+  },
+  "understanding_data": {
+    "title": "Understanding Your DNA Data",
+    "description": "Each SNP (Single Nucleotide Polymorphism) contains:",
+    "rsid": "RSID: Unique identifier (e.g., \"rs3131972\")",
+    "chromosome": "Chromosome: Location (1-22, X, Y, or MT for mitochondrial)",
+    "position": "Position: Exact base pair location on that chromosome",
+    "genotype": "Genotype: Your two alleles at that position (e.g., \"AA\", \"GC\", \"TT\"). You inherit one from each parent"
+  },
+  "why_matters": {
+    "title": "Why This Matters for Genealogy",
+    "list": {
+      "matches": "Maximize DNA matches: More SNPs tested means better matching accuracy with genetic relatives",
+      "gaps": "Fill testing gaps: Companies test different SNPs; merging gives you broader coverage",
+      "accuracy": "Compare testing accuracy: The log file shows where companies disagreed",
+      "tools": "Use specialized tools: Some genetic genealogy tools require specific SNPs that only certain companies test"
+    }
+  },
+  "footer": "The algorithm is designed to be conservative and transparent, giving you confidence that your merged DNA file accurately represents your genetic data while maximizing completeness."
+}

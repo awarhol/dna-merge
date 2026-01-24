@@ -1,0 +1,36 @@
+{
+  "upload": {
+    "drag_and_drop": "Drag & drop DNA files here, or click to select files",
+    "file_format_info": "(Upload up to 2 files - .txt or .csv)",
+    "drop_here": "Drop the files here...",
+    "unknown_format": "Unknown"
+  },
+  "buttons": {
+    "convert": "Convert",
+    "converting": "Converting...",
+    "merge": "Merge",
+    "merging": "Merging...",
+    "download_dna": "Download {{mode}} DNA",
+    "download_log": "Download Log File",
+    "try_again": "Try Again",
+    "process_more": "{{mode}} More Files"
+  },
+  "errors": {
+    "format_detection": "Unable to detect file format. Please ensure files are valid Ancestry or MyHeritage DNA files.",
+    "format_detection_single": "Unable to detect file format. Please ensure the file is a valid Ancestry or MyHeritage DNA file.",
+    "merge_error": "An error occurred during merge",
+    "convert_error": "An error occurred during conversion"
+  },
+  "success": {
+    "convert": "Conversion completed successfully!",
+    "merge": "Merge completed successfully!"
+  },
+  "stats": {
+    "total_snps": "Total SNPs {{mode}}:",
+    "conflicts": "Conflicts detected:",
+    "skipped": "Invalid rows skipped:"
+  },
+  "processing": {
+    "label": "Processing"
+  }
+}
