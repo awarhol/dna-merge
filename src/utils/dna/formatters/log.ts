@@ -4,17 +4,33 @@ export function generateLogFile(
   conflicts: ConflictEntry[],
   skipped: SkippedEntry[],
   excludedPAR?: number,
-  fileNames?: { file1?: string; file2?: string }
+  fileNames?: { file1?: string; file2?: string },
+  file1Metadata?: { chip?: string; version?: string; reference?: string },
+  file2Metadata?: { chip?: string; version?: string; reference?: string }
 ): string {
   const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC'
+
+  // Helper to format metadata
+  const formatMetadata = (metadata?: {
+    chip?: string
+    version?: string
+    reference?: string
+  }): string => {
+    if (!metadata) return ''
+    let result = ''
+    if (metadata.chip) result += `  Chip: ${metadata.chip}\n`
+    if (metadata.version) result += `  Version: ${metadata.version}\n`
+    if (metadata.reference) result += `  Reference: ${metadata.reference}\n`
+    return result
+  }
 
   let log = `DNA Merge Log
 Generated: ${timestamp}
 
 === FILES ===
 File 1: ${fileNames?.file1 || 'N/A'}
-File 2: ${fileNames?.file2 || 'N/A'}
-
+${formatMetadata(file1Metadata)}File 2: ${fileNames?.file2 || 'N/A'}
+${formatMetadata(file2Metadata)}
 === SUMMARY ===
 Conflicts detected: ${conflicts.length}
 Invalid rows skipped: ${skipped.length}

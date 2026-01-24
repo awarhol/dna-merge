@@ -8,7 +8,7 @@ describe('parseLivingDNAFile', () => {
 
     expect(result.snps).toHaveLength(5)
     expect(result.format).toBe('livingdna')
-    expect(result.chip).toBe('Sirius')
+    expect(result.metadata?.chip).toBe('Sirius')
     expect(result.errors).toHaveLength(0)
   })
 

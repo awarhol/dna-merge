@@ -12,12 +12,34 @@ export async function parseMyHeritageFileAsync(
   const snps: SNP[] = []
   const errors: SkippedEntry[] = []
   let headerFound = false
+  let chip: string | undefined
+  let version: string | undefined
+  let reference: string | undefined
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     const trimmedLine = line.trim()
 
     if (trimmedLine === '' || trimmedLine.startsWith('#')) {
+      // Extract metadata from comments
+      if (trimmedLine.startsWith('##chip=')) {
+        const match = trimmedLine.match(/^##chip=(.+)$/i)
+        if (match) {
+          chip = match[1]
+        }
+      }
+      if (trimmedLine.startsWith('##format=')) {
+        const match = trimmedLine.match(/^##format=(.+)$/i)
+        if (match) {
+          version = match[1]
+        }
+      }
+      if (trimmedLine.startsWith('##reference=')) {
+        const match = trimmedLine.match(/^##reference=(.+)$/i)
+        if (match) {
+          reference = match[1]
+        }
+      }
       continue
     }
 
@@ -89,5 +111,8 @@ export async function parseMyHeritageFileAsync(
     }
   }
 
-  return { snps, errors, format: 'myheritage' }
+  const metadata: { chip?: string; version?: string; reference?: string } | undefined =
+    chip || version || reference ? { chip, version, reference } : undefined
+
+  return { snps, errors, format: 'myheritage', metadata }
 }

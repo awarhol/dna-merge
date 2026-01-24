@@ -6,8 +6,8 @@ import { chromosomeToSortKey } from './formatters/common'
 const yieldToMainThread = () => new Promise(resolve => setTimeout(resolve, 0))
 
 export async function mergeSnpsAsync(
-  file1Snps: SNP[],
-  file2Snps: SNP[],
+  file1: { snps: SNP[]; metadata?: { chip?: string; version?: string; reference?: string } },
+  file2: { snps: SNP[]; metadata?: { chip?: string; version?: string; reference?: string } },
   options: MergeOptions,
   onProgress?: (progress: number) => void
 ): Promise<MergeResult> {
@@ -16,6 +16,9 @@ export async function mergeSnpsAsync(
   const conflicts: ConflictEntry[] = []
   const skippedRows: SkippedEntry[] = []
   const snpMap = new Map<string, SNP>()
+
+  const file1Snps = file1.snps
+  const file2Snps = file2.snps
 
   // Helper to get file name
   const getFormatName = (fileNum: 1 | 2) => {
@@ -120,5 +123,11 @@ export async function mergeSnpsAsync(
     onProgress(100)
   }
 
-  return { mergedSnps, conflicts, skippedRows }
+  return {
+    mergedSnps,
+    conflicts,
+    skippedRows,
+    file1Metadata: file1.metadata,
+    file2Metadata: file2.metadata,
+  }
 }

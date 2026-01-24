@@ -13,17 +13,31 @@ export async function parseLivingDNAFileAsync(
   const errors: SkippedEntry[] = []
   let headerFound = false
   let chip: string | undefined
+  let version: string | undefined
+  let reference: string | undefined
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     const trimmedLine = line.trim()
 
     if (trimmedLine === '' || trimmedLine.startsWith('#')) {
-      // Extract chip format from comments
+      // Extract metadata from comments
       if (trimmedLine.toLowerCase().includes('genotype chip:')) {
         const match = trimmedLine.match(/genotype chip:\s*(\S+)/i)
         if (match) {
           chip = match[1]
+        }
+      }
+      if (trimmedLine.toLowerCase().includes('file version:')) {
+        const match = trimmedLine.match(/file version:\s*([^\s]+)/i)
+        if (match) {
+          version = match[1]
+        }
+      }
+      if (trimmedLine.toLowerCase().includes('human genome reference build')) {
+        const match = trimmedLine.match(/human genome reference build\s*(\d+)/i)
+        if (match) {
+          reference = match[1]
         }
       }
       continue
@@ -101,5 +115,8 @@ export async function parseLivingDNAFileAsync(
     }
   }
 
-  return { snps, errors, format: 'livingdna', chip }
+  const metadata: { chip?: string; version?: string; reference?: string } | undefined =
+    chip || version || reference ? { chip, version, reference } : undefined
+
+  return { snps, errors, format: 'livingdna', metadata }
 }

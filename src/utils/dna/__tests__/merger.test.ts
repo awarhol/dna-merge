@@ -11,7 +11,7 @@ describe('mergeSnps', () => {
     const file1 = await parseAncestryFileAsync(ANCESTRY_SAMPLE, 1)
     const file2 = await parseMyHeritageFileAsync(MYHERITAGE_SAMPLE, 2)
 
-    const result = await mergeSnpsAsync(file1.snps, file2.snps, defaultOptions)
+    const result = await mergeSnpsAsync(file1, file2, defaultOptions)
 
     expect(result.mergedSnps.length).toBeGreaterThan(0)
     expect(result.mergedSnps.length).toBeLessThanOrEqual(file1.snps.length + file2.snps.length)
@@ -25,7 +25,7 @@ describe('mergeSnps', () => {
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AC', sourceFile: 2 as const },
     ]
 
-    const result = await mergeSnpsAsync(file1Snps, file2Snps, defaultOptions)
+    const result = await mergeSnpsAsync({ snps: file1Snps }, { snps: file2Snps }, defaultOptions)
 
     expect(result.conflicts).toHaveLength(1)
     expect(result.conflicts[0].file1Genotype).toBe('AA')
@@ -42,10 +42,14 @@ describe('mergeSnps', () => {
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AC', sourceFile: 2 as const },
     ]
 
-    const result = await mergeSnpsAsync(file1Snps, file2Snps, {
-      preferredFile: 1,
-      fillMissing: false,
-    })
+    const result = await mergeSnpsAsync(
+      { snps: file1Snps },
+      { snps: file2Snps },
+      {
+        preferredFile: 1,
+        fillMissing: false,
+      }
+    )
 
     const mergedSnp = result.mergedSnps.find(s => s.rsid === 'rs123')
     expect(mergedSnp?.genotype).toBe('AA')
@@ -60,10 +64,14 @@ describe('mergeSnps', () => {
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AC', sourceFile: 2 as const },
     ]
 
-    const result = await mergeSnpsAsync(file1Snps, file2Snps, {
-      preferredFile: 2,
-      fillMissing: false,
-    })
+    const result = await mergeSnpsAsync(
+      { snps: file1Snps },
+      { snps: file2Snps },
+      {
+        preferredFile: 2,
+        fillMissing: false,
+      }
+    )
 
     const mergedSnp = result.mergedSnps.find(s => s.rsid === 'rs123')
     expect(mergedSnp?.genotype).toBe('AC')
@@ -78,10 +86,14 @@ describe('mergeSnps', () => {
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AC', sourceFile: 2 as const },
     ]
 
-    const result = await mergeSnpsAsync(file1Snps, file2Snps, {
-      preferredFile: 1,
-      fillMissing: true,
-    })
+    const result = await mergeSnpsAsync(
+      { snps: file1Snps },
+      { snps: file2Snps },
+      {
+        preferredFile: 1,
+        fillMissing: true,
+      }
+    )
 
     const mergedSnp = result.mergedSnps.find(s => s.rsid === 'rs123')
     expect(mergedSnp?.genotype).toBe('AC')
@@ -96,10 +108,14 @@ describe('mergeSnps', () => {
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AC', sourceFile: 2 as const },
     ]
 
-    const result = await mergeSnpsAsync(file1Snps, file2Snps, {
-      preferredFile: 1,
-      fillMissing: false,
-    })
+    const result = await mergeSnpsAsync(
+      { snps: file1Snps },
+      { snps: file2Snps },
+      {
+        preferredFile: 1,
+        fillMissing: false,
+      }
+    )
 
     const mergedSnp = result.mergedSnps.find(s => s.rsid === 'rs123')
     expect(mergedSnp?.genotype).toBe('--')
@@ -112,7 +128,7 @@ describe('mergeSnps', () => {
       { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'TT', sourceFile: 1 as const },
     ]
 
-    const result = await mergeSnpsAsync(file1Snps, [], defaultOptions)
+    const result = await mergeSnpsAsync({ snps: file1Snps }, { snps: [] }, defaultOptions)
 
     expect(result.mergedSnps[0].rsid).toBe('rs1')
     expect(result.mergedSnps[1].rsid).toBe('rs2')

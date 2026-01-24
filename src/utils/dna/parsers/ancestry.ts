@@ -12,12 +12,32 @@ export async function parseAncestryFileAsync(
   const snps: SNP[] = []
   const errors: SkippedEntry[] = []
   let headerFound = false
+  let chip: string | undefined
+  let arrayVersion: string | undefined
+  let converterVersion: string | undefined
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     const trimmedLine = line.trim()
 
     if (trimmedLine === '' || trimmedLine.startsWith('#')) {
+      // Extract metadata from comments
+      if (trimmedLine.toLowerCase().includes('data was collected using')) {
+        const chipMatch = trimmedLine.match(/data was collected using\s+([^\s]+)\s+array version:/i)
+        if (chipMatch) {
+          chip = chipMatch[1]
+        }
+        const versionMatch = trimmedLine.match(/array\s+version:\s*([^\s]+)/i)
+        if (versionMatch) {
+          arrayVersion = versionMatch[1]
+        }
+      }
+      if (trimmedLine.toLowerCase().includes('converter version:')) {
+        const match = trimmedLine.match(/converter\s+version:\s*([^\s]+)/i)
+        if (match) {
+          converterVersion = match[1]
+        }
+      }
       continue
     }
 
@@ -94,5 +114,18 @@ export async function parseAncestryFileAsync(
     }
   }
 
-  return { snps, errors, format: 'ancestry' }
+  // Build version string
+  let version: string | undefined
+  if (arrayVersion && converterVersion) {
+    version = `Array: ${arrayVersion}, Converter: ${converterVersion}`
+  } else if (arrayVersion) {
+    version = `Array: ${arrayVersion}`
+  } else if (converterVersion) {
+    version = `Converter: ${converterVersion}`
+  }
+
+  const metadata: { chip?: string; version?: string; reference?: string } | undefined =
+    chip || version ? { chip, version, reference: undefined } : undefined
+
+  return { snps, errors, format: 'ancestry', metadata }
 }

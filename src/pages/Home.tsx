@@ -419,8 +419,8 @@ export const Home = () => {
       const preferredFile = (preferredFileIndex + 1) as 1 | 2 // Convert to 1-based index
 
       const mergeResult = await mergeSnpsAsync(
-        parsed1.snps,
-        parsed2.snps,
+        parsed1,
+        parsed2,
         {
           preferredFile,
           fillMissing,
@@ -449,10 +449,17 @@ export const Home = () => {
       setProgress(98)
       await new Promise(resolve => setTimeout(resolve, 50))
 
-      const logContent = generateLogFile(mergeResult.conflicts, allSkipped, excludedPAR, {
-        file1: fileMetadata[0]?.name,
-        file2: fileMetadata[1]?.name,
-      })
+      const logContent = generateLogFile(
+        mergeResult.conflicts,
+        allSkipped,
+        excludedPAR,
+        {
+          file1: fileMetadata[0]?.name,
+          file2: fileMetadata[1]?.name,
+        },
+        mergeResult.file1Metadata,
+        mergeResult.file2Metadata
+      )
 
       setProgress(100)
 
