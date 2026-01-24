@@ -14,7 +14,7 @@ import {
   generateAncestryCsv,
   generateLogFile,
   normalizeGenotypeForFormat,
-} from '../utils/dnaParser'
+} from '../utils/dna'
 import { downloadCsv, downloadText } from '../utils/downloadManager'
 import { localStorageLib } from '../utils/localStorage'
 

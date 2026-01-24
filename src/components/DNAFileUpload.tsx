@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
-import { detectFormat } from '../utils/dnaParser'
+import { detectFormat } from '../utils/dna'
 import { Tag } from './Tag'
 
 const DropzoneContainer = styled.div<{ isDragActive: boolean }>`

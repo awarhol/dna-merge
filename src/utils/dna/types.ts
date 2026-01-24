@@ -1,0 +1,50 @@
+export interface SNP {
+  rsid: string
+  chromosome: string
+  position: string
+  genotype: string
+  sourceFile: 1 | 2
+}
+
+export interface ParseResult {
+  snps: SNP[]
+  errors: SkippedEntry[]
+  format: 'ancestry' | 'myheritage' | 'livingdna'
+  chip?: string
+}
+
+export interface MergeResult {
+  mergedSnps: SNP[]
+  conflicts: ConflictEntry[]
+  skippedRows: SkippedEntry[]
+}
+
+export interface ConflictEntry {
+  rsid: string
+  chromosome: string
+  position: string
+  file1Genotype: string
+  file2Genotype: string
+  chosenGenotype: string
+  resolutionReason: string
+}
+
+export interface SkippedEntry {
+  lineNumber: number
+  content: string
+  reason: string
+  sourceFile: 1 | 2
+}
+
+export interface MergeOptions {
+  preferredFile: 1 | 2
+  fillMissing: boolean
+}
+
+export interface FormatInfo {
+  format1: 'ancestry' | 'myheritage'
+  format2: 'ancestry' | 'myheritage'
+  preferredFormat: 'ancestry' | 'myheritage'
+}
+
+export type DNAFormat = 'ancestry' | 'myheritage' | 'livingdna' | 'unknown'
