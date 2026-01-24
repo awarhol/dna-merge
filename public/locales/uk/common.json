@@ -10,10 +10,16 @@
     "converting": "Конвертація...",
     "merge": "Об'єднати",
     "merging": "Об'єднання...",
-    "download_dna": "Завантажити {{mode}} ДНК",
+    "download_converted_dna": "Завантажити конвертовану ДНК",
+    "download_merged_dna": "Завантажити об'єднану ДНК",
     "download_log": "Завантажити файл журналу",
     "try_again": "Спробувати ще раз",
-    "process_more": "{{mode}} більше файлів"
+    "convert_more": "Конвертувати більше файлів",
+    "merge_more": "Об'єднати більше файлів"
+  },
+  "modes": {
+    "converted": "конвертовано",
+    "merged": "об'єднано"
   },
   "errors": {
     "format_detection": "Не вдалося визначити формат файлу. Переконайтеся, що файли є дійсними файлами Ancestry або MyHeritage ДНК.",

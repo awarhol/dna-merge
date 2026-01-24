@@ -749,7 +749,7 @@ export const Home = () => {
           </SuccessMessage>
           <StatsList>
             <li>
-              {t('common:stats.total_snps', { mode: isSingleFileMode ? 'converted' : 'merged' })}{' '}
+              {t('common:stats.total_snps', { mode: t(`common:modes.${isSingleFileMode ? 'converted' : 'merged'}`) })}{' '}
               {stats.totalSnps.toLocaleString()}
             </li>
             <li>{t('common:stats.conflicts')} {stats.conflicts}</li>
@@ -757,12 +757,12 @@ export const Home = () => {
           </StatsList>
           <DownloadButtonsContainer>
             <DownloadButton onClick={handleDownloadCsv}>
-              {t('common:buttons.download_dna', { mode: isSingleFileMode ? 'Converted' : 'Merged' })}
+              {t(isSingleFileMode ? 'common:buttons.download_converted_dna' : 'common:buttons.download_merged_dna')}
             </DownloadButton>
             <DownloadButton onClick={handleDownloadLog}>{t('common:buttons.download_log')}</DownloadButton>
           </DownloadButtonsContainer>
           <ResetButton onClick={handleReset}>
-            {t('common:buttons.process_more', { mode: isSingleFileMode ? 'Convert' : 'Merge' })}
+            {t(isSingleFileMode ? 'common:buttons.convert_more' : 'common:buttons.merge_more')}
           </ResetButton>
         </ResultsSection>
       )}

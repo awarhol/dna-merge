@@ -10,10 +10,16 @@
     "converting": "Converting...",
     "merge": "Merge",
     "merging": "Merging...",
-    "download_dna": "Download {{mode}} DNA",
+    "download_converted_dna": "Download Converted DNA",
+    "download_merged_dna": "Download Merged DNA",
     "download_log": "Download Log File",
     "try_again": "Try Again",
-    "process_more": "{{mode}} More Files"
+    "convert_more": "Convert More Files",
+    "merge_more": "Merge More Files"
+  },
+  "modes": {
+    "converted": "converted",
+    "merged": "merged"
   },
   "errors": {
     "format_detection": "Unable to detect file format. Please ensure files are valid Ancestry or MyHeritage DNA files.",
