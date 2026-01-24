@@ -712,7 +712,7 @@ RSID,CHROMOSOME,POSITION,RESULT
   return { csv, excludedPAR }
 }
 
-export function generateAncestryTsv(snps: SNP[]): string {
+export function generateAncestryCsv(snps: SNP[]): string {
   const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC'
 
   let tsv = `#AncestryDNA merged data

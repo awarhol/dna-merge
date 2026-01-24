@@ -11,7 +11,7 @@ import {
   parseLivingDNAFileAsync,
   mergeSnpsAsync,
   generateMyHeritageCsv,
-  generateAncestryTsv,
+  generateAncestryCsv,
   generateLogFile,
   normalizeGenotypeForFormat,
 } from '../utils/dnaParser'
@@ -442,7 +442,7 @@ export const Home = () => {
         csvContent = result.csv
         excludedPAR = result.excludedPAR
       } else {
-        csvContent = generateAncestryTsv(mergeResult.mergedSnps)
+        csvContent = generateAncestryCsv(mergeResult.mergedSnps)
       }
 
       // Phase 5: Generate log (98-100%)
@@ -511,7 +511,7 @@ export const Home = () => {
         csvContent = result.csv
         excludedPAR = result.excludedPAR
       } else {
-        csvContent = generateAncestryTsv(normalizedSnps)
+        csvContent = generateAncestryCsv(normalizedSnps)
       }
 
       setProgress(95)
