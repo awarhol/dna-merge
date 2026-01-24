@@ -10,13 +10,19 @@ export interface ParseResult {
   snps: SNP[]
   errors: SkippedEntry[]
   format: 'ancestry' | 'myheritage' | 'livingdna'
-  chip?: string
+  metadata?: {
+    chip?: string
+    version?: string
+    reference?: string
+  }
 }
 
 export interface MergeResult {
   mergedSnps: SNP[]
   conflicts: ConflictEntry[]
   skippedRows: SkippedEntry[]
+  file1Metadata?: { chip?: string; version?: string; reference?: string }
+  file2Metadata?: { chip?: string; version?: string; reference?: string }
 }
 
 export interface ConflictEntry {
