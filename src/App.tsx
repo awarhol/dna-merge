@@ -9,7 +9,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <BrowserRouter basename="/merge-dna">
+      <BrowserRouter basename="/dna-merge">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />

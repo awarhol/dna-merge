@@ -34,13 +34,13 @@ Before you begin:
 
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/merge-dna.git
-   cd merge-dna
+   git clone https://github.com/YOUR-USERNAME/dna-merge.git
+   cd dna-merge
    ```
 
 3. **Add the upstream repository** as a remote:
    ```bash
-   git remote add upstream https://github.com/ORIGINAL-OWNER/merge-dna.git
+   git remote add upstream https://github.com/ORIGINAL-OWNER/dna-merge.git
    ```
 
 4. **Install dependencies**:
