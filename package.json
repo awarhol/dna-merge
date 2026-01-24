@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "test": "vitest",
@@ -53,7 +54,8 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write",
+      "tsc --noEmit"
     ]
   }
 }
