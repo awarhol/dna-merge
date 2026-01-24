@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Redirect to the correct path for GitHub Pages SPA
+      const path = window.location.pathname
+      const base = '/merge-dna'
+
+      // If accessing /merge-dna without trailing slash, redirect to /merge-dna/
+      if (path === base) {
+        window.location.replace(base + '/')
+      } else {
+        // For other 404s within the app, redirect to index and let React Router handle it
+        window.location.replace(base + '/')
+      }
+    </script>
+  </head>
+  <body></body>
+</html>
