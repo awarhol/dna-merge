@@ -4,14 +4,15 @@ import {
   validateGenotype,
   parseAncestryFile,
   parseMyHeritageFile,
+  parseLivingDNAFile,
   parseAncestryFileAsync,
   parseMyHeritageFileAsync,
+  parseLivingDNAFileAsync,
   mergeSnps,
   mergeSnpsAsync,
   generateMyHeritageCsv,
   generateAncestryTsv,
   generateLogFile,
-  getOppositeFormat,
   normalizeGenotypeForFormat,
 } from './dnaParser'
 
@@ -34,6 +35,20 @@ RSID,CHROMOSOME,POSITION,RESULT
 "rs4475691","1","846808","CT"
 "rs2341354","1","918573","AG"`
 
+const LIVINGDNA_SAMPLE = `# Living DNA customer genotype data download file version: 1.1.0
+# File creation date: 1-24-2025
+# Genotype chip: Sirius
+# The content of this file is subject to updates and changes depending on the time of download.
+# Human Genome Reference Build 37 (GRCh37.p13).
+# Genotypes are presented on the forward strand.
+#
+# rsid	chromosome	position	genotype
+rs3131972	1	752721	AG
+rs114525117	1	759036	GG
+rs141175086	1	780397	CC
+AX-33748877	22	51162850	CT
+rs143357798	22	51193012	CC`
+
 describe('detectFormat', () => {
   it('should detect Ancestry format from sample file', () => {
     expect(detectFormat(ANCESTRY_SAMPLE)).toBe('ancestry')
@@ -41,6 +56,10 @@ describe('detectFormat', () => {
 
   it('should detect MyHeritage format from sample file', () => {
     expect(detectFormat(MYHERITAGE_SAMPLE)).toBe('myheritage')
+  })
+
+  it('should detect LivingDNA format from sample file', () => {
+    expect(detectFormat(LIVINGDNA_SAMPLE)).toBe('livingdna')
   })
 
   it('should return unknown for empty content', () => {
@@ -439,16 +458,6 @@ describe('generateLogFile', () => {
   })
 })
 
-describe('getOppositeFormat', () => {
-  it('should return myheritage when given ancestry', () => {
-    expect(getOppositeFormat('ancestry')).toBe('myheritage')
-  })
-
-  it('should return ancestry when given myheritage', () => {
-    expect(getOppositeFormat('myheritage')).toBe('ancestry')
-  })
-})
-
 describe('normalizeGenotypeForFormat', () => {
   describe('converting to MyHeritage format', () => {
     it('should convert "0 0" to "--"', () => {
@@ -625,6 +634,98 @@ RSID,CHROMOSOME,POSITION,RESULT
     expect(result.snps).toHaveLength(2)
     expect(result.snps[0].rsid).toBe('rs3131972')
     expect(result.snps[0].genotype).toBe('GG')
+  })
+})
+
+describe('parseLivingDNAFile', () => {
+  it('should parse valid LivingDNA file', () => {
+    const result = parseLivingDNAFile(LIVINGDNA_SAMPLE, 1)
+
+    expect(result.snps).toHaveLength(5)
+    expect(result.format).toBe('livingdna')
+    expect(result.chip).toBe('Sirius')
+    expect(result.errors).toHaveLength(0)
+
+    expect(result.snps[0].rsid).toBe('rs3131972')
+    expect(result.snps[0].chromosome).toBe('1')
+    expect(result.snps[0].genotype).toBe('AG')
+  })
+
+  it('should handle AX-* identifiers correctly', () => {
+    const result = parseLivingDNAFile(LIVINGDNA_SAMPLE, 1)
+
+    const axSnp = result.snps.find(s => s.rsid.startsWith('AX-'))
+    expect(axSnp).toBeDefined()
+    expect(axSnp?.rsid).toBe('AX-33748877')
+    expect(axSnp?.genotype).toBe('CT')
+  })
+
+  it('should skip comment lines', () => {
+    const result = parseLivingDNAFile(LIVINGDNA_SAMPLE, 1)
+
+    // Should not count comment lines as errors
+    expect(result.errors).toHaveLength(0)
+  })
+
+  it('should validate chromosomes', () => {
+    const invalidContent = `# Living DNA
+# rsid chromosome position genotype
+rs123 99 100 AT`
+
+    const result = parseLivingDNAFile(invalidContent, 1)
+
+    expect(result.snps).toHaveLength(0)
+    expect(result.errors).toHaveLength(1)
+    expect(result.errors[0].reason).toContain('Invalid chromosome')
+  })
+
+  it('should validate genotypes', () => {
+    const invalidContent = `# Living DNA
+# rsid chromosome position genotype
+rs123 1 100 XY`
+
+    const result = parseLivingDNAFile(invalidContent, 1)
+
+    expect(result.snps).toHaveLength(0)
+    expect(result.errors).toHaveLength(1)
+    expect(result.errors[0].reason).toContain('Invalid genotype')
+  })
+
+  it('should handle missing fields', () => {
+    const invalidContent = `# Living DNA
+# rsid chromosome position genotype
+rs123 1`
+
+    const result = parseLivingDNAFile(invalidContent, 1)
+
+    expect(result.snps).toHaveLength(0)
+    expect(result.errors).toHaveLength(1)
+    expect(result.errors[0].reason).toContain('Insufficient columns')
+  })
+})
+
+describe('parseLivingDNAFileAsync', () => {
+  it('should parse LivingDNA file asynchronously', async () => {
+    const result = await parseLivingDNAFileAsync(LIVINGDNA_SAMPLE, 1)
+
+    expect(result.snps).toHaveLength(5)
+    expect(result.format).toBe('livingdna')
+    expect(result.chip).toBe('Sirius')
+    expect(result.errors).toHaveLength(0)
+  })
+
+  it('should report progress with large dataset', async () => {
+    // Create a large sample with 10000 lines to trigger progress reporting
+    const largeLines = ['# Living DNA\n# rsid chromosome position genotype']
+    for (let i = 0; i < 10000; i++) {
+      largeLines.push(`rs${i} 1 ${i * 100} AT`)
+    }
+    const largeSample = largeLines.join('\n')
+
+    const progressValues: number[] = []
+    await parseLivingDNAFileAsync(largeSample, 1, p => progressValues.push(p))
+
+    expect(progressValues.length).toBeGreaterThan(0)
   })
 })
 

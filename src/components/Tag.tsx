@@ -1,6 +1,14 @@
 import styled from 'styled-components'
 
-type TagVariant = 'ancestry' | 'myheritage' | 'unknown' | 'success' | 'error' | 'info' | 'default'
+type TagVariant =
+  | 'ancestry'
+  | 'myheritage'
+  | 'livingdna'
+  | 'unknown'
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'default'
 
 const StyledTag = styled.span<{ variant: TagVariant }>`
   display: inline-block;
@@ -15,6 +23,8 @@ const StyledTag = styled.span<{ variant: TagVariant }>`
         return '#10b981' // green
       case 'myheritage':
         return '#3b82f6' // blue
+      case 'livingdna':
+        return '#8b5cf6' // purple
       case 'success':
         return '#10b981' // green
       case 'error':

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { DNAFileUpload, type FileMetadata } from '../components/DNAFileUpload'
@@ -8,14 +8,15 @@ import {
   detectFormat,
   parseAncestryFileAsync,
   parseMyHeritageFileAsync,
+  parseLivingDNAFileAsync,
   mergeSnpsAsync,
   generateMyHeritageCsv,
   generateAncestryTsv,
   generateLogFile,
-  getOppositeFormat,
   normalizeGenotypeForFormat,
 } from '../utils/dnaParser'
 import { downloadCsv, downloadText } from '../utils/downloadManager'
+import { localStorageLib } from '../utils/localStorage'
 
 const Container = styled.div`
   min-height: 100vh;
@@ -358,11 +359,18 @@ export const Home = () => {
     conflicts: number
     skipped: number
   } | null>(null)
-  const [outputFormat, setOutputFormat] = useState<'ancestry' | 'myheritage'>('myheritage')
+  const [outputFormat, setOutputFormat] = useState<'ancestry' | 'myheritage'>(
+    localStorageLib.getOutputFormat
+  )
   const [preferredFileIndex, setPreferredFileIndex] = useState<number>(0)
   const [fillMissing, setFillMissing] = useState(true)
   const [resetTrigger, setResetTrigger] = useState(0)
   const [progress, setProgress] = useState(0)
+
+  // Save output format to localStorage whenever it changes
+  useEffect(() => {
+    localStorageLib.setOutputFormat(outputFormat)
+  }, [outputFormat])
 
   const isSingleFileMode = dnaFiles.length === 1
   const isMergeMode = dnaFiles.length === 2
@@ -396,13 +404,17 @@ export const Home = () => {
       const parsed1 =
         format1 === 'ancestry'
           ? await parseAncestryFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.35))
-          : await parseMyHeritageFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.35))
+          : format1 === 'myheritage'
+            ? await parseMyHeritageFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.35))
+            : await parseLivingDNAFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.35))
 
       // Phase 2: Parse file 2 (35-70%)
       const parsed2 =
         format2 === 'ancestry'
           ? await parseAncestryFileAsync(dnaFiles[1], 2, p => setProgress(35 + p * 0.35))
-          : await parseMyHeritageFileAsync(dnaFiles[1], 2, p => setProgress(35 + p * 0.35))
+          : format2 === 'myheritage'
+            ? await parseMyHeritageFileAsync(dnaFiles[1], 2, p => setProgress(35 + p * 0.35))
+            : await parseLivingDNAFileAsync(dnaFiles[1], 2, p => setProgress(35 + p * 0.35))
 
       // Phase 3: Merge SNPs (70-95%)
       const preferredFile = (preferredFileIndex + 1) as 1 | 2 // Convert to 1-based index
@@ -473,14 +485,16 @@ export const Home = () => {
         throw new Error(t('common:errors.format_detection_single'))
       }
 
-      const targetFormat = getOppositeFormat(sourceFormat)
-      setOutputFormat(targetFormat)
+      // Use the currently selected outputFormat from state (persisted in localStorage)
+      const targetFormat = outputFormat
 
       // Phase 1: Parse file (0-80%)
       const parsed =
         sourceFormat === 'ancestry'
           ? await parseAncestryFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.8))
-          : await parseMyHeritageFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.8))
+          : sourceFormat === 'myheritage'
+            ? await parseMyHeritageFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.8))
+            : await parseLivingDNAFileAsync(dnaFiles[0], 1, p => setProgress(p * 0.8))
 
       // Phase 2: Normalize (80%)
       setProgress(80)
@@ -625,13 +639,16 @@ export const Home = () => {
           <DescriptionSubtitle>{t('algorithm:process.title')}</DescriptionSubtitle>
           <DescriptionList>
             <li>
-              <strong>{t('algorithm:process.step1.title')}</strong> - {t('algorithm:process.step1.description')}
+              <strong>{t('algorithm:process.step1.title')}</strong> -{' '}
+              {t('algorithm:process.step1.description')}
             </li>
             <li>
-              <strong>{t('algorithm:process.step2.title')}</strong> - {t('algorithm:process.step2.description')}
+              <strong>{t('algorithm:process.step2.title')}</strong> -{' '}
+              {t('algorithm:process.step2.description')}
             </li>
             <li>
-              <strong>{t('algorithm:process.step3.title')}</strong> - {t('algorithm:process.step3.description')}
+              <strong>{t('algorithm:process.step3.title')}</strong> -{' '}
+              {t('algorithm:process.step3.description')}
             </li>
           </DescriptionList>
 
@@ -639,10 +656,12 @@ export const Home = () => {
           <p>{t('algorithm:conflict_resolution.description')}</p>
           <DescriptionList>
             <li>
-              <strong>{t('algorithm:conflict_resolution.fill_missing.title')}</strong> {t('algorithm:conflict_resolution.fill_missing.description')}
+              <strong>{t('algorithm:conflict_resolution.fill_missing.title')}</strong>{' '}
+              {t('algorithm:conflict_resolution.fill_missing.description')}
             </li>
             <li>
-              <strong>{t('algorithm:conflict_resolution.prefer_file.title')}</strong> {t('algorithm:conflict_resolution.prefer_file.description')}
+              <strong>{t('algorithm:conflict_resolution.prefer_file.title')}</strong>{' '}
+              {t('algorithm:conflict_resolution.prefer_file.description')}
             </li>
           </DescriptionList>
 
@@ -689,7 +708,7 @@ export const Home = () => {
         <DNAFileUpload onFilesChange={handleFilesChange} resetTrigger={resetTrigger} />
       </UploadSection>
 
-      {isMergeMode && !mergedCsv && !isProcessing && (
+      {(isSingleFileMode || isMergeMode) && !mergedCsv && !isProcessing && (
         <OptionsSection>
           <OptionRow>
             <label>{t('home:options.output_format')}</label>
@@ -701,29 +720,33 @@ export const Home = () => {
               <option value="ancestry">Ancestry</option>
             </Select>
           </OptionRow>
-          <OptionRow>
-            <LabelWithTooltip>
-              <span>{t('home:options.prefer_source')}</span>
-              <Tooltip content={t('home:options.tooltip_prefer')} />
-            </LabelWithTooltip>
-            <Select
-              value={preferredFileIndex}
-              onChange={e => setPreferredFileIndex(Number(e.target.value))}
-            >
-              {fileMetadata.map((file, index) => (
-                <option key={index} value={index}>
-                  {file.name}
-                </option>
-              ))}
-            </Select>
-          </OptionRow>
-          <OptionRow>
-            <LabelWithTooltip>
-              <span>{t('home:options.fill_missing')}</span>
-              <Tooltip content={t('home:options.tooltip_fill')} />
-            </LabelWithTooltip>
-            <Checkbox checked={fillMissing} onChange={e => setFillMissing(e.target.checked)} />
-          </OptionRow>
+          {isMergeMode && (
+            <>
+              <OptionRow>
+                <LabelWithTooltip>
+                  <span>{t('home:options.prefer_source')}</span>
+                  <Tooltip content={t('home:options.tooltip_prefer')} />
+                </LabelWithTooltip>
+                <Select
+                  value={preferredFileIndex}
+                  onChange={e => setPreferredFileIndex(Number(e.target.value))}
+                >
+                  {fileMetadata.map((file, index) => (
+                    <option key={index} value={index}>
+                      {file.name}
+                    </option>
+                  ))}
+                </Select>
+              </OptionRow>
+              <OptionRow>
+                <LabelWithTooltip>
+                  <span>{t('home:options.fill_missing')}</span>
+                  <Tooltip content={t('home:options.tooltip_fill')} />
+                </LabelWithTooltip>
+                <Checkbox checked={fillMissing} onChange={e => setFillMissing(e.target.checked)} />
+              </OptionRow>
+            </>
+          )}
         </OptionsSection>
       )}
 
