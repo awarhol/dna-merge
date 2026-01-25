@@ -90,7 +90,7 @@ const SupportedFormatsSection = styled.div`
   flex-direction: column;
   align-items: center;
   gap: ${props => props.theme.spacing.sm};
-  margin-bottom: ${props => props.theme.spacing.lg};
+  margin-bottom: ${props => props.theme.spacing.sm};
 `
 
 const SupportedFormatsLabel = styled.p`
@@ -105,6 +105,22 @@ const TagsContainer = styled.div`
   gap: ${props => props.theme.spacing.sm};
   justify-content: center;
   align-items: center;
+`
+
+const DisclaimerBanner = styled.div`
+  width: 100%;
+  max-width: 800px;
+  margin-top: ${props => props.theme.spacing.xl};
+  background-color: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: ${props => props.theme.borderRadius.sm};
+  padding: ${props => props.theme.spacing.md};
+  color: ${props => props.theme.colors.text};
+  line-height: 1.6;
+
+  strong {
+    color: #f59e0b;
+  }
 `
 
 const PrivacyNotice = styled.div`
@@ -185,7 +201,7 @@ const DescriptionList = styled.ul`
 const UploadSection = styled.div`
   width: 100%;
   max-width: 800px;
-  margin-top: ${props => props.theme.spacing.xl};
+  margin-top: ${props => props.theme.spacing.md};
 `
 
 const MergeButton = styled.button<{ disabled: boolean }>`
@@ -366,7 +382,7 @@ const ProcessingContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: ${props => props.theme.spacing.md};
-  margin-top: ${props => props.theme.spacing.xl};
+  margin-top: ${props => props.theme.spacing.md};
   width: 100%;
   max-width: 400px;
 `
@@ -691,92 +707,6 @@ export const Home = () => {
         </TagsContainer>
       </SupportedFormatsSection>
 
-      <PrivacyNotice>
-        <strong>🔒 {t('home:privacy.title')}</strong> {t('home:privacy.message')}
-      </PrivacyNotice>
-
-      <CollapsibleSection>
-        <summary>{t('algorithm:section_title')}</summary>
-        <DescriptionContent>
-          <p>{t('algorithm:intro')}</p>
-
-          <DescriptionSubtitle>{t('algorithm:problem.title')}</DescriptionSubtitle>
-          <p>{t('algorithm:problem.description')}</p>
-          <DescriptionList>
-            <li>{t('algorithm:problem.list.different_snps')}</li>
-            <li>{t('algorithm:problem.list.gaps')}</li>
-            <li>{t('algorithm:problem.list.conflicts')}</li>
-          </DescriptionList>
-          <p>{t('algorithm:problem.conclusion')}</p>
-
-          <DescriptionSubtitle>{t('algorithm:process.title')}</DescriptionSubtitle>
-          <DescriptionList>
-            <li>
-              <strong>{t('algorithm:process.step1.title')}</strong> -{' '}
-              {t('algorithm:process.step1.description')}
-            </li>
-            <li>
-              <strong>{t('algorithm:process.step2.title')}</strong> -{' '}
-              {t('algorithm:process.step2.description')}
-            </li>
-            <li>
-              <strong>{t('algorithm:process.step3.title')}</strong> -{' '}
-              {t('algorithm:process.step3.description')}
-            </li>
-          </DescriptionList>
-
-          <DescriptionSubtitle>{t('algorithm:conflict_resolution.title')}</DescriptionSubtitle>
-          <p>{t('algorithm:conflict_resolution.description')}</p>
-          <DescriptionList>
-            <li>
-              <strong>{t('algorithm:conflict_resolution.fill_missing.title')}</strong>{' '}
-              {t('algorithm:conflict_resolution.fill_missing.description')}
-            </li>
-            <li>
-              <strong>{t('algorithm:conflict_resolution.prefer_file.title')}</strong>{' '}
-              {t('algorithm:conflict_resolution.prefer_file.description')}
-            </li>
-          </DescriptionList>
-
-          <DescriptionSubtitle>{t('algorithm:understanding_data.title')}</DescriptionSubtitle>
-          <p>{t('algorithm:understanding_data.description')}</p>
-          <DescriptionList>
-            <li>
-              <strong>{t('algorithm:understanding_data.rsid')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:understanding_data.chromosome')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:understanding_data.position')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:understanding_data.genotype')}</strong>
-            </li>
-          </DescriptionList>
-
-          <DescriptionSubtitle>{t('algorithm:why_matters.title')}</DescriptionSubtitle>
-          <DescriptionList>
-            <li>
-              <strong>{t('algorithm:why_matters.list.matches')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:why_matters.list.gaps')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:why_matters.list.accuracy')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:why_matters.list.tools')}</strong>
-            </li>
-          </DescriptionList>
-
-          <p style={{ marginTop: '1rem', fontSize: '0.9rem', fontStyle: 'italic' }}>
-            {t('algorithm:footer')}
-          </p>
-        </DescriptionContent>
-      </CollapsibleSection>
-
       <UploadSection>
         <DNAFileUpload onFilesChange={handleFilesChange} resetTrigger={resetTrigger} />
       </UploadSection>
@@ -905,6 +835,96 @@ export const Home = () => {
           </ResetButton>
         </ResultsSection>
       )}
+
+      <DisclaimerBanner>
+        <strong>{t('home:disclaimer.title')}</strong> {t('home:disclaimer.message')}
+      </DisclaimerBanner>
+
+      <PrivacyNotice>
+        <strong>🔒 {t('home:privacy.title')}</strong> {t('home:privacy.message')}
+      </PrivacyNotice>
+
+      <CollapsibleSection>
+        <summary>{t('algorithm:section_title')}</summary>
+        <DescriptionContent>
+          <p>{t('algorithm:intro')}</p>
+
+          <DescriptionSubtitle>{t('algorithm:problem.title')}</DescriptionSubtitle>
+          <p>{t('algorithm:problem.description')}</p>
+          <DescriptionList>
+            <li>{t('algorithm:problem.list.different_snps')}</li>
+            <li>{t('algorithm:problem.list.gaps')}</li>
+            <li>{t('algorithm:problem.list.conflicts')}</li>
+          </DescriptionList>
+          <p>{t('algorithm:problem.conclusion')}</p>
+
+          <DescriptionSubtitle>{t('algorithm:process.title')}</DescriptionSubtitle>
+          <DescriptionList>
+            <li>
+              <strong>{t('algorithm:process.step1.title')}</strong> -{' '}
+              {t('algorithm:process.step1.description')}
+            </li>
+            <li>
+              <strong>{t('algorithm:process.step2.title')}</strong> -{' '}
+              {t('algorithm:process.step2.description')}
+            </li>
+            <li>
+              <strong>{t('algorithm:process.step3.title')}</strong> -{' '}
+              {t('algorithm:process.step3.description')}
+            </li>
+          </DescriptionList>
+
+          <DescriptionSubtitle>{t('algorithm:conflict_resolution.title')}</DescriptionSubtitle>
+          <p>{t('algorithm:conflict_resolution.description')}</p>
+          <DescriptionList>
+            <li>
+              <strong>{t('algorithm:conflict_resolution.fill_missing.title')}</strong>{' '}
+              {t('algorithm:conflict_resolution.fill_missing.description')}
+            </li>
+            <li>
+              <strong>{t('algorithm:conflict_resolution.prefer_file.title')}</strong>{' '}
+              {t('algorithm:conflict_resolution.prefer_file.description')}
+            </li>
+          </DescriptionList>
+
+          <DescriptionSubtitle>{t('algorithm:understanding_data.title')}</DescriptionSubtitle>
+          <p>{t('algorithm:understanding_data.description')}</p>
+          <DescriptionList>
+            <li>
+              <strong>{t('algorithm:understanding_data.rsid')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:understanding_data.chromosome')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:understanding_data.position')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:understanding_data.genotype')}</strong>
+            </li>
+          </DescriptionList>
+
+          <DescriptionSubtitle>{t('algorithm:why_matters.title')}</DescriptionSubtitle>
+          <DescriptionList>
+            <li>
+              <strong>{t('algorithm:why_matters.list.matches')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:why_matters.list.gaps')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:why_matters.list.accuracy')}</strong>
+            </li>
+            <li>
+              <strong>{t('algorithm:why_matters.list.tools')}</strong>
+            </li>
+          </DescriptionList>
+
+          <p style={{ marginTop: '1rem', fontSize: '0.9rem', fontStyle: 'italic' }}>
+            {t('algorithm:footer')}
+          </p>
+        </DescriptionContent>
+      </CollapsibleSection>
     </Container>
   )
 }

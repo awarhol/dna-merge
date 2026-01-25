@@ -4,6 +4,10 @@
   "supported_input_formats": "Supported input file types:",
   "supported_output_formats": "Supported output file types:",
   "github_badge": "View on GitHub",
+  "disclaimer": {
+    "title": "Disclaimer:",
+    "message": "This tool is for genealogical research and personal informational purposes only. It is not intended for medical, diagnostic, or scientific use. Results are provided as-is without guarantees of accuracy or completeness. For medical or health-related decisions, please consult qualified healthcare professionals and certified genetic counselors."
+  },
   "privacy": {
     "title": "Your Privacy is Protected:",
     "message": "All DNA file processing happens entirely in your browser on your computer. No data is uploaded to any server. Your genetic information never leaves your device."
