@@ -75,13 +75,13 @@ const RemoveButton = styled.button`
 
 interface FileWithFormat {
   file: File
-  format: 'ancestry' | 'myheritage' | 'livingdna' | '23andme' | 'unknown'
+  format: 'ancestry' | 'myheritage' | 'livingdna' | '23andme' | 'ftdna' | 'unknown'
 }
 
 export interface FileMetadata {
   content: string
   name: string
-  format: 'ancestry' | 'myheritage' | 'livingdna' | '23andme' | 'unknown'
+  format: 'ancestry' | 'myheritage' | 'livingdna' | '23andme' | 'ftdna' | 'unknown'
 }
 
 interface DNAFileUploadProps {

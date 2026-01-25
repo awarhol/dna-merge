@@ -42,7 +42,7 @@ export function isMissingValue(genotype: string): boolean {
 
 export function isValidChromosome(
   chromosome: string,
-  format: 'ancestry' | 'myheritage' | 'livingdna' | '23andme'
+  format: 'ancestry' | 'myheritage' | 'livingdna' | '23andme' | 'ftdna'
 ): boolean {
   const chr = chromosome.toUpperCase().trim()
 

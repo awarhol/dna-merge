@@ -5,6 +5,7 @@ import {
   MYHERITAGE_SAMPLE,
   LIVINGDNA_SAMPLE,
   TWENTYTHREEANDME_SAMPLE,
+  FTDNA_SAMPLE,
 } from './fixtures'
 
 describe('detectFormat', () => {
@@ -29,6 +30,71 @@ describe('detectFormat', () => {
 # rsid	chromosome	position	genotype
 rs1	1	100	AT`
     expect(detectFormat(content)).toBe('23andme')
+  })
+
+  it('should detect FTDNA format from sample file', async () => {
+    expect(detectFormat(FTDNA_SAMPLE)).toBe('ftdna')
+  })
+
+  it('should detect FTDNA format by unquoted CSV', async () => {
+    const content = `RSID,CHROMOSOME,POSITION,RESULT
+rs1,1,100,AT
+rs2,1,200,GG
+rs3,1,400,CC`
+    expect(detectFormat(content)).toBe('ftdna')
+  })
+
+  it('should detect FTDNA format with distinctive patterns', async () => {
+    const content = `RSID,CHROMOSOME,POSITION,RESULT
+rs1,1,100,AT
+GSA-1:120044893,1,200,CC
+rs2,1,300,GG`
+    expect(detectFormat(content)).toBe('ftdna')
+  })
+
+  it('should detect FTDNA format by header comment', async () => {
+    const content = `# Family Tree DNA raw data download
+RSID,CHROMOSOME,POSITION,RESULT
+rs1,1,100,AT
+rs2,1,200,GG`
+    expect(detectFormat(content)).toBe('ftdna')
+  })
+
+  it('should distinguish FTDNA from MyHeritage by quotes', async () => {
+    // FTDNA: unquoted CSV
+    const ftdnaContent = `RSID,CHROMOSOME,POSITION,RESULT
+rs1,1,100,AT
+rs2,1,200,GG
+rs3,1,300,TT`
+    expect(detectFormat(ftdnaContent)).toBe('ftdna')
+
+    // MyHeritage: quoted CSV
+    const myheritageContent = `RSID,CHROMOSOME,POSITION,RESULT
+"rs1","1","100","AT"
+"rs2","1","200","GG"
+"rs3","1","300","CC"`
+    expect(detectFormat(myheritageContent)).toBe('myheritage')
+  })
+
+  it('should detect MyHeritage with quoted CSV', async () => {
+    const header = `RSID,CHROMOSOME,POSITION,RESULT
+`
+    const snpLines = Array.from({ length: 250 }, (_, i) => `"rs${i}","1","${1000 + i}","AT"`).join(
+      '\n'
+    )
+    const content = header + snpLines
+
+    // Quoted CSV should be detected as MyHeritage
+    expect(detectFormat(content)).toBe('myheritage')
+  })
+
+  it('should detect FTDNA with unquoted CSV regardless of patterns', async () => {
+    const header = `RSID,CHROMOSOME,POSITION,RESULT
+`
+    const regularSnps = Array.from({ length: 100 }, (_, i) => `rs${i},1,${1000 + i},AT`).join('\n')
+    const content = header + regularSnps
+
+    expect(detectFormat(content)).toBe('ftdna')
   })
 
   it('should return unknown for empty content', async () => {

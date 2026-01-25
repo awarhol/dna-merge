@@ -1,9 +1,28 @@
 import type { DNAFormat } from './types'
 
+function scanForFTDNAPatterns(lines: string[], startIndex: number): boolean {
+  const FTDNA_RSID_PATTERN = /(2010-\d{2}-[XY]-\d+|GSA-\d+:\d+)/
+  const MAX_LINES_TO_SCAN = 200
+  let scanned = 0
+
+  for (let i = startIndex + 1; i < lines.length && scanned < MAX_LINES_TO_SCAN; i++) {
+    const line = lines[i].trim()
+    if (!line || line.startsWith('#')) continue
+
+    scanned++
+    if (FTDNA_RSID_PATTERN.test(line)) {
+      return true
+    }
+  }
+
+  return false
+}
+
 export function detectFormat(content: string): DNAFormat {
   const lines = content.split('\n')
 
-  for (const line of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
     if (line.trim() === '') continue
 
     if (line.startsWith('#') || line.startsWith('##')) {
@@ -12,6 +31,9 @@ export function detectFormat(content: string): DNAFormat {
       }
       if (line.toLowerCase().includes('myheritage')) {
         return 'myheritage'
+      }
+      if (line.toLowerCase().includes('family tree dna') || line.toLowerCase().includes('ftdna')) {
+        return 'ftdna'
       }
       if (line.toLowerCase().includes('living dna')) {
         return 'livingdna'
@@ -28,9 +50,29 @@ export function detectFormat(content: string): DNAFormat {
       }
     }
 
-    if (line.includes(',') && line.includes('"')) {
+    if (line.includes(',')) {
       if (line.toUpperCase().includes('RSID') && line.toUpperCase().includes('RESULT')) {
-        return 'myheritage'
+        // Check if this is quoted CSV (MyHeritage) or unquoted CSV (FTDNA)
+        let hasQuotes = false
+        for (let j = i + 1; j < lines.length && j < i + 10; j++) {
+          const dataLine = lines[j].trim()
+          if (dataLine && !dataLine.startsWith('#')) {
+            if (dataLine.includes('"')) {
+              hasQuotes = true
+            }
+            break
+          }
+        }
+
+        if (hasQuotes) {
+          // Quoted CSV - could be MyHeritage or FTDNA with distinctive patterns
+          // Scan for FTDNA-specific patterns to distinguish from MyHeritage
+          const isFTDNA = scanForFTDNAPatterns(lines, i)
+          return isFTDNA ? 'ftdna' : 'myheritage'
+        } else {
+          // Unquoted CSV with RSID,RESULT header - this is FTDNA format
+          return 'ftdna'
+        }
       }
     }
   }

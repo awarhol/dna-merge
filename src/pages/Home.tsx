@@ -10,6 +10,7 @@ import {
   parseMyHeritageFileAsync,
   parseLivingDNAFileAsync,
   parse23andMeFileAsync,
+  parseFTDNAFileAsync,
   mergeSnpsAsync,
   generateMyHeritageCsv,
   generateAncestryCsv,
@@ -348,13 +349,14 @@ const ProcessingContainer = styled.div`
 `
 
 const formatParsers: Record<
-  'ancestry' | 'myheritage' | 'livingdna' | '23andme',
+  'ancestry' | 'myheritage' | 'livingdna' | '23andme' | 'ftdna',
   typeof parseAncestryFileAsync
 > = {
   ancestry: parseAncestryFileAsync,
   myheritage: parseMyHeritageFileAsync,
   livingdna: parseLivingDNAFileAsync,
   '23andme': parse23andMeFileAsync,
+  ftdna: parseFTDNAFileAsync,
 }
 
 export const Home = () => {
