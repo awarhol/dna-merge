@@ -100,3 +100,57 @@ export function isValidChromosome(
 
   return false
 }
+
+/**
+ * Check if an SNP name is a standard rsID (e.g., rs377726663)
+ */
+export function isStandardRsId(rsid: string): boolean {
+  const normalized = rsid.trim()
+  return /^rs\d+$/i.test(normalized)
+}
+
+/**
+ * Check if a position value is valid (not 0)
+ */
+export function isValidPosition(position: string): boolean {
+  const pos = position.trim()
+  return pos !== '0'
+}
+
+/**
+ * Check if a row has an invalid position (chromosome OR position = 0)
+ */
+export function hasInvalidPosition(chromosome: string, position: string): boolean {
+  return chromosome === '0' || !isValidPosition(chromosome) || !isValidPosition(position)
+}
+
+/**
+ * Determine if a row with invalid chromosome/position should be kept
+ * when includeInvalidPositions option is enabled.
+ *
+ * Logic:
+ * - Custom name + empty alleles → always skip (return false)
+ * - Standard rsID (rs*) OR non-empty alleles → keep if option enabled
+ *
+ * @param rsid SNP identifier
+ * @param genotype Allele values
+ * @param includeOption Whether the user enabled the option
+ */
+export function shouldKeepInvalidPosition(
+  rsid: string,
+  genotype: string,
+  includeOption: boolean
+): boolean {
+  // If option is disabled, skip all invalid positions
+  if (!includeOption) {
+    return false
+  }
+
+  // Always skip if custom name + empty alleles
+  if (!isStandardRsId(rsid) && isMissingValue(genotype)) {
+    return false
+  }
+
+  // Keep if standard rsID OR non-empty alleles
+  return isStandardRsId(rsid) || !isMissingValue(genotype)
+}

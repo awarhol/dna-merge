@@ -4,6 +4,8 @@ import {
   validateGenotype,
   isMultibaseGenotype,
   splitMultibaseGenotype,
+  hasInvalidPosition,
+  shouldKeepInvalidPosition,
 } from '../validation'
 import { normalizeChromosome, yieldToMainThread } from './common'
 
@@ -11,7 +13,8 @@ export async function parseLivingDNAFileAsync(
   content: string,
   sourceFile: 1 | 2 = 1,
   onProgress?: (progress: number) => void,
-  parseMultibaseGenotypes = false
+  parseMultibaseGenotypes = false,
+  includeInvalidPositions = false
 ): Promise<ParseResult> {
   const BATCH_SIZE = 5000
   const lines = content.split('\n')
@@ -82,6 +85,63 @@ export async function parseLivingDNAFileAsync(
       continue
     }
 
+    // Check if this row has invalid position (chromosome OR position = 0)
+    if (hasInvalidPosition(chromosome, position)) {
+      // Check if it's a valid standard genotype
+      const isValidStandard = validateGenotype(genotype)
+      // Check if it's a multi-base genotype (Indel)
+      const isMultibase = isMultibaseGenotype(genotype)
+
+      // Special handling for invalid positions
+      if (shouldKeepInvalidPosition(rsid, genotype, includeInvalidPositions)) {
+        // Keep this SNP even though position is invalid
+        // Still validate genotype
+        if (!isValidStandard && !isMultibase) {
+          errors.push({
+            lineNumber: i + 1,
+            content: trimmedLine,
+            reason: `Invalid genotype: ${genotype}`,
+            sourceFile,
+          })
+          continue
+        }
+
+        // If it's a multi-base genotype but we're not parsing them, skip it
+        if (isMultibase && !parseMultibaseGenotypes) {
+          errors.push({
+            lineNumber: i + 1,
+            content: trimmedLine,
+            reason: `Skipped multi-base genotype (Indel): ${genotype}`,
+            sourceFile,
+          })
+          continue
+        }
+
+        const normalizedChromosome = normalizeChromosome(chromosome, 'ancestry')
+        const finalGenotype = isMultibase ? splitMultibaseGenotype(genotype) : genotype
+
+        // Add to SNPs with invalid position preserved
+        snps.push({
+          rsid,
+          chromosome: normalizedChromosome,
+          position,
+          genotype: finalGenotype,
+          sourceFile,
+        })
+        continue
+      } else {
+        // Skip this row
+        errors.push({
+          lineNumber: i + 1,
+          content: trimmedLine,
+          reason: `Invalid position: chromosome=${chromosome}, position=${position}`,
+          sourceFile,
+        })
+        continue
+      }
+    }
+
+    // Normal validation for valid positions
     if (!isValidChromosome(chromosome, 'livingdna')) {
       errors.push({
         lineNumber: i + 1,

@@ -1,5 +1,10 @@
 import type { ParseResult, SNP, SkippedEntry } from '../types'
-import { isValidChromosome, validateGenotype } from '../validation'
+import {
+  isValidChromosome,
+  validateGenotype,
+  hasInvalidPosition,
+  shouldKeepInvalidPosition,
+} from '../validation'
 import { yieldToMainThread } from './common'
 
 export async function parse23andMeFileAsync(
@@ -7,7 +12,8 @@ export async function parse23andMeFileAsync(
   sourceFile: 1 | 2 = 1,
   onProgress?: (progress: number) => void,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _parseMultibaseGenotypes = false
+  _parseMultibaseGenotypes = false,
+  includeInvalidPositions = false
 ): Promise<ParseResult> {
   const BATCH_SIZE = 5000
   const lines = content.split('\n')
@@ -80,6 +86,44 @@ export async function parse23andMeFileAsync(
       continue
     }
 
+    // Check if this row has invalid position (chromosome OR position = 0)
+    if (hasInvalidPosition(chromosome, position)) {
+      // Special handling for invalid positions
+      if (shouldKeepInvalidPosition(rsid, genotype, includeInvalidPositions)) {
+        // Keep this SNP even though position is invalid
+        // Still validate genotype - allow single-character genotypes for hemizygous regions
+        if (!validateGenotype(genotype, true)) {
+          errors.push({
+            lineNumber: i + 1,
+            content: trimmedLine,
+            reason: `Invalid genotype: ${genotype}`,
+            sourceFile,
+          })
+          continue
+        }
+
+        // Add to SNPs with invalid position preserved
+        snps.push({
+          rsid,
+          chromosome: chromosome.toUpperCase(),
+          position,
+          genotype,
+          sourceFile,
+        })
+        continue
+      } else {
+        // Skip this row
+        errors.push({
+          lineNumber: i + 1,
+          content: trimmedLine,
+          reason: `Invalid position: chromosome=${chromosome}, position=${position}`,
+          sourceFile,
+        })
+        continue
+      }
+    }
+
+    // Normal validation for valid positions
     // Validate chromosome (1-22, X, Y, MT)
     if (!isValidChromosome(chromosome, '23andme')) {
       errors.push({

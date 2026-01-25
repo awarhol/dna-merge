@@ -1,5 +1,10 @@
 import type { ParseResult, SNP, SkippedEntry } from '../types'
-import { isValidChromosome, validateGenotype } from '../validation'
+import {
+  isValidChromosome,
+  validateGenotype,
+  hasInvalidPosition,
+  shouldKeepInvalidPosition,
+} from '../validation'
 import { normalizeChromosome, yieldToMainThread } from './common'
 
 export async function parseAncestryFileAsync(
@@ -7,7 +12,8 @@ export async function parseAncestryFileAsync(
   sourceFile: 1 | 2 = 1,
   onProgress?: (progress: number) => void,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _parseMultibaseGenotypes = false
+  _parseMultibaseGenotypes = false,
+  includeInvalidPositions = false
 ): Promise<ParseResult> {
   const BATCH_SIZE = 5000
   const lines = content.split('\n')
@@ -77,6 +83,46 @@ export async function parseAncestryFileAsync(
       continue
     }
 
+    // Check if this row has invalid position (chromosome OR position = 0)
+    if (hasInvalidPosition(chromosome, position)) {
+      // Special handling for invalid positions
+      if (shouldKeepInvalidPosition(rsid, genotype, includeInvalidPositions)) {
+        // Keep this SNP even though position is invalid
+        // Still validate genotype
+        if (!validateGenotype(genotype)) {
+          errors.push({
+            lineNumber: i + 1,
+            content: trimmedLine,
+            reason: `Invalid genotype: ${genotype}`,
+            sourceFile,
+          })
+          continue
+        }
+
+        const normalizedChromosome = normalizeChromosome(chromosome, 'ancestry')
+
+        // Add to SNPs with invalid position preserved
+        snps.push({
+          rsid,
+          chromosome: normalizedChromosome,
+          position,
+          genotype,
+          sourceFile,
+        })
+        continue
+      } else {
+        // Skip this row
+        errors.push({
+          lineNumber: i + 1,
+          content: trimmedLine,
+          reason: `Invalid position: chromosome=${chromosome}, position=${position}`,
+          sourceFile,
+        })
+        continue
+      }
+    }
+
+    // Normal validation for valid positions
     if (!isValidChromosome(chromosome, 'ancestry')) {
       errors.push({
         lineNumber: i + 1,

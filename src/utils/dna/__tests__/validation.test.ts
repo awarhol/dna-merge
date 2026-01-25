@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest'
-import { validateGenotype, isMultibaseGenotype, splitMultibaseGenotype } from '../validation'
+import {
+  validateGenotype,
+  isMultibaseGenotype,
+  splitMultibaseGenotype,
+  isStandardRsId,
+  isValidPosition,
+  hasInvalidPosition,
+  shouldKeepInvalidPosition,
+} from '../validation'
 
 describe('validateGenotype', () => {
   it('should validate standard nucleotide pairs', async () => {
@@ -153,5 +161,112 @@ describe('splitMultibaseGenotype', () => {
   it('should handle whitespace', async () => {
     expect(splitMultibaseGenotype(' TAAGTGTAAGTG ')).toBe('TAAGTG TAAGTG')
     expect(splitMultibaseGenotype(' AGA ')).toBe('A GA')
+  })
+})
+
+describe('isStandardRsId', () => {
+  it('should identify standard rsIDs', async () => {
+    expect(isStandardRsId('rs377726663')).toBe(true)
+    expect(isStandardRsId('rs12345')).toBe(true)
+    expect(isStandardRsId('rs1')).toBe(true)
+    expect(isStandardRsId('RS12345')).toBe(true) // Case insensitive
+  })
+
+  it('should reject non-standard rsIDs', async () => {
+    expect(isStandardRsId('i3000001')).toBe(false)
+    expect(isStandardRsId('exm-rs123')).toBe(false)
+    expect(isStandardRsId('custom_snp')).toBe(false)
+    expect(isStandardRsId('rs')).toBe(false) // No number
+    expect(isStandardRsId('rs12abc')).toBe(false) // Contains letters
+  })
+
+  it('should handle whitespace', async () => {
+    expect(isStandardRsId(' rs12345 ')).toBe(true)
+    expect(isStandardRsId('  RS999  ')).toBe(true)
+  })
+})
+
+describe('isValidPosition', () => {
+  it('should accept non-zero positions', async () => {
+    expect(isValidPosition('12345')).toBe(true)
+    expect(isValidPosition('1')).toBe(true)
+    expect(isValidPosition('999999')).toBe(true)
+  })
+
+  it('should reject zero positions', async () => {
+    expect(isValidPosition('0')).toBe(false)
+  })
+
+  it('should handle whitespace', async () => {
+    expect(isValidPosition(' 12345 ')).toBe(true)
+    expect(isValidPosition(' 0 ')).toBe(false)
+  })
+})
+
+describe('hasInvalidPosition', () => {
+  it('should detect invalid chromosomes', async () => {
+    expect(hasInvalidPosition('0', '12345')).toBe(true)
+    expect(hasInvalidPosition('0', '0')).toBe(true)
+  })
+
+  it('should detect invalid positions', async () => {
+    expect(hasInvalidPosition('1', '0')).toBe(true)
+    expect(hasInvalidPosition('X', '0')).toBe(true)
+  })
+
+  it('should accept valid chromosome and position', async () => {
+    expect(hasInvalidPosition('1', '12345')).toBe(false)
+    expect(hasInvalidPosition('X', '54321')).toBe(false)
+    expect(hasInvalidPosition('MT', '16569')).toBe(false)
+  })
+})
+
+describe('shouldKeepInvalidPosition', () => {
+  describe('when option is disabled', () => {
+    it('should skip all invalid positions', async () => {
+      expect(shouldKeepInvalidPosition('rs12345', 'AT', false)).toBe(false)
+      expect(shouldKeepInvalidPosition('i3000001', 'CG', false)).toBe(false)
+      expect(shouldKeepInvalidPosition('rs12345', '--', false)).toBe(false)
+      expect(shouldKeepInvalidPosition('custom_snp', '--', false)).toBe(false)
+    })
+  })
+
+  describe('when option is enabled', () => {
+    it('should keep standard rsIDs regardless of genotype', async () => {
+      expect(shouldKeepInvalidPosition('rs12345', 'AT', true)).toBe(true)
+      expect(shouldKeepInvalidPosition('rs12345', '--', true)).toBe(true)
+      expect(shouldKeepInvalidPosition('rs12345', '00', true)).toBe(true)
+      expect(shouldKeepInvalidPosition('RS999', 'CG', true)).toBe(true)
+    })
+
+    it('should keep non-standard IDs with valid genotypes', async () => {
+      expect(shouldKeepInvalidPosition('i3000001', 'AT', true)).toBe(true)
+      expect(shouldKeepInvalidPosition('exm-rs123', 'CG', true)).toBe(true)
+      expect(shouldKeepInvalidPosition('custom_snp', 'TT', true)).toBe(true)
+    })
+
+    it('should skip non-standard IDs with missing genotypes', async () => {
+      expect(shouldKeepInvalidPosition('i3000001', '--', true)).toBe(false)
+      expect(shouldKeepInvalidPosition('exm-rs123', '00', true)).toBe(false)
+      expect(shouldKeepInvalidPosition('custom_snp', '--', true)).toBe(false)
+      expect(shouldKeepInvalidPosition('custom_snp', '00', true)).toBe(false)
+    })
+
+    it('should keep non-standard IDs with DD/II genotypes (not considered missing)', async () => {
+      // DD and II are valid special markers, not missing values
+      expect(shouldKeepInvalidPosition('custom_snp', 'DD', true)).toBe(true)
+      expect(shouldKeepInvalidPosition('custom_snp', 'II', true)).toBe(true)
+      expect(shouldKeepInvalidPosition('i3000001', 'DI', true)).toBe(true)
+      expect(shouldKeepInvalidPosition('exm-rs123', 'ID', true)).toBe(true)
+    })
+
+    it('should handle edge cases', async () => {
+      // Standard rsID with missing genotype - should keep
+      expect(shouldKeepInvalidPosition('rs12345', 'DD', true)).toBe(true)
+      // Custom name with valid genotype - should keep
+      expect(shouldKeepInvalidPosition('my_custom', 'AT', true)).toBe(true)
+      // Custom name with empty genotype - should skip
+      expect(shouldKeepInvalidPosition('my_custom', '--', true)).toBe(false)
+    })
   })
 })

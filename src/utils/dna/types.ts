@@ -49,6 +49,7 @@ export interface MergeOptions {
   preferredFile: 1 | 2
   fillMissing: boolean
   parseMultibaseGenotypes?: boolean
+  includeInvalidPositions?: boolean // Include SNPs with 0,0 positions
 }
 
 export interface FormatInfo {

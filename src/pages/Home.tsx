@@ -401,6 +401,7 @@ export const Home = () => {
   const [preferredFileIndex, setPreferredFileIndex] = useState<number>(0)
   const [fillMissing, setFillMissing] = useState(true)
   const [parseMultibaseGenotypes, setParseMultibaseGenotypes] = useState(false)
+  const [includeInvalidPositions, setIncludeInvalidPositions] = useState(false)
   const [resetTrigger, setResetTrigger] = useState(0)
   const [progress, setProgress] = useState(0)
 
@@ -442,7 +443,8 @@ export const Home = () => {
         dnaFiles[0],
         1,
         p => setProgress(p * 0.35),
-        parseMultibaseGenotypes
+        parseMultibaseGenotypes,
+        includeInvalidPositions
       )
 
       // Phase 2: Parse file 2 (35-70%)
@@ -450,7 +452,8 @@ export const Home = () => {
         dnaFiles[1],
         2,
         p => setProgress(35 + p * 0.35),
-        parseMultibaseGenotypes
+        parseMultibaseGenotypes,
+        includeInvalidPositions
       )
 
       // Phase 3: Merge SNPs (70-95%)
@@ -543,7 +546,8 @@ export const Home = () => {
         dnaFiles[0],
         1,
         p => setProgress(p * 0.8),
-        parseMultibaseGenotypes
+        parseMultibaseGenotypes,
+        includeInvalidPositions
       )
 
       // Phase 2: Normalize (80%)
@@ -824,6 +828,16 @@ export const Home = () => {
             <Checkbox
               checked={parseMultibaseGenotypes}
               onChange={e => setParseMultibaseGenotypes(e.target.checked)}
+            />
+          </OptionRow>
+          <OptionRow>
+            <LabelWithTooltip>
+              <span>{t('home:options.include_invalid_positions')}</span>
+              <Tooltip content={t('home:options.tooltip_invalid_positions')} />
+            </LabelWithTooltip>
+            <Checkbox
+              checked={includeInvalidPositions}
+              onChange={e => setIncludeInvalidPositions(e.target.checked)}
             />
           </OptionRow>
         </OptionsSection>
