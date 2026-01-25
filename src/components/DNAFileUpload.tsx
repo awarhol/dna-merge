@@ -331,14 +331,8 @@ const SortableFileItem = ({
   }
 
   return (
-    <FileItem
-      ref={setNodeRef}
-      style={style}
-      $isDragging={isDragging}
-      {...attributes}
-      {...listeners}
-    >
-      <FileInfo>
+    <FileItem ref={setNodeRef} style={style} $isDragging={isDragging} {...attributes}>
+      <FileInfo {...listeners}>
         <DragHandle>≡</DragHandle>
         <PriorityBadge>{getPriorityLabel(index)}</PriorityBadge>
         <FileName>{item.file.name}</FileName>
