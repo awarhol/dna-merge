@@ -28,7 +28,7 @@ export function validateGenotype(genotype: string, allowSingleChar = false): boo
 
   // Check single-character genotypes (for hemizygous regions in 23andMe)
   if (allowSingleChar) {
-    const validSingleChar = ['A', 'T', 'C', 'G', '-', '0']
+    const validSingleChar = ['A', 'T', 'C', 'G', '-', '0', 'D', 'I']
     return validSingleChar.includes(normalized)
   }
 

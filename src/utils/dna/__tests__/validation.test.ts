@@ -42,6 +42,8 @@ describe('validateGenotype', () => {
     expect(validateGenotype('G', true)).toBe(true)
     expect(validateGenotype('-', true)).toBe(true)
     expect(validateGenotype('0', true)).toBe(true)
+    expect(validateGenotype('D', true)).toBe(true)
+    expect(validateGenotype('I', true)).toBe(true)
   })
 
   it('should reject single-character genotypes when allowSingleChar is false', async () => {
@@ -51,6 +53,8 @@ describe('validateGenotype', () => {
     expect(validateGenotype('G', false)).toBe(false)
     expect(validateGenotype('-', false)).toBe(false)
     expect(validateGenotype('0', false)).toBe(false)
+    expect(validateGenotype('D', false)).toBe(false)
+    expect(validateGenotype('I', false)).toBe(false)
   })
 
   it('should reject single-character genotypes by default', async () => {
@@ -65,6 +69,8 @@ describe('validateGenotype', () => {
     expect(validateGenotype('t', true)).toBe(true)
     expect(validateGenotype('c', true)).toBe(true)
     expect(validateGenotype('g', true)).toBe(true)
+    expect(validateGenotype('d', true)).toBe(true)
+    expect(validateGenotype('i', true)).toBe(true)
   })
 
   it('should reject invalid single-character genotypes', async () => {
