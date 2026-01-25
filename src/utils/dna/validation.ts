@@ -1,4 +1,4 @@
-export function validateGenotype(genotype: string): boolean {
+export function validateGenotype(genotype: string, allowSingleChar = false): boolean {
   const normalized = genotype.toUpperCase().trim()
 
   const validNucleotides = [
@@ -21,7 +21,18 @@ export function validateGenotype(genotype: string): boolean {
   ]
   const validSpecial = ['--', '00', 'DD', 'II', 'DI', 'ID']
 
-  return validNucleotides.includes(normalized) || validSpecial.includes(normalized)
+  // Check two-character genotypes
+  if (validNucleotides.includes(normalized) || validSpecial.includes(normalized)) {
+    return true
+  }
+
+  // Check single-character genotypes (for hemizygous regions in 23andMe)
+  if (allowSingleChar) {
+    const validSingleChar = ['A', 'T', 'C', 'G', '-', '0']
+    return validSingleChar.includes(normalized)
+  }
+
+  return false
 }
 
 export function isMissingValue(genotype: string): boolean {
@@ -31,7 +42,7 @@ export function isMissingValue(genotype: string): boolean {
 
 export function isValidChromosome(
   chromosome: string,
-  format: 'ancestry' | 'myheritage' | 'livingdna'
+  format: 'ancestry' | 'myheritage' | 'livingdna' | '23andme'
 ): boolean {
   const chr = chromosome.toUpperCase().trim()
 

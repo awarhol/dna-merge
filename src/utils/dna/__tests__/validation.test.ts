@@ -34,4 +34,43 @@ describe('validateGenotype', () => {
     expect(validateGenotype('di')).toBe(true)
     expect(validateGenotype('id')).toBe(true)
   })
+
+  it('should validate single-character genotypes when allowSingleChar is true', async () => {
+    expect(validateGenotype('A', true)).toBe(true)
+    expect(validateGenotype('T', true)).toBe(true)
+    expect(validateGenotype('C', true)).toBe(true)
+    expect(validateGenotype('G', true)).toBe(true)
+    expect(validateGenotype('-', true)).toBe(true)
+    expect(validateGenotype('0', true)).toBe(true)
+  })
+
+  it('should reject single-character genotypes when allowSingleChar is false', async () => {
+    expect(validateGenotype('A', false)).toBe(false)
+    expect(validateGenotype('T', false)).toBe(false)
+    expect(validateGenotype('C', false)).toBe(false)
+    expect(validateGenotype('G', false)).toBe(false)
+    expect(validateGenotype('-', false)).toBe(false)
+    expect(validateGenotype('0', false)).toBe(false)
+  })
+
+  it('should reject single-character genotypes by default', async () => {
+    expect(validateGenotype('A')).toBe(false)
+    expect(validateGenotype('T')).toBe(false)
+    expect(validateGenotype('C')).toBe(false)
+    expect(validateGenotype('G')).toBe(false)
+  })
+
+  it('should be case insensitive for single-character genotypes', async () => {
+    expect(validateGenotype('a', true)).toBe(true)
+    expect(validateGenotype('t', true)).toBe(true)
+    expect(validateGenotype('c', true)).toBe(true)
+    expect(validateGenotype('g', true)).toBe(true)
+  })
+
+  it('should reject invalid single-character genotypes', async () => {
+    expect(validateGenotype('X', true)).toBe(false)
+    expect(validateGenotype('Y', true)).toBe(false)
+    expect(validateGenotype('Z', true)).toBe(false)
+    expect(validateGenotype('1', true)).toBe(false)
+  })
 })

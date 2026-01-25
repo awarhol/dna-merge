@@ -9,11 +9,14 @@ export interface SNP {
 export interface ParseResult {
   snps: SNP[]
   errors: SkippedEntry[]
-  format: 'ancestry' | 'myheritage' | 'livingdna'
+  format: 'ancestry' | 'myheritage' | 'livingdna' | '23andme'
   metadata?: {
     chip?: string
     version?: string
     reference?: string
+    fileId?: string
+    signature?: string
+    timestamp?: string
   }
 }
 
@@ -53,4 +56,4 @@ export interface FormatInfo {
   preferredFormat: 'ancestry' | 'myheritage'
 }
 
-export type DNAFormat = 'ancestry' | 'myheritage' | 'livingdna' | 'unknown'
+export type DNAFormat = 'ancestry' | 'myheritage' | 'livingdna' | '23andme' | 'unknown'

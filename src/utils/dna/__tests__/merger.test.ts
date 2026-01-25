@@ -133,4 +133,57 @@ describe('mergeSnps', () => {
     expect(result.mergedSnps[0].rsid).toBe('rs1')
     expect(result.mergedSnps[1].rsid).toBe('rs2')
   })
+
+  it('should not create conflict when 23andMe single char matches double char', async () => {
+    // 23andMe file with single-character genotype (hemizygous)
+    const file1Snps = [
+      { rsid: 'rs123', chromosome: 'X', position: '100', genotype: 'A', sourceFile: 1 as const },
+    ]
+    // Another format with double-character genotype
+    const file2Snps = [
+      { rsid: 'rs123', chromosome: 'X', position: '100', genotype: 'AA', sourceFile: 2 as const },
+    ]
+
+    const result = await mergeSnpsAsync({ snps: file1Snps }, { snps: file2Snps }, defaultOptions)
+
+    expect(result.conflicts).toHaveLength(0)
+    expect(result.mergedSnps).toHaveLength(1)
+  })
+
+  it('should not create conflict for all single-character nucleotides', async () => {
+    const file1Snps = [
+      { rsid: 'rs1', chromosome: 'X', position: '100', genotype: 'A', sourceFile: 1 as const },
+      { rsid: 'rs2', chromosome: 'Y', position: '200', genotype: 'T', sourceFile: 1 as const },
+      { rsid: 'rs3', chromosome: 'MT', position: '300', genotype: 'C', sourceFile: 1 as const },
+      { rsid: 'rs4', chromosome: 'X', position: '400', genotype: 'G', sourceFile: 1 as const },
+    ]
+    const file2Snps = [
+      { rsid: 'rs1', chromosome: 'X', position: '100', genotype: 'AA', sourceFile: 2 as const },
+      { rsid: 'rs2', chromosome: 'Y', position: '200', genotype: 'TT', sourceFile: 2 as const },
+      { rsid: 'rs3', chromosome: 'MT', position: '300', genotype: 'CC', sourceFile: 2 as const },
+      { rsid: 'rs4', chromosome: 'X', position: '400', genotype: 'GG', sourceFile: 2 as const },
+    ]
+
+    const result = await mergeSnpsAsync({ snps: file1Snps }, { snps: file2Snps }, defaultOptions)
+
+    expect(result.conflicts).toHaveLength(0)
+    expect(result.mergedSnps).toHaveLength(4)
+  })
+
+  it('should still detect real conflicts even with single-character support', async () => {
+    // 23andMe file with single-character genotype
+    const file1Snps = [
+      { rsid: 'rs123', chromosome: 'X', position: '100', genotype: 'A', sourceFile: 1 as const },
+    ]
+    // Different genotype that doesn't match
+    const file2Snps = [
+      { rsid: 'rs123', chromosome: 'X', position: '100', genotype: 'CC', sourceFile: 2 as const },
+    ]
+
+    const result = await mergeSnpsAsync({ snps: file1Snps }, { snps: file2Snps }, defaultOptions)
+
+    expect(result.conflicts).toHaveLength(1)
+    expect(result.conflicts[0].file1Genotype).toBe('A')
+    expect(result.conflicts[0].file2Genotype).toBe('CC')
+  })
 })

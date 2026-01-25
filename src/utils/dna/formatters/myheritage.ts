@@ -30,7 +30,11 @@ RSID,CHROMOSOME,POSITION,RESULT
     else if (chromosome === '24') chromosome = 'Y'
     else if (chromosome === '26') chromosome = 'MT'
 
-    csv += `"${snp.rsid}","${chromosome}","${snp.position}","${snp.genotype}"\n`
+    // Handle single-character genotypes (from 23andMe) - should be normalized already,
+    // but double-check for safety
+    const genotype = snp.genotype.length === 1 ? snp.genotype + snp.genotype : snp.genotype
+
+    csv += `"${snp.rsid}","${chromosome}","${snp.position}","${genotype}"\n`
   })
 
   return { csv, excludedPAR }

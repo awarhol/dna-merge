@@ -1,6 +1,6 @@
 import type { SNP, MergeResult, ConflictEntry, SkippedEntry, MergeOptions } from './types'
 import { isMissingValue } from './validation'
-import { chromosomeToSortKey } from './formatters/common'
+import { chromosomeToSortKey, normalizeGenotypeForComparison } from './formatters/common'
 
 // Helper to yield to the main thread
 const yieldToMainThread = () => new Promise(resolve => setTimeout(resolve, 0))
@@ -47,7 +47,11 @@ export async function mergeSnpsAsync(
     const existing = snpMap.get(snp.rsid)
 
     if (existing) {
-      if (existing.genotype.toUpperCase() !== snp.genotype.toUpperCase()) {
+      // Normalize genotypes for comparison (handles A vs AA from 23andMe)
+      const existingNormalized = normalizeGenotypeForComparison(existing.genotype)
+      const snpNormalized = normalizeGenotypeForComparison(snp.genotype)
+
+      if (existingNormalized !== snpNormalized) {
         let chosenGenotype = existing.genotype
         let resolutionReason = `Preferred ${getFormatName(1)}`
 

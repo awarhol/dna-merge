@@ -36,4 +36,21 @@ describe('generateMyHeritageCsv', () => {
     const result = generateMyHeritageCsv([])
     expect(result.csv).toMatch(/##timestamp=.*UTC/)
   })
+
+  it('should handle single-character genotypes from 23andMe', async () => {
+    const snps = [
+      { rsid: 'rs1', chromosome: 'X', position: '100', genotype: 'A', sourceFile: 1 as const },
+      { rsid: 'rs2', chromosome: 'Y', position: '200', genotype: 'T', sourceFile: 1 as const },
+      { rsid: 'rs3', chromosome: 'MT', position: '300', genotype: 'C', sourceFile: 1 as const },
+      { rsid: 'rs4', chromosome: 'X', position: '400', genotype: 'G', sourceFile: 1 as const },
+    ]
+
+    const result = generateMyHeritageCsv(snps)
+
+    expect(result.csv).toContain('"rs1","X","100","AA"') // A → AA
+    expect(result.csv).toContain('"rs2","Y","200","TT"') // T → TT
+    expect(result.csv).toContain('"rs3","MT","300","CC"') // C → CC
+    expect(result.csv).toContain('"rs4","X","400","GG"') // G → GG
+    expect(result.excludedPAR).toBe(0)
+  })
 })

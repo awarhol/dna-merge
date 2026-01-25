@@ -5,8 +5,22 @@ export function generateLogFile(
   skipped: SkippedEntry[],
   excludedPAR?: number,
   fileNames?: { file1?: string; file2?: string },
-  file1Metadata?: { chip?: string; version?: string; reference?: string },
-  file2Metadata?: { chip?: string; version?: string; reference?: string }
+  file1Metadata?: {
+    chip?: string
+    version?: string
+    reference?: string
+    fileId?: string
+    signature?: string
+    timestamp?: string
+  },
+  file2Metadata?: {
+    chip?: string
+    version?: string
+    reference?: string
+    fileId?: string
+    signature?: string
+    timestamp?: string
+  }
 ): string {
   const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC'
 
@@ -15,12 +29,18 @@ export function generateLogFile(
     chip?: string
     version?: string
     reference?: string
+    fileId?: string
+    signature?: string
+    timestamp?: string
   }): string => {
     if (!metadata) return ''
     let result = ''
     if (metadata.chip) result += `  Chip: ${metadata.chip}\n`
     if (metadata.version) result += `  Version: ${metadata.version}\n`
     if (metadata.reference) result += `  Reference: ${metadata.reference}\n`
+    if (metadata.fileId) result += `  File ID: ${metadata.fileId}\n`
+    if (metadata.signature) result += `  Signature: ${metadata.signature}\n`
+    if (metadata.timestamp) result += `  Timestamp: ${metadata.timestamp}\n`
     return result
   }
 

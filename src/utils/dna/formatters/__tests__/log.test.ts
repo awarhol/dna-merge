@@ -60,4 +60,32 @@ describe('generateLogFile', () => {
     expect(log).toContain('Conflicts detected: 1')
     expect(log).toContain('Invalid rows skipped: 1')
   })
+
+  it('should include 23andMe metadata in log', async () => {
+    const file1Metadata = {
+      fileId: '1234567890abcdef',
+      signature: 'abc123def456',
+      timestamp: '2026-01-25T08:00:00Z',
+    }
+
+    const file2Metadata = {
+      chip: 'GSA',
+      version: 'MHv1.0',
+    }
+
+    const log = generateLogFile(
+      [],
+      [],
+      undefined,
+      { file1: '23andme.txt', file2: 'myheritage.csv' },
+      file1Metadata,
+      file2Metadata
+    )
+
+    expect(log).toContain('File ID: 1234567890abcdef')
+    expect(log).toContain('Signature: abc123def456')
+    expect(log).toContain('Timestamp: 2026-01-25T08:00:00Z')
+    expect(log).toContain('Chip: GSA')
+    expect(log).toContain('Version: MHv1.0')
+  })
 })

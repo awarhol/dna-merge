@@ -9,6 +9,7 @@ import {
   parseAncestryFileAsync,
   parseMyHeritageFileAsync,
   parseLivingDNAFileAsync,
+  parse23andMeFileAsync,
   mergeSnpsAsync,
   generateMyHeritageCsv,
   generateAncestryCsv,
@@ -347,12 +348,13 @@ const ProcessingContainer = styled.div`
 `
 
 const formatParsers: Record<
-  'ancestry' | 'myheritage' | 'livingdna',
+  'ancestry' | 'myheritage' | 'livingdna' | '23andme',
   typeof parseAncestryFileAsync
 > = {
   ancestry: parseAncestryFileAsync,
   myheritage: parseMyHeritageFileAsync,
   livingdna: parseLivingDNAFileAsync,
+  '23andme': parse23andMeFileAsync,
 }
 
 export const Home = () => {
@@ -434,15 +436,21 @@ export const Home = () => {
       setProgress(95)
       await new Promise(resolve => setTimeout(resolve, 50))
 
+      // Normalize genotypes for output format (handle single-char from 23andMe)
+      const normalizedSnps = mergeResult.mergedSnps.map(snp => ({
+        ...snp,
+        genotype: normalizeGenotypeForFormat(snp.genotype, outputFormat),
+      }))
+
       let csvContent: string
       let excludedPAR = 0
 
       if (outputFormat === 'myheritage') {
-        const result = generateMyHeritageCsv(mergeResult.mergedSnps)
+        const result = generateMyHeritageCsv(normalizedSnps)
         csvContent = result.csv
         excludedPAR = result.excludedPAR
       } else {
-        csvContent = generateAncestryCsv(mergeResult.mergedSnps)
+        csvContent = generateAncestryCsv(normalizedSnps)
       }
 
       // Phase 5: Generate log (98-100%)

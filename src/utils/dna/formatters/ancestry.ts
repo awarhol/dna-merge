@@ -18,8 +18,11 @@ rsid\tchromosome\tposition\tallele1\tallele2
     else if (chromosome === 'XY') chromosome = '25'
     else if (chromosome === 'MT') chromosome = '26'
 
-    const allele1 = snp.genotype[0] || ''
-    const allele2 = snp.genotype[1] || ''
+    // Handle single-character genotypes (from 23andMe) - should be normalized already,
+    // but double-check for safety
+    const genotype = snp.genotype.length === 1 ? snp.genotype + snp.genotype : snp.genotype
+    const allele1 = genotype[0] || ''
+    const allele2 = genotype[1] || ''
     tsv += `${snp.rsid}\t${chromosome}\t${snp.position}\t${allele1}\t${allele2}\n`
   })
 
