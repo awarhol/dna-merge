@@ -11,7 +11,7 @@ import { normalizeChromosome, yieldToMainThread } from './common'
 
 export async function parseLivingDNAFileAsync(
   content: string,
-  sourceFile: 1 | 2 = 1,
+  sourceFile: number = 0,
   onProgress?: (progress: number) => void,
   parseMultibaseGenotypes = false,
   includeInvalidPositions = false

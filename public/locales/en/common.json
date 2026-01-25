@@ -1,9 +1,10 @@
 {
   "upload": {
     "drag_and_drop": "Drag & drop DNA files here, or click to select files",
-    "file_format_info": "(Upload up to 2 files - .txt or .csv)",
+    "file_format_info": "(Upload up to 10 files - .txt or .csv)",
     "drop_here": "Drop the files here...",
-    "unknown_format": "Unknown"
+    "unknown_format": "Unknown",
+    "drag_to_reorder": "Drag to reorder. First file has highest priority."
   },
   "buttons": {
     "convert": "Convert",

@@ -9,7 +9,7 @@ import { yieldToMainThread } from './common'
 
 export async function parseMyHeritageFileAsync(
   content: string,
-  sourceFile: 1 | 2 = 1,
+  sourceFile: number = 0,
   onProgress?: (progress: number) => void,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _parseMultibaseGenotypes = false,

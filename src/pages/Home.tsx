@@ -12,10 +12,11 @@ import {
   parseLivingDNAFileAsync,
   parse23andMeFileAsync,
   parseFTDNAFileAsync,
-  mergeSnpsAsync,
+  mergeSnpsAsyncN,
   generateMyHeritageCsv,
   generateAncestryCsv,
   generateLogFile,
+  generateLogFileN,
   normalizeGenotypeForFormat,
 } from '../utils/dna'
 import { downloadCsv, downloadText } from '../utils/downloadManager'
@@ -414,7 +415,6 @@ export const Home = () => {
   const [outputFormat, setOutputFormat] = useState<'ancestry' | 'myheritage'>(
     localStorageLib.getOutputFormat
   )
-  const [preferredFileIndex, setPreferredFileIndex] = useState<number>(0)
   const [fillMissing, setFillMissing] = useState(true)
   const [parseMultibaseGenotypes, setParseMultibaseGenotypes] = useState(false)
   const [includeInvalidPositions, setIncludeInvalidPositions] = useState(false)
@@ -427,7 +427,7 @@ export const Home = () => {
   }, [outputFormat])
 
   const isSingleFileMode = dnaFiles.length === 1
-  const isMergeMode = dnaFiles.length === 2
+  const isMergeMode = dnaFiles.length >= 2 && dnaFiles.length <= 10
 
   const handleFilesChange = (files: string[], metadata?: FileMetadata[]) => {
     setDnaFiles(files)
@@ -436,62 +436,54 @@ export const Home = () => {
     setLogFile(null)
     setError(null)
     setStats(null)
-    setPreferredFileIndex(0)
   }
 
   const handleMerge = async () => {
-    if (dnaFiles.length !== 2) return
+    if (dnaFiles.length < 2 || dnaFiles.length > 10) return
 
     setIsProcessing(true)
     setError(null)
     setProgress(0)
 
     try {
-      const format1 = detectFormat(dnaFiles[0])
-      const format2 = detectFormat(dnaFiles[1])
+      // Detect formats for all files
+      const formats = dnaFiles.map(file => detectFormat(file))
 
-      if (format1 === 'unknown' || format2 === 'unknown') {
+      if (formats.some(format => format === 'unknown')) {
         throw new Error(t('common:errors.format_detection'))
       }
 
-      // Phase 1: Parse file 1 (0-35%)
-      const parsed1 = await formatParsers[format1](
-        dnaFiles[0],
-        1,
-        p => setProgress(p * 0.35),
-        parseMultibaseGenotypes,
-        includeInvalidPositions
-      )
+      // Phase 1: Parse all files (0-70%)
+      const parsedFiles = []
+      const progressPerFile = 70 / dnaFiles.length
 
-      // Phase 2: Parse file 2 (35-70%)
-      const parsed2 = await formatParsers[format2](
-        dnaFiles[1],
-        2,
-        p => setProgress(35 + p * 0.35),
-        parseMultibaseGenotypes,
-        includeInvalidPositions
-      )
+      for (let i = 0; i < dnaFiles.length; i++) {
+        const parser = formatParsers[formats[i] as keyof typeof formatParsers]
+        const startProgress = i * progressPerFile
+        const parsed = await parser(
+          dnaFiles[i],
+          i, // Use 0-based index
+          p => setProgress(startProgress + (p / 100) * progressPerFile),
+          parseMultibaseGenotypes,
+          includeInvalidPositions
+        )
+        parsedFiles.push(parsed)
+      }
 
-      // Phase 3: Merge SNPs (70-95%)
-      const preferredFile = (preferredFileIndex + 1) as 1 | 2 // Convert to 1-based index
-
-      const mergeResult = await mergeSnpsAsync(
-        parsed1,
-        parsed2,
+      // Phase 2: Merge SNPs using N-way algorithm (70-95%)
+      const mergeResult = await mergeSnpsAsyncN(
+        parsedFiles,
         {
-          preferredFile,
           fillMissing,
         },
         p => setProgress(70 + p * 0.25)
       )
 
-      const allSkipped = [...parsed1.errors, ...parsed2.errors, ...mergeResult.skippedRows]
-
-      // Phase 4: Generate output (95-98%)
+      // Phase 3: Generate output (95-98%)
       setProgress(95)
       await new Promise(resolve => setTimeout(resolve, 50))
 
-      // Normalize genotypes for output format (handle single-char from 23andMe)
+      // Normalize genotypes for output format
       const normalizedSnps = mergeResult.mergedSnps.map(snp => ({
         ...snp,
         genotype: normalizeGenotypeForFormat(snp.genotype, outputFormat),
@@ -508,20 +500,16 @@ export const Home = () => {
         csvContent = generateAncestryCsv(normalizedSnps)
       }
 
-      // Phase 5: Generate log (98-100%)
+      // Phase 4: Generate log (98-100%)
       setProgress(98)
       await new Promise(resolve => setTimeout(resolve, 50))
 
-      const logContent = generateLogFile(
+      const logContent = generateLogFileN(
         mergeResult.conflicts,
-        allSkipped,
-        excludedPAR,
-        {
-          file1: fileMetadata[0]?.name,
-          file2: fileMetadata[1]?.name,
-        },
-        mergeResult.file1Metadata,
-        mergeResult.file2Metadata
+        mergeResult.skippedRows,
+        fileMetadata.map(f => f.name),
+        mergeResult.filesMetadata,
+        excludedPAR
       )
 
       setProgress(100)
@@ -531,7 +519,7 @@ export const Home = () => {
       setStats({
         totalSnps: mergeResult.mergedSnps.length,
         conflicts: mergeResult.conflicts.length,
-        skipped: allSkipped.length,
+        skipped: mergeResult.skippedRows.length,
       })
     } catch (err) {
       setError((err as Error).message || t('common:errors.merge_error'))
@@ -631,8 +619,7 @@ export const Home = () => {
         filename = `convert-${sourceFormat}-to-${outputFormat}--${timestamp}.${extension}`
       } else {
         const fillMissingStr = fillMissing ? 'yes' : 'no'
-        const preferredFileName = fileMetadata[preferredFileIndex]?.name || 'file1'
-        filename = `${outputFormat}--preferred-${preferredFileName}--fill-missing-${fillMissingStr}--${timestamp}.${extension}`
+        filename = `merged_${dnaFiles.length}_files_${outputFormat}--fill-missing-${fillMissingStr}--${timestamp}.${extension}`
       }
 
       if (extension === 'csv') {
@@ -654,8 +641,7 @@ export const Home = () => {
         filename = `convert-${sourceFormat}-to-${outputFormat}--${timestamp}--log.txt`
       } else {
         const fillMissingStr = fillMissing ? 'yes' : 'no'
-        const preferredFileName = fileMetadata[preferredFileIndex]?.name || 'file1'
-        filename = `${outputFormat}--preferred-${preferredFileName}--fill-missing-${fillMissingStr}--${timestamp}--log.txt`
+        filename = `merged_${dnaFiles.length}_files_${outputFormat}--fill-missing-${fillMissingStr}--${timestamp}--log.txt`
       }
 
       downloadText(logFile, filename)
@@ -724,31 +710,13 @@ export const Home = () => {
             </Select>
           </OptionRow>
           {isMergeMode && (
-            <>
-              <OptionRow>
-                <LabelWithTooltip>
-                  <span>{t('home:options.prefer_source')}</span>
-                  <Tooltip content={t('home:options.tooltip_prefer')} />
-                </LabelWithTooltip>
-                <Select
-                  value={preferredFileIndex}
-                  onChange={e => setPreferredFileIndex(Number(e.target.value))}
-                >
-                  {fileMetadata.map((file, index) => (
-                    <option key={index} value={index}>
-                      {file.name}
-                    </option>
-                  ))}
-                </Select>
-              </OptionRow>
-              <OptionRow>
-                <LabelWithTooltip>
-                  <span>{t('home:options.fill_missing')}</span>
-                  <Tooltip content={t('home:options.tooltip_fill')} />
-                </LabelWithTooltip>
-                <Checkbox checked={fillMissing} onChange={e => setFillMissing(e.target.checked)} />
-              </OptionRow>
-            </>
+            <OptionRow>
+              <LabelWithTooltip>
+                <span>{t('home:options.fill_missing')}</span>
+                <Tooltip content={t('home:options.tooltip_fill')} />
+              </LabelWithTooltip>
+              <Checkbox checked={fillMissing} onChange={e => setFillMissing(e.target.checked)} />
+            </OptionRow>
           )}
           <OptionRow>
             <LabelWithTooltip>

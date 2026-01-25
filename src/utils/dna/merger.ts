@@ -1,127 +1,172 @@
-import type { SNP, MergeResult, ConflictEntry, SkippedEntry, MergeOptions } from './types'
+import type {
+  SNP,
+  SkippedEntry,
+  MergeResultN,
+  ConflictEntryN,
+  MergeOptionsN,
+  ParseResult,
+} from './types'
 import { isMissingValue } from './validation'
 import { chromosomeToSortKey, normalizeGenotypeForComparison } from './formatters/common'
 
 // Helper to yield to the main thread
 const yieldToMainThread = () => new Promise(resolve => setTimeout(resolve, 0))
 
-export async function mergeSnpsAsync(
-  file1: { snps: SNP[]; metadata?: { chip?: string; version?: string; reference?: string } },
-  file2: { snps: SNP[]; metadata?: { chip?: string; version?: string; reference?: string } },
-  options: MergeOptions,
+// N-way merge function supporting 1-10 files
+export async function mergeSnpsAsyncN(
+  files: ParseResult[],
+  options: MergeOptionsN,
   onProgress?: (progress: number) => void
-): Promise<MergeResult> {
+): Promise<MergeResultN> {
   const BATCH_SIZE = 5000
-  const { preferredFile, fillMissing } = options
-  const conflicts: ConflictEntry[] = []
-  const skippedRows: SkippedEntry[] = []
-  const snpMap = new Map<string, SNP>()
+  const { fillMissing } = options
+  const conflicts: ConflictEntryN[] = []
+  const allSkippedRows: SkippedEntry[] = []
 
-  const file1Snps = file1.snps
-  const file2Snps = file2.snps
+  // Track genotypes from all files for each RSID
+  const snpMap = new Map<
+    string,
+    {
+      snp: SNP
+      fileGenotypes: (string | null)[] // Track genotype from each file
+    }
+  >()
 
-  // Helper to get file name
-  const getFormatName = (fileNum: 1 | 2) => {
-    return `File ${fileNum}`
-  }
+  // Phase 1: Parse and index all files (0-60%)
+  const totalSnps = files.reduce((sum, file) => sum + file.snps.length, 0)
+  let processedSnps = 0
 
-  // Phase 1: Add all file1 SNPs to map (0-40%)
-  for (let i = 0; i < file1Snps.length; i++) {
-    snpMap.set(file1Snps[i].rsid, file1Snps[i])
+  for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+    const file = files[fileIndex]
 
-    if (i > 0 && i % BATCH_SIZE === 0) {
-      if (onProgress) {
-        onProgress(Math.min(Math.round((i / file1Snps.length) * 40), 39))
+    // Collect skipped rows from each file
+    allSkippedRows.push(
+      ...file.errors.map(error => ({
+        ...error,
+        sourceFile: fileIndex,
+      }))
+    )
+
+    for (let i = 0; i < file.snps.length; i++) {
+      const snp = file.snps[i]
+      const existing = snpMap.get(snp.rsid)
+
+      if (existing) {
+        // SNP exists from a previous file - track this file's genotype
+        existing.fileGenotypes[fileIndex] = snp.genotype
+      } else {
+        // New SNP - initialize genotype tracking
+        const fileGenotypes = new Array(files.length).fill(null)
+        fileGenotypes[fileIndex] = snp.genotype
+        snpMap.set(snp.rsid, {
+          snp: { ...snp, sourceFile: fileIndex },
+          fileGenotypes,
+        })
       }
-      await yieldToMainThread()
+
+      processedSnps++
+      if (i > 0 && i % BATCH_SIZE === 0) {
+        if (onProgress) {
+          onProgress(Math.min(Math.round((processedSnps / totalSnps) * 60), 59))
+        }
+        await yieldToMainThread()
+      }
     }
   }
 
   if (onProgress) {
-    onProgress(40)
+    onProgress(60)
   }
 
-  // Phase 2: Process file2 SNPs and detect conflicts (40-80%)
-  for (let i = 0; i < file2Snps.length; i++) {
-    const snp = file2Snps[i]
-    const existing = snpMap.get(snp.rsid)
+  // Phase 2: Resolve conflicts (60-90%)
+  const entries = Array.from(snpMap.entries())
+  for (let i = 0; i < entries.length; i++) {
+    const [rsid, { snp, fileGenotypes }] = entries[i]
 
-    if (existing) {
-      // Normalize genotypes for comparison (handles A vs AA from 23andMe)
-      const existingNormalized = normalizeGenotypeForComparison(existing.genotype)
-      const snpNormalized = normalizeGenotypeForComparison(snp.genotype)
+    // Check if there are any conflicts (different non-null values)
+    const normalizedGenotypes = fileGenotypes.map(g =>
+      g !== null ? normalizeGenotypeForComparison(g) : null
+    )
+    const uniqueNonNull = new Set(normalizedGenotypes.filter(g => g !== null))
 
-      if (existingNormalized !== snpNormalized) {
-        let chosenGenotype = existing.genotype
-        let resolutionReason = `Preferred ${getFormatName(1)}`
+    if (uniqueNonNull.size > 1) {
+      // Conflict detected - resolve it
+      let chosenGenotype: string
+      let chosenFromFile: number
+      let resolutionReason: string
 
-        // Priority 1: Fill missing if enabled
-        if (fillMissing) {
-          const file1Missing = isMissingValue(existing.genotype)
-          const file2Missing = isMissingValue(snp.genotype)
-
-          if (file1Missing && !file2Missing) {
-            chosenGenotype = snp.genotype
-            resolutionReason = `Filled Missing from ${getFormatName(2)}`
-            snpMap.set(snp.rsid, { ...snp, sourceFile: 2 })
-          } else if (file2Missing && !file1Missing) {
-            resolutionReason = `Filled Missing from ${getFormatName(1)}`
-          } else if (!file1Missing && !file2Missing) {
-            // Both have values, use preferred file
-            chosenGenotype = preferredFile === 2 ? snp.genotype : existing.genotype
-            resolutionReason = `Preferred ${getFormatName(preferredFile)}`
-            if (preferredFile === 2) {
-              snpMap.set(snp.rsid, { ...snp, sourceFile: 2 })
-            }
-          }
-        } else {
-          // Fill missing disabled, use preferred file
-          chosenGenotype = preferredFile === 2 ? snp.genotype : existing.genotype
-          resolutionReason = `Preferred ${getFormatName(preferredFile)}`
-          if (preferredFile === 2) {
-            snpMap.set(snp.rsid, { ...snp, sourceFile: 2 })
+      if (fillMissing) {
+        // Scan files 0→N for first non-missing value
+        let foundIndex = -1
+        for (let j = 0; j < fileGenotypes.length; j++) {
+          const genotype = fileGenotypes[j]
+          if (genotype !== null && !isMissingValue(genotype)) {
+            foundIndex = j
+            break
           }
         }
 
-        conflicts.push({
-          rsid: snp.rsid,
-          chromosome: snp.chromosome,
-          position: snp.position,
-          file1Genotype: existing.genotype,
-          file2Genotype: snp.genotype,
-          chosenGenotype,
-          resolutionReason,
-        })
+        if (foundIndex >= 0) {
+          chosenGenotype = fileGenotypes[foundIndex]!
+          chosenFromFile = foundIndex
+          resolutionReason = `Filled missing from File ${foundIndex + 1} (highest priority non-missing)`
+        } else {
+          // All missing - use first file
+          chosenGenotype = fileGenotypes[0] || '--'
+          chosenFromFile = 0
+          resolutionReason = 'All files missing, used File 1 placeholder'
+        }
+      } else {
+        // No fill missing - always use File[0]
+        chosenGenotype = fileGenotypes[0] || '--'
+        chosenFromFile = 0
+        resolutionReason = 'Used File 1 (highest priority)'
       }
-    } else {
-      snpMap.set(snp.rsid, snp)
+
+      conflicts.push({
+        rsid,
+        chromosome: snp.chromosome,
+        position: snp.position,
+        fileGenotypes,
+        chosenGenotype,
+        chosenFromFile,
+        resolutionReason,
+      })
+
+      // Update the SNP with the chosen value
+      snpMap.set(rsid, {
+        snp: { ...snp, genotype: chosenGenotype, sourceFile: chosenFromFile },
+        fileGenotypes,
+      })
     }
 
     if (i > 0 && i % BATCH_SIZE === 0) {
       if (onProgress) {
-        onProgress(Math.min(40 + Math.round((i / file2Snps.length) * 40), 79))
+        onProgress(Math.min(60 + Math.round((i / entries.length) * 30), 89))
       }
       await yieldToMainThread()
     }
   }
 
   if (onProgress) {
-    onProgress(80)
+    onProgress(90)
   }
 
-  // Phase 3: Sort merged SNPs (80-100%)
-  const mergedSnps = Array.from(snpMap.values()).sort((a, b) => {
-    const chrA = chromosomeToSortKey(a.chromosome)
-    const chrB = chromosomeToSortKey(b.chromosome)
+  // Phase 3: Sort merged SNPs (90-100%)
+  const mergedSnps = Array.from(snpMap.values())
+    .map(({ snp }) => snp)
+    .sort((a, b) => {
+      const chrA = chromosomeToSortKey(a.chromosome)
+      const chrB = chromosomeToSortKey(b.chromosome)
 
-    if (chrA !== chrB) {
-      return chrA - chrB
-    }
+      if (chrA !== chrB) {
+        return chrA - chrB
+      }
 
-    const posA = parseInt(a.position, 10)
-    const posB = parseInt(b.position, 10)
-    return posA - posB
-  })
+      const posA = parseInt(a.position, 10)
+      const posB = parseInt(b.position, 10)
+      return posA - posB
+    })
 
   if (onProgress) {
     onProgress(100)
@@ -130,8 +175,7 @@ export async function mergeSnpsAsync(
   return {
     mergedSnps,
     conflicts,
-    skippedRows,
-    file1Metadata: file1.metadata,
-    file2Metadata: file2.metadata,
+    skippedRows: allSkippedRows,
+    filesMetadata: files.map(f => f.metadata || {}),
   }
 }

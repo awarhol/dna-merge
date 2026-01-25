@@ -1,6 +1,6 @@
 {
   "title": "Merge DNA files",
-  "subtitle": "Upload 1 or 2 DNA files to convert or merge",
+  "subtitle": "Upload 1-10 DNA files to convert or merge with priority-based conflict resolution",
   "supported_input_formats": "Supported input file types:",
   "supported_output_formats": "Supported output file types:",
   "github_badge": "View on GitHub",
@@ -14,12 +14,10 @@
   },
   "options": {
     "output_format": "Output Format:",
-    "prefer_source": "Prefer data source in case of conflicts:",
     "fill_missing": "Fill Missing Values:",
     "parse_multibase": "Parse Multi-Base Genotypes (Indels):",
     "include_invalid_positions": "Include SNPs with 0,0 Position:",
-    "tooltip_prefer": "When both tests show different values for the same genetic marker (e.g., one shows 'AT' and the other shows 'GG'), use the result from this source.",
-    "tooltip_fill": "When enabled, fills gaps in one test with real data from the other test. When disabled, strictly follows your preferred source even if it has missing values (-- or 00).",
+    "tooltip_fill": "When enabled, fills missing values (-- or 00) by scanning files in priority order and using the first non-missing value found. When disabled, always uses the value from the first file (highest priority).",
     "tooltip_multibase": "When enabled, splits long Indel genotypes like 'TAAGTGTAAGTG' into 'TAAGTG TAAGTG'. When disabled (default), these variants are skipped. Primarily affects LivingDNA files.",
     "tooltip_invalid_positions": "Include rows with chromosome='0' or position='0' when they have standard rsIDs (like 'rs123') or non-empty alleles. Rows with custom names AND empty alleles (--) are always skipped."
   }
