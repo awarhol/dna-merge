@@ -1,4 +1,4 @@
-# Merge DNA - Claude Context File
+# Merge DNA files - Claude Context File
 
 ## Project Overview
 

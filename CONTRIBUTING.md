@@ -1,6 +1,6 @@
-# Contributing to Merge DNA
+# Contributing to Merge DNA files
 
-Thank you for your interest in contributing to Merge DNA! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to Merge DNA files! This document provides guidelines and instructions for contributing to the project.
 
 ## Table of Contents
 
@@ -362,6 +362,6 @@ If you have questions about contributing, feel free to:
 
 ## License
 
-By contributing to Merge DNA, you agree that your contributions will be licensed under the MIT License.
+By contributing to Merge DNA files, you agree that your contributions will be licensed under the MIT License.
 
-Thank you for contributing to Merge DNA!
+Thank you for contributing to Merge DNA files!

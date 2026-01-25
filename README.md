@@ -1,4 +1,4 @@
-# Merge DNA
+# Merge DNA files
 
 A web-based tool for merging and converting DNA test files from consumer genealogy testing services. Process your raw genetic data from multiple DNA tests in one place with intelligent conflict resolution and detailed logging.
 
