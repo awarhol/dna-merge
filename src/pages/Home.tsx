@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { DNAFileUpload, type FileMetadata } from '../components/DNAFileUpload'
 import { Tooltip } from '../components/Tooltip'
 import { ProgressBar } from '../components/ProgressBar'
+import { Tag } from '../components/Tag'
 import {
   detectFormat,
   parseAncestryFileAsync,
@@ -82,6 +83,28 @@ const Subtitle = styled.p`
   margin-bottom: ${props => props.theme.spacing.xl};
   text-align: center;
   max-width: 600px;
+`
+
+const SupportedFormatsSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${props => props.theme.spacing.sm};
+  margin-bottom: ${props => props.theme.spacing.lg};
+`
+
+const SupportedFormatsLabel = styled.p`
+  font-size: 0.9rem;
+  color: ${props => props.theme.colors.textSecondary};
+  margin: 0;
+`
+
+const TagsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${props => props.theme.spacing.sm};
+  justify-content: center;
+  align-items: center;
 `
 
 const PrivacyNotice = styled.div`
@@ -644,6 +667,25 @@ export const Home = () => {
         </GitHubBadge>
       </HeaderSection>
       <Subtitle>{t('home:subtitle')}</Subtitle>
+
+      <SupportedFormatsSection>
+        <SupportedFormatsLabel>{t('home:supported_input_formats')}</SupportedFormatsLabel>
+        <TagsContainer>
+          <Tag variant="ancestry">Ancestry</Tag>
+          <Tag variant="myheritage">MyHeritage</Tag>
+          <Tag variant="livingdna">LivingDNA</Tag>
+          <Tag variant="ftdna">FTDNA</Tag>
+          <Tag variant="23andme">23andMe</Tag>
+        </TagsContainer>
+      </SupportedFormatsSection>
+
+      <SupportedFormatsSection>
+        <SupportedFormatsLabel>{t('home:supported_output_formats')}</SupportedFormatsLabel>
+        <TagsContainer>
+          <Tag variant="ancestry">Ancestry</Tag>
+          <Tag variant="myheritage">MyHeritage</Tag>
+        </TagsContainer>
+      </SupportedFormatsSection>
 
       <PrivacyNotice>
         <strong>🔒 {t('home:privacy.title')}</strong> {t('home:privacy.message')}
