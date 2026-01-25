@@ -377,6 +377,7 @@ export const Home = () => {
   )
   const [preferredFileIndex, setPreferredFileIndex] = useState<number>(0)
   const [fillMissing, setFillMissing] = useState(true)
+  const [parseMultibaseGenotypes, setParseMultibaseGenotypes] = useState(false)
   const [resetTrigger, setResetTrigger] = useState(0)
   const [progress, setProgress] = useState(0)
 
@@ -414,10 +415,20 @@ export const Home = () => {
       }
 
       // Phase 1: Parse file 1 (0-35%)
-      const parsed1 = await formatParsers[format1](dnaFiles[0], 1, p => setProgress(p * 0.35))
+      const parsed1 = await formatParsers[format1](
+        dnaFiles[0],
+        1,
+        p => setProgress(p * 0.35),
+        parseMultibaseGenotypes
+      )
 
       // Phase 2: Parse file 2 (35-70%)
-      const parsed2 = await formatParsers[format2](dnaFiles[1], 2, p => setProgress(35 + p * 0.35))
+      const parsed2 = await formatParsers[format2](
+        dnaFiles[1],
+        2,
+        p => setProgress(35 + p * 0.35),
+        parseMultibaseGenotypes
+      )
 
       // Phase 3: Merge SNPs (70-95%)
       const preferredFile = (preferredFileIndex + 1) as 1 | 2 // Convert to 1-based index
@@ -505,7 +516,12 @@ export const Home = () => {
       const targetFormat = outputFormat
 
       // Phase 1: Parse file (0-80%)
-      const parsed = await formatParsers[sourceFormat](dnaFiles[0], 1, p => setProgress(p * 0.8))
+      const parsed = await formatParsers[sourceFormat](
+        dnaFiles[0],
+        1,
+        p => setProgress(p * 0.8),
+        parseMultibaseGenotypes
+      )
 
       // Phase 2: Normalize (80%)
       setProgress(80)
@@ -758,6 +774,16 @@ export const Home = () => {
               </OptionRow>
             </>
           )}
+          <OptionRow>
+            <LabelWithTooltip>
+              <span>{t('home:options.parse_multibase')}</span>
+              <Tooltip content={t('home:options.tooltip_multibase')} />
+            </LabelWithTooltip>
+            <Checkbox
+              checked={parseMultibaseGenotypes}
+              onChange={e => setParseMultibaseGenotypes(e.target.checked)}
+            />
+          </OptionRow>
         </OptionsSection>
       )}
 

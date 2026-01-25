@@ -10,7 +10,9 @@
     "output_format": "Output Format:",
     "prefer_source": "Prefer data source in case of conflicts:",
     "fill_missing": "Fill Missing Values:",
+    "parse_multibase": "Parse Multi-Base Genotypes (Indels):",
     "tooltip_prefer": "When both tests show different values for the same genetic marker (e.g., one shows 'AT' and the other shows 'GG'), use the result from this source.",
-    "tooltip_fill": "When enabled, fills gaps in one test with real data from the other test. When disabled, strictly follows your preferred source even if it has missing values (-- or 00)."
+    "tooltip_fill": "When enabled, fills gaps in one test with real data from the other test. When disabled, strictly follows your preferred source even if it has missing values (-- or 00).",
+    "tooltip_multibase": "When enabled, splits long Indel genotypes like 'TAAGTGTAAGTG' into 'TAAGTG TAAGTG'. When disabled (default), these variants are skipped. Primarily affects LivingDNA files."
   }
 }

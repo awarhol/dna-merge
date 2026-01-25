@@ -5,7 +5,9 @@ import { yieldToMainThread } from './common'
 export async function parse23andMeFileAsync(
   content: string,
   sourceFile: 1 | 2 = 1,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _parseMultibaseGenotypes = false
 ): Promise<ParseResult> {
   const BATCH_SIZE = 5000
   const lines = content.split('\n')

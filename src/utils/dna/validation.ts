@@ -35,6 +35,40 @@ export function validateGenotype(genotype: string, allowSingleChar = false): boo
   return false
 }
 
+/**
+ * Check if a genotype string is a multi-base genotype (Indel)
+ * Multi-base genotypes are even-length strings > 2 characters with only valid nucleotides
+ */
+export function isMultibaseGenotype(genotype: string): boolean {
+  const normalized = genotype.toUpperCase().trim()
+
+  // Must be even length and > 2 characters
+  if (normalized.length <= 2 || normalized.length % 2 !== 0) {
+    return false
+  }
+
+  // All characters must be valid nucleotides (A, T, C, G)
+  return /^[ATCG]+$/.test(normalized)
+}
+
+/**
+ * Split a multi-base genotype into two alleles
+ * Example: "TAAGTGTAAGTG" -> "TAAGTG TAAGTG"
+ */
+export function splitMultibaseGenotype(genotype: string): string {
+  const normalized = genotype.toUpperCase().trim()
+
+  if (!isMultibaseGenotype(normalized)) {
+    return genotype
+  }
+
+  const halfLength = normalized.length / 2
+  const allele1 = normalized.substring(0, halfLength)
+  const allele2 = normalized.substring(halfLength)
+
+  return `${allele1} ${allele2}`
+}
+
 export function isMissingValue(genotype: string): boolean {
   const normalized = genotype.toUpperCase().trim()
   return normalized === '--' || normalized === '00'

@@ -48,6 +48,7 @@ export interface SkippedEntry {
 export interface MergeOptions {
   preferredFile: 1 | 2
   fillMissing: boolean
+  parseMultibaseGenotypes?: boolean
 }
 
 export interface FormatInfo {

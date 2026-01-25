@@ -1,11 +1,17 @@
 import type { ParseResult, SNP, SkippedEntry } from '../types'
-import { isValidChromosome, validateGenotype } from '../validation'
+import {
+  isValidChromosome,
+  validateGenotype,
+  isMultibaseGenotype,
+  splitMultibaseGenotype,
+} from '../validation'
 import { normalizeChromosome, yieldToMainThread } from './common'
 
 export async function parseLivingDNAFileAsync(
   content: string,
   sourceFile: 1 | 2 = 1,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  parseMultibaseGenotypes = false
 ): Promise<ParseResult> {
   const BATCH_SIZE = 5000
   const lines = content.split('\n')
@@ -86,7 +92,13 @@ export async function parseLivingDNAFileAsync(
       continue
     }
 
-    if (!validateGenotype(genotype)) {
+    // Check if it's a valid standard genotype
+    const isValidStandard = validateGenotype(genotype)
+
+    // Check if it's a multi-base genotype (Indel)
+    const isMultibase = isMultibaseGenotype(genotype)
+
+    if (!isValidStandard && !isMultibase) {
       errors.push({
         lineNumber: i + 1,
         content: trimmedLine,
@@ -96,13 +108,27 @@ export async function parseLivingDNAFileAsync(
       continue
     }
 
+    // If it's a multi-base genotype but we're not parsing them, skip it
+    if (isMultibase && !parseMultibaseGenotypes) {
+      errors.push({
+        lineNumber: i + 1,
+        content: trimmedLine,
+        reason: `Skipped multi-base genotype (Indel): ${genotype}`,
+        sourceFile,
+      })
+      continue
+    }
+
     const normalizedChromosome = normalizeChromosome(chromosome, 'ancestry')
+
+    // Split multi-base genotypes if parsing is enabled
+    const finalGenotype = isMultibase ? splitMultibaseGenotype(genotype) : genotype
 
     snps.push({
       rsid,
       chromosome: normalizedChromosome,
       position,
-      genotype,
+      genotype: finalGenotype,
       sourceFile,
     })
 
