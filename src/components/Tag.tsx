@@ -4,6 +4,7 @@ type TagVariant =
   | 'ancestry'
   | 'myheritage'
   | 'livingdna'
+  | '23andme'
   | 'unknown'
   | 'success'
   | 'error'
@@ -25,6 +26,8 @@ const StyledTag = styled.span<{ variant: TagVariant }>`
         return '#3b82f6' // blue
       case 'livingdna':
         return '#8b5cf6' // purple
+      case '23andme':
+        return '#f59e0b' // amber
       case 'success':
         return '#10b981' // green
       case 'error':
