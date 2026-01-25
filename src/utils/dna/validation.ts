@@ -37,13 +37,14 @@ export function validateGenotype(genotype: string, allowSingleChar = false): boo
 
 /**
  * Check if a genotype string is a multi-base genotype (Indel)
- * Multi-base genotypes are even-length strings > 2 characters with only valid nucleotides
+ * Multi-base genotypes are strings > 2 characters with only valid nucleotides
+ * Can be even-length (e.g., "TAAGTGTAAGTG") or odd-length (e.g., "AGA")
  */
 export function isMultibaseGenotype(genotype: string): boolean {
   const normalized = genotype.toUpperCase().trim()
 
-  // Must be even length and > 2 characters
-  if (normalized.length <= 2 || normalized.length % 2 !== 0) {
+  // Must be > 2 characters (can be odd or even length)
+  if (normalized.length <= 2) {
     return false
   }
 
@@ -53,7 +54,8 @@ export function isMultibaseGenotype(genotype: string): boolean {
 
 /**
  * Split a multi-base genotype into two alleles
- * Example: "TAAGTGTAAGTG" -> "TAAGTG TAAGTG"
+ * For even-length: splits in half (e.g., "TAAGTGTAAGTG" -> "TAAGTG TAAGTG")
+ * For odd-length: smaller allele first (e.g., "AGA" -> "A GA", "ATCGA" -> "AT CGA")
  */
 export function splitMultibaseGenotype(genotype: string): string {
   const normalized = genotype.toUpperCase().trim()
@@ -62,9 +64,10 @@ export function splitMultibaseGenotype(genotype: string): string {
     return genotype
   }
 
-  const halfLength = normalized.length / 2
-  const allele1 = normalized.substring(0, halfLength)
-  const allele2 = normalized.substring(halfLength)
+  // For odd-length genotypes, use floor division (smaller allele first)
+  const splitPoint = Math.floor(normalized.length / 2)
+  const allele1 = normalized.substring(0, splitPoint)
+  const allele2 = normalized.substring(splitPoint)
 
   return `${allele1} ${allele2}`
 }

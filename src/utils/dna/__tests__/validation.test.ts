@@ -95,10 +95,11 @@ describe('isMultibaseGenotype', () => {
     expect(isMultibaseGenotype('AA')).toBe(false)
   })
 
-  it('should reject odd-length strings', async () => {
-    expect(isMultibaseGenotype('ATA')).toBe(false)
-    expect(isMultibaseGenotype('ATCGA')).toBe(false)
-    expect(isMultibaseGenotype('TAAGTGT')).toBe(false)
+  it('should accept odd-length strings with valid nucleotides', async () => {
+    expect(isMultibaseGenotype('ATA')).toBe(true)
+    expect(isMultibaseGenotype('ATCGA')).toBe(true)
+    expect(isMultibaseGenotype('TAAGTGT')).toBe(true)
+    expect(isMultibaseGenotype('AGA')).toBe(true)
   })
 
   it('should reject strings with invalid characters', async () => {
@@ -128,19 +129,29 @@ describe('splitMultibaseGenotype', () => {
     expect(splitMultibaseGenotype('CGCG')).toBe('CG CG')
   })
 
+  it('should split odd-length multi-base genotypes with smaller allele first', async () => {
+    expect(splitMultibaseGenotype('AGA')).toBe('A GA')
+    expect(splitMultibaseGenotype('ATA')).toBe('A TA')
+    expect(splitMultibaseGenotype('ATCGA')).toBe('AT CGA')
+    expect(splitMultibaseGenotype('TAAGTGT')).toBe('TAA GTGT')
+    expect(splitMultibaseGenotype('CGATC')).toBe('CG ATC')
+  })
+
   it('should return original genotype if not a multi-base genotype', async () => {
     expect(splitMultibaseGenotype('AT')).toBe('AT')
     expect(splitMultibaseGenotype('CG')).toBe('CG')
     expect(splitMultibaseGenotype('--')).toBe('--')
-    expect(splitMultibaseGenotype('ATA')).toBe('ATA')
   })
 
   it('should be case insensitive', async () => {
     expect(splitMultibaseGenotype('taagtgtaagtg')).toBe('TAAGTG TAAGTG')
     expect(splitMultibaseGenotype('AtAtCgAtCg')).toBe('ATATC GATCG')
+    expect(splitMultibaseGenotype('aga')).toBe('A GA')
+    expect(splitMultibaseGenotype('AtCgA')).toBe('AT CGA')
   })
 
   it('should handle whitespace', async () => {
     expect(splitMultibaseGenotype(' TAAGTGTAAGTG ')).toBe('TAAGTG TAAGTG')
+    expect(splitMultibaseGenotype(' AGA ')).toBe('A GA')
   })
 })
