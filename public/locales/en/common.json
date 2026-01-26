@@ -39,5 +39,10 @@
   },
   "processing": {
     "label": "Processing"
+  },
+  "seo": {
+    "title": "Merge DNA Files - Privacy-First DNA File Merger",
+    "description": "Free online tool to merge and convert DNA test files from AncestryDNA, 23andMe, MyHeritage, and LivingDNA. All processing happens in your browser - your genetic data never leaves your computer.",
+    "keywords": "DNA merge, DNA file converter, AncestryDNA, 23andMe, MyHeritage, LivingDNA, genetic data, genealogy, privacy, client-side processing"
   }
 }

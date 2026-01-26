@@ -5,6 +5,8 @@ import { DNAFileUpload, type FileMetadata } from '../components/DNAFileUpload'
 import { Tooltip } from '../components/Tooltip'
 import { ProgressBar } from '../components/ProgressBar'
 import { Tag } from '../components/Tag'
+import { SEO } from '../components/SEO'
+import { GITHUB_REPO } from '@/config/site'
 import {
   detectFormat,
   parseAncestryFileAsync,
@@ -658,241 +660,242 @@ export const Home = () => {
   }
 
   return (
-    <Container>
-      <HeaderSection>
-        <Title>{t('home:title')}</Title>
-        <GitHubBadge
-          href="https://github.com/awarhol/dna-merge"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-          </svg>
-          {t('home:github_badge')}
-        </GitHubBadge>
-      </HeaderSection>
-      <Subtitle>{t('home:subtitle')}</Subtitle>
+    <>
+      <SEO />
+      <Container>
+        <HeaderSection>
+          <Title>{t('home:title')}</Title>
+          <GitHubBadge href={GITHUB_REPO} target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+            {t('home:github_badge')}
+          </GitHubBadge>
+        </HeaderSection>
+        <Subtitle>{t('home:subtitle')}</Subtitle>
 
-      <SupportedFormatsSection>
-        <SupportedFormatsLabel>{t('home:supported_input_formats')}</SupportedFormatsLabel>
-        <TagsContainer>
-          <Tag variant="ancestry">Ancestry</Tag>
-          <Tag variant="myheritage">MyHeritage</Tag>
-          <Tag variant="livingdna">LivingDNA</Tag>
-          <Tag variant="ftdna">FTDNA</Tag>
-          <Tag variant="23andme">23andMe</Tag>
-        </TagsContainer>
-      </SupportedFormatsSection>
+        <SupportedFormatsSection>
+          <SupportedFormatsLabel>{t('home:supported_input_formats')}</SupportedFormatsLabel>
+          <TagsContainer>
+            <Tag variant="ancestry">Ancestry</Tag>
+            <Tag variant="myheritage">MyHeritage</Tag>
+            <Tag variant="livingdna">LivingDNA</Tag>
+            <Tag variant="ftdna">FTDNA</Tag>
+            <Tag variant="23andme">23andMe</Tag>
+          </TagsContainer>
+        </SupportedFormatsSection>
 
-      <SupportedFormatsSection>
-        <SupportedFormatsLabel>{t('home:supported_output_formats')}</SupportedFormatsLabel>
-        <TagsContainer>
-          <Tag variant="ancestry">Ancestry</Tag>
-          <Tag variant="myheritage">MyHeritage</Tag>
-        </TagsContainer>
-      </SupportedFormatsSection>
+        <SupportedFormatsSection>
+          <SupportedFormatsLabel>{t('home:supported_output_formats')}</SupportedFormatsLabel>
+          <TagsContainer>
+            <Tag variant="ancestry">Ancestry</Tag>
+            <Tag variant="myheritage">MyHeritage</Tag>
+          </TagsContainer>
+        </SupportedFormatsSection>
 
-      <UploadSection>
-        <DNAFileUpload onFilesChange={handleFilesChange} resetTrigger={resetTrigger} />
-      </UploadSection>
+        <UploadSection>
+          <DNAFileUpload onFilesChange={handleFilesChange} resetTrigger={resetTrigger} />
+        </UploadSection>
 
-      {(isSingleFileMode || isMergeMode) && !mergedCsv && !isProcessing && (
-        <OptionsSection>
-          <OptionRow>
-            <label>{t('home:options.output_format')}</label>
-            <Select
-              value={outputFormat}
-              onChange={e => setOutputFormat(e.target.value as 'ancestry' | 'myheritage')}
-            >
-              <option value="myheritage">MyHeritage</option>
-              <option value="ancestry">Ancestry</option>
-            </Select>
-          </OptionRow>
-          {isMergeMode && (
+        {(isSingleFileMode || isMergeMode) && !mergedCsv && !isProcessing && (
+          <OptionsSection>
+            <OptionRow>
+              <label>{t('home:options.output_format')}</label>
+              <Select
+                value={outputFormat}
+                onChange={e => setOutputFormat(e.target.value as 'ancestry' | 'myheritage')}
+              >
+                <option value="myheritage">MyHeritage</option>
+                <option value="ancestry">Ancestry</option>
+              </Select>
+            </OptionRow>
+            {isMergeMode && (
+              <OptionRow>
+                <LabelWithTooltip>
+                  <span>{t('home:options.fill_missing')}</span>
+                  <Tooltip content={t('home:options.tooltip_fill')} />
+                </LabelWithTooltip>
+                <Checkbox checked={fillMissing} onChange={e => setFillMissing(e.target.checked)} />
+              </OptionRow>
+            )}
             <OptionRow>
               <LabelWithTooltip>
-                <span>{t('home:options.fill_missing')}</span>
-                <Tooltip content={t('home:options.tooltip_fill')} />
+                <span>{t('home:options.parse_multibase')}</span>
+                <Tooltip content={t('home:options.tooltip_multibase')} />
               </LabelWithTooltip>
-              <Checkbox checked={fillMissing} onChange={e => setFillMissing(e.target.checked)} />
+              <Checkbox
+                checked={parseMultibaseGenotypes}
+                onChange={e => setParseMultibaseGenotypes(e.target.checked)}
+              />
             </OptionRow>
-          )}
-          <OptionRow>
-            <LabelWithTooltip>
-              <span>{t('home:options.parse_multibase')}</span>
-              <Tooltip content={t('home:options.tooltip_multibase')} />
-            </LabelWithTooltip>
-            <Checkbox
-              checked={parseMultibaseGenotypes}
-              onChange={e => setParseMultibaseGenotypes(e.target.checked)}
-            />
-          </OptionRow>
-          <OptionRow>
-            <LabelWithTooltip>
-              <span>{t('home:options.include_invalid_positions')}</span>
-              <Tooltip content={t('home:options.tooltip_invalid_positions')} />
-            </LabelWithTooltip>
-            <Checkbox
-              checked={includeInvalidPositions}
-              onChange={e => setIncludeInvalidPositions(e.target.checked)}
-            />
-          </OptionRow>
-        </OptionsSection>
-      )}
+            <OptionRow>
+              <LabelWithTooltip>
+                <span>{t('home:options.include_invalid_positions')}</span>
+                <Tooltip content={t('home:options.tooltip_invalid_positions')} />
+              </LabelWithTooltip>
+              <Checkbox
+                checked={includeInvalidPositions}
+                onChange={e => setIncludeInvalidPositions(e.target.checked)}
+              />
+            </OptionRow>
+          </OptionsSection>
+        )}
 
-      {!mergedCsv && (
-        <ProcessingContainer>
-          <MergeButton
-            disabled={(!isSingleFileMode && !isMergeMode) || isProcessing}
-            onClick={handleProcess}
-          >
-            {isProcessing && <ButtonSpinner />}
-            {isProcessing
-              ? isSingleFileMode
-                ? t('common:buttons.converting')
-                : t('common:buttons.merging')
-              : isSingleFileMode
-                ? t('common:buttons.convert')
-                : t('common:buttons.merge')}
-          </MergeButton>
-          {isProcessing && <ProgressBar progress={progress} label={t('common:processing.label')} />}
-        </ProcessingContainer>
-      )}
+        {!mergedCsv && (
+          <ProcessingContainer>
+            <MergeButton
+              disabled={(!isSingleFileMode && !isMergeMode) || isProcessing}
+              onClick={handleProcess}
+            >
+              {isProcessing && <ButtonSpinner />}
+              {isProcessing
+                ? isSingleFileMode
+                  ? t('common:buttons.converting')
+                  : t('common:buttons.merging')
+                : isSingleFileMode
+                  ? t('common:buttons.convert')
+                  : t('common:buttons.merge')}
+            </MergeButton>
+            {isProcessing && (
+              <ProgressBar progress={progress} label={t('common:processing.label')} />
+            )}
+          </ProcessingContainer>
+        )}
 
-      {error && (
-        <ResultsSection>
-          <ErrorMessage>{error}</ErrorMessage>
-          <ResetButton onClick={handleReset}>{t('common:buttons.try_again')}</ResetButton>
-        </ResultsSection>
-      )}
+        {error && (
+          <ResultsSection>
+            <ErrorMessage>{error}</ErrorMessage>
+            <ResetButton onClick={handleReset}>{t('common:buttons.try_again')}</ResetButton>
+          </ResultsSection>
+        )}
 
-      {mergedCsv && stats && (
-        <ResultsSection>
-          <SuccessMessage>
-            {isSingleFileMode ? t('common:success.convert') : t('common:success.merge')}
-          </SuccessMessage>
-          <StatsList>
-            <li>
-              {t('common:stats.total_snps', {
-                mode: t(`common:modes.${isSingleFileMode ? 'converted' : 'merged'}`),
-              })}{' '}
-              {stats.totalSnps.toLocaleString()}
-            </li>
-            <li>
-              {t('common:stats.conflicts')} {stats.conflicts}
-            </li>
-            <li>
-              {t('common:stats.skipped')} {stats.skipped}
-            </li>
-          </StatsList>
-          <DownloadButtonsContainer>
-            <DownloadButton onClick={handleDownloadCsv}>
-              {t(
-                isSingleFileMode
-                  ? 'common:buttons.download_converted_dna'
-                  : 'common:buttons.download_merged_dna'
-              )}
-            </DownloadButton>
-            <DownloadButton onClick={handleDownloadLog}>
-              {t('common:buttons.download_log')}
-            </DownloadButton>
-          </DownloadButtonsContainer>
-          <ResetButton onClick={handleReset}>
-            {t(isSingleFileMode ? 'common:buttons.convert_more' : 'common:buttons.merge_more')}
-          </ResetButton>
-        </ResultsSection>
-      )}
+        {mergedCsv && stats && (
+          <ResultsSection>
+            <SuccessMessage>
+              {isSingleFileMode ? t('common:success.convert') : t('common:success.merge')}
+            </SuccessMessage>
+            <StatsList>
+              <li>
+                {t('common:stats.total_snps', {
+                  mode: t(`common:modes.${isSingleFileMode ? 'converted' : 'merged'}`),
+                })}{' '}
+                {stats.totalSnps.toLocaleString()}
+              </li>
+              <li>
+                {t('common:stats.conflicts')} {stats.conflicts}
+              </li>
+              <li>
+                {t('common:stats.skipped')} {stats.skipped}
+              </li>
+            </StatsList>
+            <DownloadButtonsContainer>
+              <DownloadButton onClick={handleDownloadCsv}>
+                {t(
+                  isSingleFileMode
+                    ? 'common:buttons.download_converted_dna'
+                    : 'common:buttons.download_merged_dna'
+                )}
+              </DownloadButton>
+              <DownloadButton onClick={handleDownloadLog}>
+                {t('common:buttons.download_log')}
+              </DownloadButton>
+            </DownloadButtonsContainer>
+            <ResetButton onClick={handleReset}>
+              {t(isSingleFileMode ? 'common:buttons.convert_more' : 'common:buttons.merge_more')}
+            </ResetButton>
+          </ResultsSection>
+        )}
 
-      <DisclaimerBanner>
-        <strong>{t('home:disclaimer.title')}</strong> {t('home:disclaimer.message')}
-      </DisclaimerBanner>
+        <DisclaimerBanner>
+          <strong>{t('home:disclaimer.title')}</strong> {t('home:disclaimer.message')}
+        </DisclaimerBanner>
 
-      <PrivacyNotice>
-        <strong>🔒 {t('home:privacy.title')}</strong> {t('home:privacy.message')}
-      </PrivacyNotice>
+        <PrivacyNotice>
+          <strong>🔒 {t('home:privacy.title')}</strong> {t('home:privacy.message')}
+        </PrivacyNotice>
 
-      <CollapsibleSection>
-        <summary>{t('algorithm:section_title')}</summary>
-        <DescriptionContent>
-          <p>{t('algorithm:intro')}</p>
+        <CollapsibleSection>
+          <summary>{t('algorithm:section_title')}</summary>
+          <DescriptionContent>
+            <p>{t('algorithm:intro')}</p>
 
-          <DescriptionSubtitle>{t('algorithm:problem.title')}</DescriptionSubtitle>
-          <p>{t('algorithm:problem.description')}</p>
-          <DescriptionList>
-            <li>{t('algorithm:problem.list.different_snps')}</li>
-            <li>{t('algorithm:problem.list.gaps')}</li>
-            <li>{t('algorithm:problem.list.conflicts')}</li>
-          </DescriptionList>
-          <p>{t('algorithm:problem.conclusion')}</p>
+            <DescriptionSubtitle>{t('algorithm:problem.title')}</DescriptionSubtitle>
+            <p>{t('algorithm:problem.description')}</p>
+            <DescriptionList>
+              <li>{t('algorithm:problem.list.different_snps')}</li>
+              <li>{t('algorithm:problem.list.gaps')}</li>
+              <li>{t('algorithm:problem.list.conflicts')}</li>
+            </DescriptionList>
+            <p>{t('algorithm:problem.conclusion')}</p>
 
-          <DescriptionSubtitle>{t('algorithm:process.title')}</DescriptionSubtitle>
-          <DescriptionList>
-            <li>
-              <strong>{t('algorithm:process.step1.title')}</strong> -{' '}
-              {t('algorithm:process.step1.description')}
-            </li>
-            <li>
-              <strong>{t('algorithm:process.step2.title')}</strong> -{' '}
-              {t('algorithm:process.step2.description')}
-            </li>
-            <li>
-              <strong>{t('algorithm:process.step3.title')}</strong> -{' '}
-              {t('algorithm:process.step3.description')}
-            </li>
-          </DescriptionList>
+            <DescriptionSubtitle>{t('algorithm:process.title')}</DescriptionSubtitle>
+            <DescriptionList>
+              <li>
+                <strong>{t('algorithm:process.step1.title')}</strong> -{' '}
+                {t('algorithm:process.step1.description')}
+              </li>
+              <li>
+                <strong>{t('algorithm:process.step2.title')}</strong> -{' '}
+                {t('algorithm:process.step2.description')}
+              </li>
+              <li>
+                <strong>{t('algorithm:process.step3.title')}</strong> -{' '}
+                {t('algorithm:process.step3.description')}
+              </li>
+            </DescriptionList>
 
-          <DescriptionSubtitle>{t('algorithm:conflict_resolution.title')}</DescriptionSubtitle>
-          <p>{t('algorithm:conflict_resolution.description')}</p>
-          <DescriptionList>
-            <li>
-              <strong>{t('algorithm:conflict_resolution.fill_missing.title')}</strong>{' '}
-              {t('algorithm:conflict_resolution.fill_missing.description')}
-            </li>
-            <li>
-              <strong>{t('algorithm:conflict_resolution.prefer_file.title')}</strong>{' '}
-              {t('algorithm:conflict_resolution.prefer_file.description')}
-            </li>
-          </DescriptionList>
+            <DescriptionSubtitle>{t('algorithm:conflict_resolution.title')}</DescriptionSubtitle>
+            <p>{t('algorithm:conflict_resolution.description')}</p>
+            <DescriptionList>
+              <li>
+                <strong>{t('algorithm:conflict_resolution.fill_missing.title')}</strong>{' '}
+                {t('algorithm:conflict_resolution.fill_missing.description')}
+              </li>
+              <li>
+                <strong>{t('algorithm:conflict_resolution.prefer_file.title')}</strong>{' '}
+                {t('algorithm:conflict_resolution.prefer_file.description')}
+              </li>
+            </DescriptionList>
 
-          <DescriptionSubtitle>{t('algorithm:understanding_data.title')}</DescriptionSubtitle>
-          <p>{t('algorithm:understanding_data.description')}</p>
-          <DescriptionList>
-            <li>
-              <strong>{t('algorithm:understanding_data.rsid')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:understanding_data.chromosome')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:understanding_data.position')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:understanding_data.genotype')}</strong>
-            </li>
-          </DescriptionList>
+            <DescriptionSubtitle>{t('algorithm:understanding_data.title')}</DescriptionSubtitle>
+            <p>{t('algorithm:understanding_data.description')}</p>
+            <DescriptionList>
+              <li>
+                <strong>{t('algorithm:understanding_data.rsid')}</strong>
+              </li>
+              <li>
+                <strong>{t('algorithm:understanding_data.chromosome')}</strong>
+              </li>
+              <li>
+                <strong>{t('algorithm:understanding_data.position')}</strong>
+              </li>
+              <li>
+                <strong>{t('algorithm:understanding_data.genotype')}</strong>
+              </li>
+            </DescriptionList>
 
-          <DescriptionSubtitle>{t('algorithm:why_matters.title')}</DescriptionSubtitle>
-          <DescriptionList>
-            <li>
-              <strong>{t('algorithm:why_matters.list.matches')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:why_matters.list.gaps')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:why_matters.list.accuracy')}</strong>
-            </li>
-            <li>
-              <strong>{t('algorithm:why_matters.list.tools')}</strong>
-            </li>
-          </DescriptionList>
+            <DescriptionSubtitle>{t('algorithm:why_matters.title')}</DescriptionSubtitle>
+            <DescriptionList>
+              <li>
+                <strong>{t('algorithm:why_matters.list.matches')}</strong>
+              </li>
+              <li>
+                <strong>{t('algorithm:why_matters.list.gaps')}</strong>
+              </li>
+              <li>
+                <strong>{t('algorithm:why_matters.list.accuracy')}</strong>
+              </li>
+              <li>
+                <strong>{t('algorithm:why_matters.list.tools')}</strong>
+              </li>
+            </DescriptionList>
 
-          <p style={{ marginTop: '1rem', fontSize: '0.9rem', fontStyle: 'italic' }}>
-            {t('algorithm:footer')}
-          </p>
-        </DescriptionContent>
-      </CollapsibleSection>
-    </Container>
+            <p style={{ marginTop: '1rem', fontSize: '0.9rem', fontStyle: 'italic' }}>
+              {t('algorithm:footer')}
+            </p>
+          </DescriptionContent>
+        </CollapsibleSection>
+      </Container>
+    </>
   )
 }
