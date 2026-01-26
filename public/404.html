@@ -3,18 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <script>
-      // Redirect to the correct path for GitHub Pages SPA
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // This script checks the path and redirects properly for SPAs on GitHub Pages
+
       const path = window.location.pathname
       const base = '/dna-merge'
 
-      // If accessing /dna-merge without trailing slash, redirect to /dna-merge/
-      if (path === base) {
-        window.location.replace(base + '/')
-      } else {
-        // For other 404s within the app, redirect to index and let React Router handle it
+      // Only redirect if it's NOT a file with an extension
+      // This allows sitemap.xml, robots.txt, verification files, etc. to 404 properly
+      const hasFileExtension = /\.[a-z0-9]+$/i.test(path.split('/').pop())
+
+      if (!hasFileExtension) {
+        // This is a route, not a file - redirect to index and let React Router handle it
         window.location.replace(base + '/')
       }
+      // If it has a file extension, let it 404 naturally (it means the file doesn't exist)
     </script>
   </head>
-  <body></body>
+  <body>
+    <h1>404 - Not Found</h1>
+  </body>
 </html>
