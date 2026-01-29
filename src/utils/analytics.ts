@@ -62,7 +62,7 @@ export const analytics = {
   },
 
   // Download events
-  fileDownloaded: (fileType: 'merged' | 'log', format: string) => {
+  fileDownloaded: (fileType: 'merged' | 'log' | 'converted', format: string) => {
     trackEvent('DNA File', 'File Downloaded', `${fileType} - ${format}`)
   },
 

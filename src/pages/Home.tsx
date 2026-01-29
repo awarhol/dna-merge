@@ -666,6 +666,7 @@ export const Home = () => {
       }
 
       downloadText(logFile, filename)
+      analytics.fileDownloaded('log', 'text')
     }
   }
 
