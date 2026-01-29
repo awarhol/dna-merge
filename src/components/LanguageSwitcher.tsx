@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
+import { analytics } from '@/utils/analytics'
 
 const SwitcherContainer = styled.div`
   position: fixed;
@@ -40,7 +41,9 @@ export const LanguageSwitcher = () => {
   const { i18n } = useTranslation()
 
   const changeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    i18n.changeLanguage(e.target.value)
+    const newLanguage = e.target.value
+    i18n.changeLanguage(newLanguage)
+    analytics.languageChanged(newLanguage)
   }
 
   return (

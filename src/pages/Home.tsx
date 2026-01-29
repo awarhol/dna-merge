@@ -23,6 +23,7 @@ import {
 } from '../utils/dna'
 import { downloadCsv, downloadText } from '../utils/downloadManager'
 import { localStorageLib } from '../utils/localStorage'
+import { analytics } from '@/utils/analytics'
 
 const Container = styled.div`
   min-height: 100vh;
@@ -438,6 +439,11 @@ export const Home = () => {
     setLogFile(null)
     setError(null)
     setStats(null)
+
+    // Track file uploads
+    metadata?.forEach((meta, index) => {
+      analytics.fileUploaded(meta.format, (index + 1) as 1 | 2)
+    })
   }
 
   const handleMerge = async () => {
@@ -523,8 +529,13 @@ export const Home = () => {
         conflicts: mergeResult.conflicts.length,
         skipped: mergeResult.skippedRows.length,
       })
+
+      // Track successful merge
+      const formatList = formats.join('+')
+      analytics.filesMerged(formatList, formatList, mergeResult.mergedSnps.length)
     } catch (err) {
       setError((err as Error).message || t('common:errors.merge_error'))
+      analytics.errorOccurred('Merge Error', (err as Error).message)
     } finally {
       setIsProcessing(false)
     }
@@ -594,8 +605,12 @@ export const Home = () => {
         conflicts: 0,
         skipped: parsed.errors.length,
       })
+
+      // Track successful conversion
+      analytics.formatConverted(sourceFormat, targetFormat)
     } catch (err) {
       setError((err as Error).message || t('common:errors.convert_error'))
+      analytics.errorOccurred('Conversion Error', (err as Error).message)
     } finally {
       setIsProcessing(false)
     }
@@ -629,6 +644,10 @@ export const Home = () => {
       } else {
         downloadText(mergedCsv, filename)
       }
+
+      // Track download
+      const fileType = isSingleFileMode ? 'converted' : 'merged'
+      analytics.fileDownloaded(fileType, outputFormat)
     }
   }
 
