@@ -1,0 +1,59 @@
+{
+  "section_title": "Cómo funciona el algoritmo de fusión",
+  "intro": "Esta herramienta te ayuda a combinar múltiples archivos de datos de ADN sin procesar de diferentes compañías de pruebas (AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA) en un solo perfil genético completo. Así es como funciona el algoritmo:",
+  "problem": {
+    "title": "¿Qué problema resuelve esto?",
+    "description": "Cuando te haces pruebas con múltiples compañías de ADN, cada compañía puede:",
+    "list": {
+      "different_snps": "Probar diferentes SNPs (marcadores genéticos)",
+      "gaps": "Tener vacíos en sus datos (sin resultados, mostrados como \"--\")",
+      "conflicts": "Ocasionalmente producir resultados contradictorios para el mismo SNP"
+    },
+    "conclusion": "Este algoritmo combina inteligentemente tus archivos para darte la imagen más completa de tu ADN."
+  },
+  "process": {
+    "title": "El proceso de fusión en tres pasos",
+    "step1": {
+      "title": "Paso 1: Cargar el primer archivo",
+      "description": "El algoritmo lee todos los SNPs de tu primer archivo y los indexa por su RSID (el identificador único como \"rs3131972\")"
+    },
+    "step2": {
+      "title": "Paso 2: Procesar archivos adicionales",
+      "description": "Para cada SNP en tus archivos adicionales, el algoritmo verifica si el RSID ya existe. Si es nuevo, lo agrega. Si existe con un genotipo diferente, resuelve el conflicto usando tu estrategia elegida. Este proceso se repite para todos los archivos subidos."
+    },
+    "step3": {
+      "title": "Paso 3: Ordenar por posición genómica",
+      "description": "El archivo fusionado final se ordena por número de cromosoma (1, 2, 3... 22, X, Y, MT) y posición, coincidiendo con referencias genómicas estándar"
+    }
+  },
+  "conflict_resolution": {
+    "title": "Estrategias de resolución de conflictos",
+    "description": "Cuando el mismo SNP tiene diferentes genotipos en múltiples archivos, puedes elegir:",
+    "fill_missing": {
+      "title": "\"Rellenar faltantes\" (Recomendado):",
+      "description": "Si un archivo tiene datos faltantes (\"--\" o \"00\") y el otro tiene un valor, usa el valor. Si ambos tienen valores, usa el archivo preferido. Esto maximiza la cobertura."
+    },
+    "prefer_file": {
+      "title": "\"Preferir archivo\":",
+      "description": "Siempre usa el genotipo de tu archivo preferido, independientemente de los datos faltantes. Más simple pero puede perder datos válidos."
+    }
+  },
+  "understanding_data": {
+    "title": "Entendiendo tus datos de ADN",
+    "description": "Cada SNP (Polimorfismo de Nucleótido Simple) contiene:",
+    "rsid": "RSID: Identificador único (ej. \"rs3131972\")",
+    "chromosome": "Cromosoma: Ubicación (1-22, X, Y, o MT para mitocondrial)",
+    "position": "Posición: Ubicación exacta del par de bases en ese cromosoma",
+    "genotype": "Genotipo: Tus dos alelos en esa posición (ej. \"AA\", \"GC\", \"TT\"). Heredas uno de cada padre"
+  },
+  "why_matters": {
+    "title": "Por qué esto es importante para la genealogía",
+    "list": {
+      "matches": "Maximizar coincidencias de ADN: Más SNPs probados significa mejor precisión de coincidencia con parientes genéticos",
+      "gaps": "Llenar vacíos de pruebas: Las compañías prueban diferentes SNPs; fusionar proporciona una cobertura más amplia",
+      "accuracy": "Comparar precisión de pruebas: El archivo de registro muestra dónde las compañías no estuvieron de acuerdo",
+      "tools": "Usar herramientas especializadas: Algunas herramientas de genealogía genética requieren SNPs específicos que solo ciertas compañías prueban"
+    }
+  },
+  "footer": "El algoritmo está diseñado para ser conservador y transparente, dándote confianza de que tu archivo de ADN fusionado representa con precisión tus datos genéticos mientras maximiza la integridad."
+}

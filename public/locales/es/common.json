@@ -1,0 +1,48 @@
+{
+  "upload": {
+    "drag_and_drop": "Arrastra y suelta archivos de ADN aquí, o haz clic para seleccionar archivos",
+    "file_format_info": "(Sube hasta 10 archivos - .txt o .csv)",
+    "drop_here": "Suelta los archivos aquí...",
+    "unknown_format": "Desconocido",
+    "drag_to_reorder": "Arrastra para reordenar. El primer archivo tiene la prioridad más alta."
+  },
+  "buttons": {
+    "convert": "Convertir",
+    "converting": "Convirtiendo...",
+    "merge": "Fusionar",
+    "merging": "Fusionando...",
+    "download_converted_dna": "Descargar ADN convertido",
+    "download_merged_dna": "Descargar ADN fusionado",
+    "download_log": "Descargar archivo de registro",
+    "try_again": "Intentar de nuevo",
+    "convert_more": "Convertir más archivos",
+    "merge_more": "Fusionar más archivos"
+  },
+  "modes": {
+    "converted": "convertido",
+    "merged": "fusionado"
+  },
+  "errors": {
+    "format_detection": "No se pudo detectar el formato del archivo. Asegúrate de que los archivos sean archivos de ADN válidos de Ancestry o MyHeritage.",
+    "format_detection_single": "No se pudo detectar el formato del archivo. Asegúrate de que el archivo sea un archivo de ADN válido de Ancestry o MyHeritage.",
+    "merge_error": "Ocurrió un error durante la fusión",
+    "convert_error": "Ocurrió un error durante la conversión"
+  },
+  "success": {
+    "convert": "¡Conversión completada exitosamente!",
+    "merge": "¡Fusión completada exitosamente!"
+  },
+  "stats": {
+    "total_snps": "Total de SNPs {{mode}}:",
+    "conflicts": "Conflictos detectados:",
+    "skipped": "Filas inválidas omitidas:"
+  },
+  "processing": {
+    "label": "Procesando"
+  },
+  "seo": {
+    "title": "Fusionar archivos de ADN - Fusionador de archivos de ADN centrado en la privacidad",
+    "description": "Herramienta gratuita en línea para fusionar y convertir archivos de pruebas de ADN de AncestryDNA, 23andMe, MyHeritage y LivingDNA. Todo el procesamiento ocurre en tu navegador - tus datos genéticos nunca salen de tu computadora.",
+    "keywords": "fusionar ADN, conversor de archivos de ADN, AncestryDNA, 23andMe, MyHeritage, LivingDNA, datos genéticos, genealogía, privacidad, procesamiento del lado del cliente"
+  }
+}

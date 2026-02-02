@@ -1,0 +1,24 @@
+{
+  "title": "Fusionar archivos de ADN",
+  "subtitle": "Sube de 1 a 10 archivos de ADN para convertir o fusionar con resolución de conflictos basada en prioridades",
+  "supported_input_formats": "Tipos de archivos de entrada admitidos:",
+  "supported_output_formats": "Tipos de archivos de salida admitidos:",
+  "github_badge": "Ver en GitHub",
+  "disclaimer": {
+    "title": "Aviso legal:",
+    "message": "Esta herramienta es solo para investigación genealógica y propósitos informativos personales. No está destinada para uso médico, diagnóstico o científico. Los resultados se proporcionan tal como están, sin garantías de exactitud o integridad. Para decisiones médicas o relacionadas con la salud, consulta a profesionales de la salud calificados y consejeros genéticos certificados."
+  },
+  "privacy": {
+    "title": "Tu privacidad está protegida:",
+    "message": "Todo el procesamiento de archivos de ADN ocurre completamente en tu navegador en tu computadora. No se suben datos a ningún servidor. Tu información genética nunca sale de tu dispositivo."
+  },
+  "options": {
+    "output_format": "Formato de salida:",
+    "fill_missing": "Rellenar valores faltantes:",
+    "parse_multibase": "Analizar genotipos de múltiples bases (Indels):",
+    "include_invalid_positions": "Incluir SNPs con posición 0,0:",
+    "tooltip_fill": "Cuando está habilitado, rellena los valores faltantes (-- o 00) escaneando archivos en orden de prioridad y usando el primer valor no faltante encontrado. Cuando está deshabilitado, siempre usa el valor del primer archivo (prioridad más alta).",
+    "tooltip_multibase": "Cuando está habilitado, divide genotipos largos de Indel como 'TAAGTGTAAGTG' en 'TAAGTG TAAGTG'. Cuando está deshabilitado (predeterminado), estas variantes se omiten. Afecta principalmente a archivos de LivingDNA.",
+    "tooltip_invalid_positions": "Incluir filas con chromosome='0' o position='0' cuando tienen rsIDs estándar (como 'rs123') o alelos no vacíos. Las filas con nombres personalizados Y alelos vacíos (--) siempre se omiten."
+  }
+}
