@@ -1,0 +1,24 @@
+{
+  "title": "DNA-Dateien zusammenführen",
+  "subtitle": "Laden Sie 1-10 DNA-Dateien hoch, um sie zu konvertieren oder mit prioritätsbasierter Konfliktlösung zusammenzuführen",
+  "supported_input_formats": "Unterstützte Eingabedateitypen:",
+  "supported_output_formats": "Unterstützte Ausgabedateitypen:",
+  "github_badge": "Auf GitHub ansehen",
+  "disclaimer": {
+    "title": "Haftungsausschluss:",
+    "message": "Dieses Tool dient ausschließlich genealogischen Forschungs- und persönlichen Informationszwecken. Es ist nicht für medizinische, diagnostische oder wissenschaftliche Zwecke bestimmt. Die Ergebnisse werden ohne Gewährleistung für Genauigkeit oder Vollständigkeit bereitgestellt. Für medizinische oder gesundheitsbezogene Entscheidungen konsultieren Sie bitte qualifizierte medizinische Fachkräfte und zertifizierte genetische Berater."
+  },
+  "privacy": {
+    "title": "Ihr Datenschutz ist geschützt:",
+    "message": "Die gesamte DNA-Dateiverarbeitung erfolgt vollständig in Ihrem Browser auf Ihrem Computer. Es werden keine Daten auf einen Server hochgeladen. Ihre genetischen Informationen verlassen niemals Ihr Gerät."
+  },
+  "options": {
+    "output_format": "Ausgabeformat:",
+    "fill_missing": "Fehlende Werte ausfüllen:",
+    "parse_multibase": "Multi-Base-Genotypen (Indels) analysieren:",
+    "include_invalid_positions": "SNPs mit Position 0,0 einbeziehen:",
+    "tooltip_fill": "Wenn aktiviert, werden fehlende Werte (-- oder 00) durch Scannen der Dateien in Prioritätsreihenfolge ausgefüllt und der erste gefundene nicht fehlende Wert verwendet. Wenn deaktiviert, wird immer der Wert aus der ersten Datei (höchste Priorität) verwendet.",
+    "tooltip_multibase": "Wenn aktiviert, werden lange Indel-Genotypen wie 'TAAGTGTAAGTG' in 'TAAGTG TAAGTG' aufgeteilt. Wenn deaktiviert (Standard), werden diese Varianten übersprungen. Betrifft hauptsächlich LivingDNA-Dateien.",
+    "tooltip_invalid_positions": "Zeilen mit chromosome='0' oder position='0' einbeziehen, wenn sie Standard-rsIDs (wie 'rs123') oder nicht-leere Allele haben. Zeilen mit benutzerdefinierten Namen UND leeren Allelen (--) werden immer übersprungen."
+  }
+}

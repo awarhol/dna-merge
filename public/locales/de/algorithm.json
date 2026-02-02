@@ -1,0 +1,59 @@
+{
+  "section_title": "Wie der Zusammenführungsalgorithmus funktioniert",
+  "intro": "Dieses Tool hilft Ihnen, mehrere DNA-Rohdatendateien von verschiedenen Testunternehmen (AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA) in ein einziges, umfassendes genetisches Profil zu kombinieren. So funktioniert der Algorithmus:",
+  "problem": {
+    "title": "Welches Problem löst dies?",
+    "description": "Wenn Sie bei mehreren DNA-Unternehmen testen, kann jedes Unternehmen:",
+    "list": {
+      "different_snps": "Verschiedene SNPs (genetische Marker) testen",
+      "gaps": "Lücken in ihren Daten haben (keine Aufrufe, angezeigt als \"--\")",
+      "conflicts": "Gelegentlich widersprüchliche Ergebnisse für denselben SNP liefern"
+    },
+    "conclusion": "Dieser Algorithmus kombiniert Ihre Dateien intelligent, um Ihnen das vollständigste Bild Ihrer DNA zu geben."
+  },
+  "process": {
+    "title": "Der dreistufige Zusammenführungsprozess",
+    "step1": {
+      "title": "Schritt 1: Erste Datei laden",
+      "description": "Der Algorithmus liest alle SNPs aus Ihrer ersten Datei und indiziert sie nach ihrer RSID (der eindeutigen Kennung wie \"rs3131972\")"
+    },
+    "step2": {
+      "title": "Schritt 2: Zusätzliche Dateien verarbeiten",
+      "description": "Für jeden SNP in Ihren zusätzlichen Dateien prüft der Algorithmus, ob die RSID bereits existiert. Wenn sie neu ist, fügt er sie hinzu. Wenn sie mit einem anderen Genotyp existiert, löst er den Konflikt mit Ihrer gewählten Strategie. Dieser Prozess wiederholt sich für alle hochgeladenen Dateien."
+    },
+    "step3": {
+      "title": "Schritt 3: Nach genomischer Position sortieren",
+      "description": "Die endgültige zusammengeführte Datei wird nach Chromosomennummer (1, 2, 3... 22, X, Y, MT) und Position sortiert, entsprechend den Standard-Genomreferenzen"
+    }
+  },
+  "conflict_resolution": {
+    "title": "Strategien zur Konfliktlösung",
+    "description": "Wenn derselbe SNP unterschiedliche Genotypen in mehreren Dateien hat, können Sie wählen:",
+    "fill_missing": {
+      "title": "\"Fehlende ausfüllen\" (Empfohlen):",
+      "description": "Wenn eine Datei fehlende Daten (\"--\" oder \"00\") hat und die andere einen Wert, verwenden Sie den Wert. Wenn beide Werte haben, verwenden Sie die bevorzugte Datei. Dies maximiert die Abdeckung."
+    },
+    "prefer_file": {
+      "title": "\"Datei bevorzugen\":",
+      "description": "Verwenden Sie immer den Genotyp aus Ihrer bevorzugten Datei, unabhängig von fehlenden Daten. Einfacher, kann aber gültige Daten verlieren."
+    }
+  },
+  "understanding_data": {
+    "title": "Ihre DNA-Daten verstehen",
+    "description": "Jeder SNP (Einzelnukleotid-Polymorphismus) enthält:",
+    "rsid": "RSID: Eindeutige Kennung (z.B. \"rs3131972\")",
+    "chromosome": "Chromosom: Standort (1-22, X, Y oder MT für mitochondrial)",
+    "position": "Position: Exakte Basenpaarposition auf diesem Chromosom",
+    "genotype": "Genotyp: Ihre zwei Allele an dieser Position (z.B. \"AA\", \"GC\", \"TT\"). Sie erben eines von jedem Elternteil"
+  },
+  "why_matters": {
+    "title": "Warum dies für die Genealogie wichtig ist",
+    "list": {
+      "matches": "DNA-Übereinstimmungen maximieren: Mehr getestete SNPs bedeuten bessere Übereinstimmungsgenauigkeit mit genetischen Verwandten",
+      "gaps": "Testlücken füllen: Unternehmen testen verschiedene SNPs; Zusammenführen bietet breitere Abdeckung",
+      "accuracy": "Testgenauigkeit vergleichen: Die Protokolldatei zeigt, wo Unternehmen nicht übereinstimmten",
+      "tools": "Spezialisierte Tools verwenden: Einige genetische Genealogie-Tools erfordern spezifische SNPs, die nur bestimmte Unternehmen testen"
+    }
+  },
+  "footer": "Der Algorithmus ist darauf ausgelegt, konservativ und transparent zu sein, und gibt Ihnen die Gewissheit, dass Ihre zusammengeführte DNA-Datei Ihre genetischen Daten genau darstellt und gleichzeitig die Vollständigkeit maximiert."
+}

@@ -1,0 +1,48 @@
+{
+  "upload": {
+    "drag_and_drop": "DNA-Dateien hier ablegen oder klicken, um Dateien auszuwählen",
+    "file_format_info": "(Bis zu 10 Dateien hochladen - .txt oder .csv)",
+    "drop_here": "Dateien hier ablegen...",
+    "unknown_format": "Unbekannt",
+    "drag_to_reorder": "Zum Neuordnen ziehen. Erste Datei hat höchste Priorität."
+  },
+  "buttons": {
+    "convert": "Konvertieren",
+    "converting": "Konvertierung läuft...",
+    "merge": "Zusammenführen",
+    "merging": "Zusammenführung läuft...",
+    "download_converted_dna": "Konvertierte DNA herunterladen",
+    "download_merged_dna": "Zusammengeführte DNA herunterladen",
+    "download_log": "Protokolldatei herunterladen",
+    "try_again": "Erneut versuchen",
+    "convert_more": "Weitere Dateien konvertieren",
+    "merge_more": "Weitere Dateien zusammenführen"
+  },
+  "modes": {
+    "converted": "konvertiert",
+    "merged": "zusammengeführt"
+  },
+  "errors": {
+    "format_detection": "Dateiformat konnte nicht erkannt werden. Bitte stellen Sie sicher, dass die Dateien gültige Ancestry- oder MyHeritage-DNA-Dateien sind.",
+    "format_detection_single": "Dateiformat konnte nicht erkannt werden. Bitte stellen Sie sicher, dass die Datei eine gültige Ancestry- oder MyHeritage-DNA-Datei ist.",
+    "merge_error": "Bei der Zusammenführung ist ein Fehler aufgetreten",
+    "convert_error": "Bei der Konvertierung ist ein Fehler aufgetreten"
+  },
+  "success": {
+    "convert": "Konvertierung erfolgreich abgeschlossen!",
+    "merge": "Zusammenführung erfolgreich abgeschlossen!"
+  },
+  "stats": {
+    "total_snps": "Gesamt-SNPs {{mode}}:",
+    "conflicts": "Erkannte Konflikte:",
+    "skipped": "Übersprungene ungültige Zeilen:"
+  },
+  "processing": {
+    "label": "Verarbeitung"
+  },
+  "seo": {
+    "title": "DNA-Dateien zusammenführen - Datenschutzorientierter DNA-Dateien-Merger",
+    "description": "Kostenloses Online-Tool zum Zusammenführen und Konvertieren von DNA-Testdateien von AncestryDNA, 23andMe, MyHeritage und LivingDNA. Alle Verarbeitungen erfolgen in Ihrem Browser - Ihre genetischen Daten verlassen niemals Ihren Computer.",
+    "keywords": "DNA zusammenführen, DNA-Datei-Konverter, AncestryDNA, 23andMe, MyHeritage, LivingDNA, genetische Daten, Genealogie, Datenschutz, clientseitige Verarbeitung"
+  }
+}
