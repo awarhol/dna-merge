@@ -1,6 +1,6 @@
 {
   "section_title": "How the Merge Algorithm Works",
-  "intro": "This tool helps you combine DNA raw data files from different testing companies (Ancestry and MyHeritage) into a single, comprehensive genetic profile. Here's how the algorithm works:",
+  "intro": "This tool helps you combine multiple DNA raw data files from different testing companies (AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA) into a single, comprehensive genetic profile. Here's how the algorithm works:",
   "problem": {
     "title": "What Problem Does This Solve?",
     "description": "When you test with multiple DNA companies, each company may:",
@@ -18,8 +18,8 @@
       "description": "The algorithm reads all SNPs from your first file and indexes them by their RSID (the unique identifier like \"rs3131972\")"
     },
     "step2": {
-      "title": "Step 2: Process Second File",
-      "description": "For each SNP in your second file, the algorithm checks if the RSID already exists. If it's new, it adds it. If it exists with a different genotype, it resolves the conflict using your chosen strategy"
+      "title": "Step 2: Process Additional Files",
+      "description": "For each SNP in your additional files, the algorithm checks if the RSID already exists. If it's new, it adds it. If it exists with a different genotype, it resolves the conflict using your chosen strategy. This process repeats for all uploaded files."
     },
     "step3": {
       "title": "Step 3: Sort by Genomic Position",
@@ -28,7 +28,7 @@
   },
   "conflict_resolution": {
     "title": "Conflict Resolution Strategies",
-    "description": "When the same SNP has different genotypes in both files, you can choose:",
+    "description": "When the same SNP has different genotypes across multiple files, you can choose:",
     "fill_missing": {
       "title": "\"Fill Missing\" (Recommended):",
       "description": "If one file has missing data (\"--\" or \"00\") and the other has a value, use the value. If both have values, use the preferred file. This maximizes coverage."

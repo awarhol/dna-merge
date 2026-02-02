@@ -4,30 +4,36 @@ A web-based tool for merging and converting DNA test files from consumer genealo
 
 ## What Does This Do?
 
-If you've taken DNA tests from different companies (like AncestryDNA, MyHeritage, 23andMe, etc.), you may want to:
+If you've taken DNA tests from different companies (like AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA), you may want to:
 
-- **Merge** data from two different tests into a single, comprehensive file
+- **Create a superkit** - Merge data from two different tests into a single, comprehensive file that combines the best data from all sources
 - **Convert** DNA files between different formats for compatibility with various analysis tools
 - **Resolve conflicts** when the same genetic marker shows different results across tests
 - **Fill gaps** by combining complete data from one test with incomplete data from another
+
+**Supported Input Formats:** AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA (FTDNA), and LivingDNA. The tool automatically detects which format your files are in.
 
 All processing happens **entirely in your browser** - your genetic data never leaves your computer.
 
 ![Upload DNA Files](docs/empty-dropzone.png)
 
-## Supported Formats
+## Output Formats
 
-The tool works with two common DNA file formats:
+After merging or converting your DNA files, you can choose between two output formats:
 
 ### Ancestry Format (.txt)
+
 Tab-separated text files typically from AncestryDNA tests, containing:
+
 - SNP identifier (rsid)
 - Chromosome number (1-22, X, Y, MT)
 - Position
 - Two separate alleles (e.g., A, T, C, G)
 
 ### MyHeritage Format (.csv)
+
 Comma-separated CSV files from MyHeritage tests, containing:
+
 - SNP identifier (RSID)
 - Chromosome (1-22, X, Y, MT)
 - Position
@@ -132,23 +138,27 @@ Files are timestamped and named descriptively so you can track different merge s
 ### For Developers
 
 **Development:**
+
 ```bash
 npm install
 npm run dev
 ```
 
 **Build for production:**
+
 ```bash
 npm run build
 npm run preview
 ```
 
 **Run tests:**
+
 ```bash
 npm test
 ```
 
 **Code quality:**
+
 ```bash
 npm run lint
 npm run format
