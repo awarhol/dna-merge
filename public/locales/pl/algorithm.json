@@ -1,0 +1,59 @@
+{
+  "section_title": "Jak działa algorytm scalania",
+  "intro": "To narzędzie pomaga połączyć wiele plików surowych danych DNA z różnych firm testujących (AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA) w jeden, kompleksowy profil genetyczny. Oto jak działa algorytm:",
+  "problem": {
+    "title": "Jaki problem to rozwiązuje?",
+    "description": "Kiedy wykonujesz testy w wielu firmach DNA, każda firma może:",
+    "list": {
+      "different_snps": "Testować różne SNP (markery genetyczne)",
+      "gaps": "Mieć luki w swoich danych (brak odczytów, oznaczone jako \"--\")",
+      "conflicts": "Sporadycznie generować sprzeczne wyniki dla tego samego SNP"
+    },
+    "conclusion": "Ten algorytm inteligentnie łączy Twoje pliki, aby dać Ci najbardziej kompletny obraz Twojego DNA."
+  },
+  "process": {
+    "title": "Trzystopniowy proces scalania",
+    "step1": {
+      "title": "Krok 1: Wczytaj pierwszy plik",
+      "description": "Algorytm odczytuje wszystkie SNP z pierwszego pliku i indeksuje je według ich RSID (unikalnego identyfikatora jak \"rs3131972\")"
+    },
+    "step2": {
+      "title": "Krok 2: Przetwórz dodatkowe pliki",
+      "description": "Dla każdego SNP w dodatkowych plikach algorytm sprawdza, czy RSID już istnieje. Jeśli jest nowy, dodaje go. Jeśli istnieje z innym genotypem, rozwiązuje konflikt używając wybranej strategii. Ten proces powtarza się dla wszystkich przesłanych plików."
+    },
+    "step3": {
+      "title": "Krok 3: Sortuj według pozycji genomowej",
+      "description": "Ostateczny scalony plik jest sortowany według numeru chromosomu (1, 2, 3... 22, X, Y, MT) i pozycji, zgodnie ze standardowymi referencjami genomu"
+    }
+  },
+  "conflict_resolution": {
+    "title": "Strategie rozwiązywania konfliktów",
+    "description": "Gdy ten sam SNP ma różne genotypy w wielu plikach, możesz wybrać:",
+    "fill_missing": {
+      "title": "\"Wypełnij brakujące\" (Zalecane):",
+      "description": "Jeśli jeden plik ma brakujące dane (\"--\" lub \"00\"), a drugi ma wartość, użyj wartości. Jeśli oba mają wartości, użyj preferowanego pliku. To maksymalizuje pokrycie."
+    },
+    "prefer_file": {
+      "title": "\"Preferuj plik\":",
+      "description": "Zawsze używaj genotypu z preferowanego pliku, niezależnie od brakujących danych. Prostsze, ale może stracić prawidłowe dane."
+    }
+  },
+  "understanding_data": {
+    "title": "Zrozumienie Twoich danych DNA",
+    "description": "Każdy SNP (polimorfizm pojedynczego nukleotydu) zawiera:",
+    "rsid": "RSID: Unikalny identyfikator (np. \"rs3131972\")",
+    "chromosome": "Chromosom: Lokalizacja (1-22, X, Y lub MT dla mitochondrialnego)",
+    "position": "Pozycja: Dokładna lokalizacja pary zasad na tym chromosomie",
+    "genotype": "Genotyp: Twoje dwa allele w tej pozycji (np. \"AA\", \"GC\", \"TT\"). Dziedziczysz jeden od każdego rodzica"
+  },
+  "why_matters": {
+    "title": "Dlaczego to ma znaczenie dla genealogii",
+    "list": {
+      "matches": "Maksymalizuj dopasowania DNA: Więcej przetestowanych SNP oznacza lepszą dokładność dopasowania z krewnymi genetycznymi",
+      "gaps": "Wypełnij luki testowe: Firmy testują różne SNP; scalanie daje szersze pokrycie",
+      "accuracy": "Porównaj dokładność testów: Plik dziennika pokazuje, gdzie firmy się nie zgadzały",
+      "tools": "Używaj specjalistycznych narzędzi: Niektóre narzędzia genealogii genetycznej wymagają określonych SNP, które testują tylko niektóre firmy"
+    }
+  },
+  "footer": "Algorytm został zaprojektowany tak, aby był konserwatywny i przejrzysty, dając Ci pewność, że scalony plik DNA dokładnie reprezentuje Twoje dane genetyczne przy maksymalizacji kompletności."
+}

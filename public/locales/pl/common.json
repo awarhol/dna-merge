@@ -1,0 +1,48 @@
+{
+  "upload": {
+    "drag_and_drop": "Przeciągnij i upuść pliki DNA tutaj lub kliknij, aby wybrać pliki",
+    "file_format_info": "(Prześlij do 10 plików - .txt lub .csv)",
+    "drop_here": "Upuść pliki tutaj...",
+    "unknown_format": "Nieznany",
+    "drag_to_reorder": "Przeciągnij, aby zmienić kolejność. Pierwszy plik ma najwyższy priorytet."
+  },
+  "buttons": {
+    "convert": "Konwertuj",
+    "converting": "Konwertowanie...",
+    "merge": "Scal",
+    "merging": "Scalanie...",
+    "download_converted_dna": "Pobierz przekonwertowane DNA",
+    "download_merged_dna": "Pobierz scalone DNA",
+    "download_log": "Pobierz plik dziennika",
+    "try_again": "Spróbuj ponownie",
+    "convert_more": "Konwertuj więcej plików",
+    "merge_more": "Scal więcej plików"
+  },
+  "modes": {
+    "converted": "przekonwertowane",
+    "merged": "scalone"
+  },
+  "errors": {
+    "format_detection": "Nie można wykryć formatu pliku. Upewnij się, że pliki są prawidłowymi plikami DNA Ancestry lub MyHeritage.",
+    "format_detection_single": "Nie można wykryć formatu pliku. Upewnij się, że plik jest prawidłowym plikiem DNA Ancestry lub MyHeritage.",
+    "merge_error": "Wystąpił błąd podczas scalania",
+    "convert_error": "Wystąpił błąd podczas konwersji"
+  },
+  "success": {
+    "convert": "Konwersja zakończona pomyślnie!",
+    "merge": "Scalanie zakończone pomyślnie!"
+  },
+  "stats": {
+    "total_snps": "Całkowita liczba SNP {{mode}}:",
+    "conflicts": "Wykryte konflikty:",
+    "skipped": "Pominięte nieprawidłowe wiersze:"
+  },
+  "processing": {
+    "label": "Przetwarzanie"
+  },
+  "seo": {
+    "title": "Scal pliki DNA - Narzędzie do scalania plików DNA z prywatnością",
+    "description": "Darmowe narzędzie online do scalania i konwertowania plików testów DNA z AncestryDNA, 23andMe, MyHeritage i LivingDNA. Całe przetwarzanie odbywa się w przeglądarce - Twoje dane genetyczne nigdy nie opuszczają komputera.",
+    "keywords": "scalanie DNA, konwerter plików DNA, AncestryDNA, 23andMe, MyHeritage, LivingDNA, dane genetyczne, genealogia, prywatność, przetwarzanie po stronie klienta"
+  }
+}

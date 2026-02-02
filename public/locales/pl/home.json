@@ -1,0 +1,24 @@
+{
+  "title": "Scal pliki DNA",
+  "subtitle": "Prześlij 1-10 plików DNA do konwersji lub scalenia z rozwiązywaniem konfliktów opartym na priorytetach",
+  "supported_input_formats": "Obsługiwane typy plików wejściowych:",
+  "supported_output_formats": "Obsługiwane typy plików wyjściowych:",
+  "github_badge": "Zobacz na GitHub",
+  "disclaimer": {
+    "title": "Zastrzeżenie:",
+    "message": "To narzędzie jest przeznaczone wyłącznie do badań genealogicznych i celów informacyjnych. Nie jest przeznaczone do użytku medycznego, diagnostycznego ani naukowego. Wyniki są dostarczane w stanie takim, w jakim są, bez gwarancji dokładności lub kompletności. W przypadku decyzji medycznych lub zdrowotnych prosimy o konsultację z wykwalifikowanymi specjalistami opieki zdrowotnej i certyfikowanymi doradcami genetycznymi."
+  },
+  "privacy": {
+    "title": "Twoja prywatność jest chroniona:",
+    "message": "Całe przetwarzanie plików DNA odbywa się w całości w przeglądarce na Twoim komputerze. Żadne dane nie są przesyłane na żaden serwer. Twoje informacje genetyczne nigdy nie opuszczają urządzenia."
+  },
+  "options": {
+    "output_format": "Format wyjściowy:",
+    "fill_missing": "Wypełnij brakujące wartości:",
+    "parse_multibase": "Analizuj genotypy wielobazowe (Indele):",
+    "include_invalid_positions": "Uwzględnij SNP z pozycją 0,0:",
+    "tooltip_fill": "Gdy włączone, wypełnia brakujące wartości (-- lub 00) poprzez skanowanie plików w kolejności priorytetów i używanie pierwszej znalezionej niepustej wartości. Gdy wyłączone, zawsze używa wartości z pierwszego pliku (najwyższy priorytet).",
+    "tooltip_multibase": "Gdy włączone, dzieli długie genotypy Indeli jak 'TAAGTGTAAGTG' na 'TAAGTG TAAGTG'. Gdy wyłączone (domyślnie), te warianty są pomijane. Dotyczy głównie plików LivingDNA.",
+    "tooltip_invalid_positions": "Uwzględnij wiersze z chromosome='0' lub position='0', gdy mają standardowe rsID (jak 'rs123') lub niepuste allele. Wiersze z niestandardowymi nazwami I pustymi allelami (--) są zawsze pomijane."
+  }
+}

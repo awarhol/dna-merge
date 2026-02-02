@@ -51,6 +51,7 @@ export const LanguageSwitcher = () => {
       <LanguageSelect value={i18n.language} onChange={changeLanguage} aria-label="Select language">
         <option value="en">🇬🇧 EN</option>
         <option value="uk">🇺🇦 UA</option>
+        <option value="pl">🇵🇱 PL</option>
       </LanguageSelect>
     </SwitcherContainer>
   )
