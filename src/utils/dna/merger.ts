@@ -12,6 +12,87 @@ import { chromosomeToSortKey, normalizeGenotypeForComparison } from './formatter
 // Helper to yield to the main thread
 const yieldToMainThread = () => new Promise(resolve => setTimeout(resolve, 0))
 
+// Consensus resolution helper function
+function resolveByConsensus(
+  fileGenotypes: (string | null)[],
+  normalizedGenotypes: (string | null)[]
+): {
+  chosenGenotype: string
+  chosenFromFile: number
+  resolutionReason: string
+} {
+  // Count occurrences of each non-null genotype
+  const genotypeCounts = new Map<string, { count: number; fileIndices: number[] }>()
+
+  normalizedGenotypes.forEach((genotype, index) => {
+    if (genotype !== null && !isMissingValue(genotype)) {
+      if (!genotypeCounts.has(genotype)) {
+        genotypeCounts.set(genotype, { count: 0, fileIndices: [] })
+      }
+      const existing = genotypeCounts.get(genotype)!
+      existing.count++
+      existing.fileIndices.push(index)
+    }
+  })
+
+  if (genotypeCounts.size === 0) {
+    // All values are missing
+    return {
+      chosenGenotype: '--',
+      chosenFromFile: 0,
+      resolutionReason: 'Consensus: All files missing, used File 1 placeholder',
+    }
+  }
+
+  // Find the genotype with the highest count
+  let maxCount = 0
+  let winnerGenotype = ''
+  let winnerFileIndices: number[] = []
+
+  for (const [genotype, data] of genotypeCounts.entries()) {
+    if (data.count > maxCount) {
+      maxCount = data.count
+      winnerGenotype = genotype
+      winnerFileIndices = data.fileIndices
+    }
+  }
+
+  // Check for ties
+  const tiedGenotypes = Array.from(genotypeCounts.entries())
+    .filter(([, data]) => data.count === maxCount)
+    .map(([genotype]) => genotype)
+
+  let chosenFromFile = winnerFileIndices[0]
+  let resolutionReason: string
+  let chosenGenotype = ''
+
+  if (tiedGenotypes.length === 1) {
+    // Clear consensus
+    resolutionReason = `Consensus: ${winnerGenotype} (${maxCount}/${fileGenotypes.length} files)`
+  } else {
+    // Tie - fall back to priority order (lowest file index)
+    const tieGenotypes = tiedGenotypes
+      .map(genotype => ({
+        genotype,
+        fileIndex: genotypeCounts.get(genotype)!.fileIndices[0],
+      }))
+      .sort((a, b) => a.fileIndex - b.fileIndex)
+
+    winnerGenotype = tieGenotypes[0].genotype
+    chosenFromFile = tieGenotypes[0].fileIndex
+    resolutionReason = `Consensus: Tie between ${tiedGenotypes.join(', ')}, used ${winnerGenotype} from File ${chosenFromFile + 1} (priority)`
+  }
+
+  // Get the original genotype from the chosen file
+  chosenGenotype = fileGenotypes[chosenFromFile] || '--'
+
+  return {
+    chosenGenotype,
+    chosenFromFile,
+    resolutionReason,
+  }
+}
+
 // N-way merge function supporting 1-10 files
 export async function mergeSnpsAsyncN(
   files: ParseResult[],
@@ -95,32 +176,41 @@ export async function mergeSnpsAsyncN(
       let chosenFromFile: number
       let resolutionReason: string
 
-      if (fillMissing) {
-        // Scan files 0→N for first non-missing value
-        let foundIndex = -1
-        for (let j = 0; j < fileGenotypes.length; j++) {
-          const genotype = fileGenotypes[j]
-          if (genotype !== null && !isMissingValue(genotype)) {
-            foundIndex = j
-            break
+      if (options.conflictResolution === 'consensus' && fileGenotypes.length > 2) {
+        // Use consensus resolution for 3+ files
+        const consensusResult = resolveByConsensus(fileGenotypes, normalizedGenotypes)
+        chosenGenotype = consensusResult.chosenGenotype
+        chosenFromFile = consensusResult.chosenFromFile
+        resolutionReason = consensusResult.resolutionReason
+      } else {
+        // Priority-based resolution (existing logic)
+        if (fillMissing) {
+          // Scan files 0→N for first non-missing value
+          let foundIndex = -1
+          for (let j = 0; j < fileGenotypes.length; j++) {
+            const genotype = fileGenotypes[j]
+            if (genotype !== null && !isMissingValue(genotype)) {
+              foundIndex = j
+              break
+            }
           }
-        }
 
-        if (foundIndex >= 0) {
-          chosenGenotype = fileGenotypes[foundIndex]!
-          chosenFromFile = foundIndex
-          resolutionReason = `Filled missing from File ${foundIndex + 1} (highest priority non-missing)`
+          if (foundIndex >= 0) {
+            chosenGenotype = fileGenotypes[foundIndex]!
+            chosenFromFile = foundIndex
+            resolutionReason = `Filled missing from File ${foundIndex + 1} (highest priority non-missing)`
+          } else {
+            // All missing - use first file
+            chosenGenotype = fileGenotypes[0] || '--'
+            chosenFromFile = 0
+            resolutionReason = 'All files missing, used File 1 placeholder'
+          }
         } else {
-          // All missing - use first file
+          // No fill missing - always use File[0]
           chosenGenotype = fileGenotypes[0] || '--'
           chosenFromFile = 0
-          resolutionReason = 'All files missing, used File 1 placeholder'
+          resolutionReason = 'Used File 1 (highest priority)'
         }
-      } else {
-        // No fill missing - always use File[0]
-        chosenGenotype = fileGenotypes[0] || '--'
-        chosenFromFile = 0
-        resolutionReason = 'Used File 1 (highest priority)'
       }
 
       conflicts.push({

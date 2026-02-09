@@ -17,7 +17,10 @@ describe('mergeSnpsAsyncN - 2 file compatibility', () => {
     const file1 = await parseAncestryFileAsync(ANCESTRY_SAMPLE, 0)
     const file2 = await parseMyHeritageFileAsync(MYHERITAGE_SAMPLE, 1)
 
-    const result = await mergeSnpsAsyncN([file1, file2], { fillMissing: true })
+    const result = await mergeSnpsAsyncN([file1, file2], {
+      fillMissing: true,
+      conflictResolution: 'priority',
+    })
 
     expect(result.mergedSnps.length).toBeGreaterThan(0)
     expect(result.mergedSnps.length).toBeLessThanOrEqual(file1.snps.length + file2.snps.length)
@@ -31,7 +34,10 @@ describe('mergeSnpsAsyncN - 2 file compatibility', () => {
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AC', sourceFile: 1 },
     ])
 
-    const result = await mergeSnpsAsyncN([file1, file2], { fillMissing: true })
+    const result = await mergeSnpsAsyncN([file1, file2], {
+      fillMissing: true,
+      conflictResolution: 'priority',
+    })
 
     expect(result.conflicts).toHaveLength(1)
     expect(result.conflicts[0].fileGenotypes).toEqual(['AA', 'AC'])
@@ -47,7 +53,10 @@ describe('mergeSnpsAsyncN - 2 file compatibility', () => {
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AC', sourceFile: 1 },
     ])
 
-    const result = await mergeSnpsAsyncN([file1, file2], { fillMissing: false })
+    const result = await mergeSnpsAsyncN([file1, file2], {
+      fillMissing: false,
+      conflictResolution: 'priority',
+    })
 
     const mergedSnp = result.mergedSnps.find(s => s.rsid === 'rs123')
     expect(mergedSnp?.genotype).toBe('AA')
@@ -62,7 +71,10 @@ describe('mergeSnpsAsyncN - 2 file compatibility', () => {
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AC', sourceFile: 1 },
     ])
 
-    const result = await mergeSnpsAsyncN([file2, file1], { fillMissing: false })
+    const result = await mergeSnpsAsyncN([file2, file1], {
+      fillMissing: false,
+      conflictResolution: 'priority',
+    })
 
     const mergedSnp = result.mergedSnps.find(s => s.rsid === 'rs123')
     expect(mergedSnp?.genotype).toBe('AC')
@@ -76,7 +88,10 @@ describe('mergeSnpsAsyncN - 2 file compatibility', () => {
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AC', sourceFile: 1 },
     ])
 
-    const result = await mergeSnpsAsyncN([file1, file2], { fillMissing: true })
+    const result = await mergeSnpsAsyncN([file1, file2], {
+      fillMissing: true,
+      conflictResolution: 'priority',
+    })
 
     const mergedSnp = result.mergedSnps.find(s => s.rsid === 'rs123')
     expect(mergedSnp?.genotype).toBe('AC')
@@ -91,7 +106,10 @@ describe('mergeSnpsAsyncN - 2 file compatibility', () => {
       { rsid: 'rs123', chromosome: '1', position: '100', genotype: 'AC', sourceFile: 1 },
     ])
 
-    const result = await mergeSnpsAsyncN([file1, file2], { fillMissing: false })
+    const result = await mergeSnpsAsyncN([file1, file2], {
+      fillMissing: false,
+      conflictResolution: 'priority',
+    })
 
     const mergedSnp = result.mergedSnps.find(s => s.rsid === 'rs123')
     expect(mergedSnp?.genotype).toBe('--')
@@ -103,7 +121,10 @@ describe('mergeSnpsAsyncN - 2 file compatibility', () => {
       { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'TT', sourceFile: 0 },
     ])
 
-    const result = await mergeSnpsAsyncN([file1], { fillMissing: true })
+    const result = await mergeSnpsAsyncN([file1], {
+      fillMissing: true,
+      conflictResolution: 'priority',
+    })
 
     expect(result.mergedSnps[0].rsid).toBe('rs1')
     expect(result.mergedSnps[1].rsid).toBe('rs2')
@@ -117,7 +138,10 @@ describe('mergeSnpsAsyncN - 2 file compatibility', () => {
       { rsid: 'rs123', chromosome: 'X', position: '100', genotype: 'AA', sourceFile: 1 },
     ])
 
-    const result = await mergeSnpsAsyncN([file1, file2], { fillMissing: true })
+    const result = await mergeSnpsAsyncN([file1, file2], {
+      fillMissing: true,
+      conflictResolution: 'priority',
+    })
 
     expect(result.conflicts).toHaveLength(0)
     expect(result.mergedSnps).toHaveLength(1)
@@ -137,7 +161,10 @@ describe('mergeSnpsAsyncN - 2 file compatibility', () => {
       { rsid: 'rs4', chromosome: 'X', position: '400', genotype: 'GG', sourceFile: 1 },
     ])
 
-    const result = await mergeSnpsAsyncN([file1, file2], { fillMissing: true })
+    const result = await mergeSnpsAsyncN([file1, file2], {
+      fillMissing: true,
+      conflictResolution: 'priority',
+    })
 
     expect(result.conflicts).toHaveLength(0)
     expect(result.mergedSnps).toHaveLength(4)
@@ -151,7 +178,10 @@ describe('mergeSnpsAsyncN - 2 file compatibility', () => {
       { rsid: 'rs123', chromosome: 'X', position: '100', genotype: 'CC', sourceFile: 1 },
     ])
 
-    const result = await mergeSnpsAsyncN([file1, file2], { fillMissing: true })
+    const result = await mergeSnpsAsyncN([file1, file2], {
+      fillMissing: true,
+      conflictResolution: 'priority',
+    })
 
     expect(result.conflicts).toHaveLength(1)
     expect(result.conflicts[0].fileGenotypes).toEqual(['A', 'CC'])
@@ -172,7 +202,10 @@ describe('mergeSnpsAsyncN - N-way merge', () => {
       ]),
     ]
 
-    const result = await mergeSnpsAsyncN(files, { fillMissing: false })
+    const result = await mergeSnpsAsyncN(files, {
+      fillMissing: false,
+      conflictResolution: 'priority',
+    })
 
     expect(result.mergedSnps[0].genotype).toBe('AA')
     expect(result.conflicts[0].chosenFromFile).toBe(0)
@@ -191,7 +224,10 @@ describe('mergeSnpsAsyncN - N-way merge', () => {
       ]),
     ]
 
-    const result = await mergeSnpsAsyncN(files, { fillMissing: true })
+    const result = await mergeSnpsAsyncN(files, {
+      fillMissing: true,
+      conflictResolution: 'priority',
+    })
 
     expect(result.mergedSnps[0].genotype).toBe('AC')
     expect(result.conflicts[0].chosenFromFile).toBe(2)
@@ -210,7 +246,10 @@ describe('mergeSnpsAsyncN - N-way merge', () => {
       ])
     )
 
-    const result = await mergeSnpsAsyncN(files, { fillMissing: true })
+    const result = await mergeSnpsAsyncN(files, {
+      fillMissing: true,
+      conflictResolution: 'priority',
+    })
 
     expect(result.mergedSnps[0].genotype).toBe('AA')
     expect(result.conflicts[0].chosenFromFile).toBe(5)
@@ -229,7 +268,10 @@ describe('mergeSnpsAsyncN - N-way merge', () => {
       ]),
     ]
 
-    const result = await mergeSnpsAsyncN(files, { fillMissing: false })
+    const result = await mergeSnpsAsyncN(files, {
+      fillMissing: false,
+      conflictResolution: 'priority',
+    })
 
     expect(result.conflicts[0].fileGenotypes).toEqual(['AA', 'AC', 'CC'])
   })
@@ -244,8 +286,166 @@ describe('mergeSnpsAsyncN - N-way merge', () => {
       ]),
     ]
 
-    const result = await mergeSnpsAsyncN(files, { fillMissing: false })
+    const result = await mergeSnpsAsyncN(files, {
+      fillMissing: false,
+      conflictResolution: 'priority',
+    })
 
     expect(result.mergedSnps[0].genotype).toBe('AA')
+  })
+
+  describe('Consensus Resolution', () => {
+    it('should select majority genotype with consensus resolution', async () => {
+      const files = [
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'AA', sourceFile: 0 },
+          { rsid: 'rs2', chromosome: '1', position: '200', genotype: 'CC', sourceFile: 0 }, // This one should lose
+        ]),
+        createMockParseResult([
+          { rsid: 'rs2', chromosome: '1', position: '200', genotype: 'CT', sourceFile: 1 }, // Majority
+          { rsid: 'rs3', chromosome: '1', position: '300', genotype: 'GG', sourceFile: 1 },
+        ]),
+        createMockParseResult([
+          { rsid: 'rs2', chromosome: '1', position: '200', genotype: 'CT', sourceFile: 2 }, // Majority
+          { rsid: 'rs4', chromosome: '1', position: '400', genotype: 'TT', sourceFile: 2 },
+        ]),
+      ]
+
+      const result = await mergeSnpsAsyncN(files, {
+        fillMissing: true,
+        conflictResolution: 'consensus',
+      })
+
+      expect(result.mergedSnps).toHaveLength(4)
+      expect(result.conflicts).toHaveLength(1)
+      expect(result.conflicts[0].rsid).toBe('rs2')
+      expect(result.conflicts[0].chosenGenotype).toBe('CT')
+      expect(result.conflicts[0].resolutionReason).toContain('Consensus: CT (2/3 files)')
+    })
+
+    it('should handle ties in consensus resolution with priority fallback', async () => {
+      const files = [
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'AA', sourceFile: 0 }, // Should win by priority
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'CC', sourceFile: 1 },
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'TT', sourceFile: 2 },
+        ]),
+      ]
+
+      const result = await mergeSnpsAsyncN(files, {
+        fillMissing: true,
+        conflictResolution: 'consensus',
+      })
+
+      expect(result.mergedSnps).toHaveLength(1)
+      expect(result.conflicts).toHaveLength(1)
+      expect(result.conflicts[0].chosenGenotype).toBe('AA')
+      expect(result.conflicts[0].chosenFromFile).toBe(0)
+      expect(result.conflicts[0].resolutionReason).toContain('Tie between AA, CC, TT')
+      expect(result.conflicts[0].resolutionReason).toContain('used AA from File 1 (priority)')
+    })
+
+    it('should ignore missing values in consensus calculation', async () => {
+      const files = [
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: '--', sourceFile: 0 },
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'CT', sourceFile: 1 }, // Should win
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'CT', sourceFile: 2 }, // Should win
+        ]),
+      ]
+
+      const result = await mergeSnpsAsyncN(files, {
+        fillMissing: true,
+        conflictResolution: 'consensus',
+      })
+
+      expect(result.mergedSnps).toHaveLength(1)
+      expect(result.conflicts).toHaveLength(1)
+      expect(result.conflicts[0].chosenGenotype).toBe('CT')
+      expect(result.conflicts[0].resolutionReason).toContain('Consensus: CT (2/3 files)')
+    })
+
+    it('should handle consensus with all missing values', async () => {
+      const files = [
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: '--', sourceFile: 0 },
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: '00', sourceFile: 1 },
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: '--', sourceFile: 2 },
+        ]),
+      ]
+
+      const result = await mergeSnpsAsyncN(files, {
+        fillMissing: true,
+        conflictResolution: 'consensus',
+      })
+
+      expect(result.mergedSnps).toHaveLength(1)
+      expect(result.conflicts).toHaveLength(1)
+      expect(result.conflicts[0].chosenGenotype).toBe('--')
+      expect(result.conflicts[0].resolutionReason).toContain('Consensus: All files missing')
+    })
+
+    it('should fall back to priority resolution for 2 files with consensus selected', async () => {
+      const files = [
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'AA', sourceFile: 0 },
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'CC', sourceFile: 1 },
+        ]),
+      ]
+
+      const result = await mergeSnpsAsyncN(files, {
+        fillMissing: true,
+        conflictResolution: 'consensus',
+      })
+
+      expect(result.mergedSnps).toHaveLength(1)
+      expect(result.conflicts).toHaveLength(1)
+      expect(result.conflicts[0].chosenGenotype).toBe('AA')
+      expect(result.conflicts[0].resolutionReason).toContain('highest priority non-missing')
+    })
+
+    it('should handle complex consensus scenarios with many files', async () => {
+      const files = [
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'AA', sourceFile: 0 },
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'CC', sourceFile: 1 },
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'CC', sourceFile: 2 },
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'CC', sourceFile: 3 },
+        ]),
+        createMockParseResult([
+          { rsid: 'rs1', chromosome: '1', position: '100', genotype: 'GG', sourceFile: 4 },
+        ]),
+      ]
+
+      const result = await mergeSnpsAsyncN(files, {
+        fillMissing: true,
+        conflictResolution: 'consensus',
+      })
+
+      expect(result.mergedSnps).toHaveLength(1)
+      expect(result.conflicts).toHaveLength(1)
+      expect(result.conflicts[0].chosenGenotype).toBe('CC')
+      expect(result.conflicts[0].resolutionReason).toContain('Consensus: CC (3/5 files)')
+    })
   })
 })

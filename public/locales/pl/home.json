@@ -1,6 +1,6 @@
 {
   "title": "Scal pliki DNA",
-  "subtitle": "Prześlij 1-10 plików DNA do konwersji lub scalenia z rozwiązywaniem konfliktów opartym na priorytetach",
+  "subtitle": "Prześlij 1-10 plików DNA do konwersji lub scalenia z rozwiązywaniem konfliktów opartym na priorytetach lub konsensusie",
   "supported_input_formats": "Obsługiwane typy plików wejściowych:",
   "supported_output_formats": "Obsługiwane typy plików wyjściowych:",
   "github_badge": "Zobacz na GitHub",
@@ -14,9 +14,13 @@
   },
   "options": {
     "output_format": "Format wyjściowy:",
+    "conflict_resolution": "Rozwiązywanie konfliktów:",
+    "resolution_priority": "Oparte na priorytetach",
+    "resolution_consensus": "Zwycięż przez konsensus",
     "fill_missing": "Wypełnij brakujące wartości:",
     "parse_multibase": "Analizuj genotypy wielobazowe (Indele):",
     "include_invalid_positions": "Uwzględnij SNP z pozycją 0,0:",
+    "tooltip_conflict_resolution": "Podczas scalania 3+ plików, wybierz, jak rozwiązywać konflikty, w których pliki nie zgadzają się co do tego samego SNP. 'Zwycięż przez konsensus' wybiera genotyp, który występuje najczęściej we wszystkich plikach, z remisami rozstrzyganymi przez priorytet pliku.",
     "tooltip_fill": "Gdy włączone, wypełnia brakujące wartości (-- lub 00) poprzez skanowanie plików w kolejności priorytetów i używanie pierwszej znalezionej niepustej wartości. Gdy wyłączone, zawsze używa wartości z pierwszego pliku (najwyższy priorytet).",
     "tooltip_multibase": "Gdy włączone, dzieli długie genotypy Indeli jak 'TAAGTGTAAGTG' na 'TAAGTG TAAGTG'. Gdy wyłączone (domyślnie), te warianty są pomijane. Dotyczy głównie plików LivingDNA.",
     "tooltip_invalid_positions": "Uwzględnij wiersze z chromosome='0' lub position='0', gdy mają standardowe rsID (jak 'rs123') lub niepuste allele. Wiersze z niestandardowymi nazwami I pustymi allelami (--) są zawsze pomijane."

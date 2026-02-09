@@ -14,9 +14,13 @@
   },
   "options": {
     "output_format": "Output Format:",
+    "conflict_resolution": "Conflict Resolution:",
+    "resolution_priority": "Priority-Based",
+    "resolution_consensus": "Win by Consensus",
     "fill_missing": "Fill Missing Values:",
     "parse_multibase": "Parse Multi-Base Genotypes (Indels):",
     "include_invalid_positions": "Include SNPs with 0,0 Position:",
+    "tooltip_conflict_resolution": "When merging 3+ files, choose how to resolve conflicts where files disagree on the same SNP. 'Win by Consensus' selects the genotype that appears most frequently across all files, with ties broken by file priority.",
     "tooltip_fill": "When enabled, fills missing values (-- or 00) by scanning files in priority order and using the first non-missing value found. When disabled, always uses the value from the first file (highest priority).",
     "tooltip_multibase": "When enabled, splits long Indel genotypes like 'TAAGTGTAAGTG' into 'TAAGTG TAAGTG'. When disabled (default), these variants are skipped. Primarily affects LivingDNA files.",
     "tooltip_invalid_positions": "Include rows with chromosome='0' or position='0' when they have standard rsIDs (like 'rs123') or non-empty alleles. Rows with custom names AND empty alleles (--) are always skipped."

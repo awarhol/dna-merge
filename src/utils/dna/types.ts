@@ -73,6 +73,7 @@ export interface ConflictEntryN {
 
 export interface MergeOptionsN {
   fillMissing: boolean
+  conflictResolution: 'priority' | 'consensus'
   parseMultibaseGenotypes?: boolean
   includeInvalidPositions?: boolean // Include SNPs with 0,0 positions
 }

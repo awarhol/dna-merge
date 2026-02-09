@@ -36,6 +36,10 @@
     "prefer_file": {
       "title": "\"Preferuj plik\":",
       "description": "Zawsze używaj genotypu z preferowanego pliku, niezależnie od brakujących danych. Prostsze, ale może stracić prawidłowe dane."
+    },
+    "consensus": {
+      "title": "\"Zwycięż przez konsensus\" (tylko 3+ pliki):",
+      "description": "Podczas scalania 3+ plików wybiera genotyp, który występuje najczęściej we wszystkich plikach, z remisami rozstrzyganymi przez priorytet pliku. To wykorzystuje wiele źródeł danych do poprawy dokładności."
     }
   },
   "understanding_data": {

@@ -36,6 +36,10 @@
     "prefer_file": {
       "title": "\"Prefer File\":",
       "description": "Always use the genotype from your preferred file, regardless of missing data. Simpler but may lose valid data."
+    },
+    "consensus": {
+      "title": "\"Win by Consensus\" (3+ files only):",
+      "description": "When merging 3+ files, selects the genotype that appears most frequently across all files. In case of ties, falls back to file priority order. This leverages multiple data sources to improve accuracy."
     }
   },
   "understanding_data": {

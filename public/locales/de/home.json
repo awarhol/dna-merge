@@ -1,6 +1,6 @@
 {
   "title": "DNA-Dateien zusammenführen",
-  "subtitle": "Laden Sie 1-10 DNA-Dateien hoch, um sie zu konvertieren oder mit prioritätsbasierter Konfliktlösung zusammenzuführen",
+  "subtitle": "Laden Sie 1-10 DNA-Dateien hoch, um sie zu konvertieren oder mit prioritätsbasierter oder konsensbasierter Konfliktlösung zusammenzuführen",
   "supported_input_formats": "Unterstützte Eingabedateitypen:",
   "supported_output_formats": "Unterstützte Ausgabedateitypen:",
   "github_badge": "Auf GitHub ansehen",
@@ -14,9 +14,13 @@
   },
   "options": {
     "output_format": "Ausgabeformat:",
+    "conflict_resolution": "Konfliktlösung:",
+    "resolution_priority": "Prioritätsbasiert",
+    "resolution_consensus": "Nach Konsens gewinnen",
     "fill_missing": "Fehlende Werte ausfüllen:",
     "parse_multibase": "Multi-Base-Genotypen (Indels) analysieren:",
     "include_invalid_positions": "SNPs mit Position 0,0 einbeziehen:",
+    "tooltip_conflict_resolution": "Beim Zusammenführen von 3+ Dateien, wählen Sie, wie Konflikte gelöst werden sollen, bei denen Dateien beim selben SNP abweichen. 'Nach Konsens gewinnen' wählt den Genotyp, der am häufigsten in allen Dateien vorkommt, mit Unentschiedenheiten, die durch Dateipriorität gelöst werden.",
     "tooltip_fill": "Wenn aktiviert, werden fehlende Werte (-- oder 00) durch Scannen der Dateien in Prioritätsreihenfolge ausgefüllt und der erste gefundene nicht fehlende Wert verwendet. Wenn deaktiviert, wird immer der Wert aus der ersten Datei (höchste Priorität) verwendet.",
     "tooltip_multibase": "Wenn aktiviert, werden lange Indel-Genotypen wie 'TAAGTGTAAGTG' in 'TAAGTG TAAGTG' aufgeteilt. Wenn deaktiviert (Standard), werden diese Varianten übersprungen. Betrifft hauptsächlich LivingDNA-Dateien.",
     "tooltip_invalid_positions": "Zeilen mit chromosome='0' oder position='0' einbeziehen, wenn sie Standard-rsIDs (wie 'rs123') oder nicht-leere Allele haben. Zeilen mit benutzerdefinierten Namen UND leeren Allelen (--) werden immer übersprungen."

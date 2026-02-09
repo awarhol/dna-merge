@@ -419,6 +419,7 @@ export const Home = () => {
     localStorageLib.getOutputFormat
   )
   const [fillMissing, setFillMissing] = useState(true)
+  const [conflictResolution, setConflictResolution] = useState<'priority' | 'consensus'>('priority')
   const [parseMultibaseGenotypes, setParseMultibaseGenotypes] = useState(false)
   const [includeInvalidPositions, setIncludeInvalidPositions] = useState(false)
   const [resetTrigger, setResetTrigger] = useState(0)
@@ -483,6 +484,7 @@ export const Home = () => {
         parsedFiles,
         {
           fillMissing,
+          conflictResolution,
         },
         p => setProgress(70 + p * 0.25)
       )
@@ -729,6 +731,21 @@ export const Home = () => {
                 <option value="ancestry">Ancestry</option>
               </Select>
             </OptionRow>
+            {isMergeMode && dnaFiles.length > 2 && (
+              <OptionRow>
+                <LabelWithTooltip>
+                  <span>{t('home:options.conflict_resolution')}</span>
+                  <Tooltip content={t('home:options.tooltip_conflict_resolution')} />
+                </LabelWithTooltip>
+                <Select
+                  value={conflictResolution}
+                  onChange={e => setConflictResolution(e.target.value as 'priority' | 'consensus')}
+                >
+                  <option value="priority">{t('home:options.resolution_priority')}</option>
+                  <option value="consensus">{t('home:options.resolution_consensus')}</option>
+                </Select>
+              </OptionRow>
+            )}
             {isMergeMode && (
               <OptionRow>
                 <LabelWithTooltip>

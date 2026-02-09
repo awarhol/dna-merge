@@ -36,6 +36,10 @@
     "prefer_file": {
       "title": "\"Datei bevorzugen\":",
       "description": "Verwenden Sie immer den Genotyp aus Ihrer bevorzugten Datei, unabhängig von fehlenden Daten. Einfacher, kann aber gültige Daten verlieren."
+    },
+    "consensus": {
+      "title": "\"Nach Konsens gewinnen\" (nur 3+ Dateien):",
+      "description": "Beim Zusammenführen von 3+ Dateien wird der Genotyp gewählt, der am häufigsten in allen Dateien vorkommt. Bei Unentschiedenheiten wird auf die Dateipriorität zurückgegriffen. Dies nutzt mehrere Datenquellen zur Verbesserung der Genauigkeit."
     }
   },
   "understanding_data": {

@@ -36,6 +36,10 @@
     "prefer_file": {
       "title": "\"Preferir archivo\":",
       "description": "Siempre usa el genotipo de tu archivo preferido, independientemente de los datos faltantes. Más simple pero puede perder datos válidos."
+    },
+    "consensus": {
+      "title": "\"Ganar por consenso\" (solo 3+ archivos):",
+      "description": "Al fusionar 3+ archivos, selecciona el genotipo que aparece con más frecuencia en todos los archivos. En caso de empates, recurre al orden de prioridad de archivos. Esto aprovecha múltiples fuentes de datos para mejorar la precisión."
     }
   },
   "understanding_data": {
