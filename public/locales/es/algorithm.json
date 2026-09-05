@@ -1,6 +1,6 @@
 {
   "section_title": "Cómo funciona el algoritmo de fusión",
-  "intro": "Esta herramienta te ayuda a combinar múltiples archivos de datos de ADN sin procesar de diferentes compañías de pruebas (AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA) en un solo perfil genético completo. Así es como funciona el algoritmo:",
+  "intro": "Esta herramienta combina múltiples archivos de datos de ADN sin procesar de diferentes compañías de pruebas (AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA) en un solo perfil genético completo — ideal para subir a GEDmatch como superkit. Así es como funciona el algoritmo:",
   "problem": {
     "title": "¿Qué problema resuelve esto?",
     "description": "Cuando te haces pruebas con múltiples compañías de ADN, cada compañía puede:",
@@ -42,21 +42,13 @@
       "description": "Al fusionar 3+ archivos, selecciona el genotipo que aparece con más frecuencia en todos los archivos. En caso de empates, recurre al orden de prioridad de archivos. Esto aprovecha múltiples fuentes de datos para mejorar la precisión."
     }
   },
-  "understanding_data": {
-    "title": "Entendiendo tus datos de ADN",
-    "description": "Cada SNP (Polimorfismo de Nucleótido Simple) contiene:",
-    "rsid": "RSID: Identificador único (ej. \"rs3131972\")",
-    "chromosome": "Cromosoma: Ubicación (1-22, X, Y, o MT para mitocondrial)",
-    "position": "Posición: Ubicación exacta del par de bases en ese cromosoma",
-    "genotype": "Genotipo: Tus dos alelos en esa posición (ej. \"AA\", \"GC\", \"TT\"). Heredas uno de cada padre"
-  },
   "why_matters": {
-    "title": "Por qué esto es importante para la genealogía",
+    "title": "Por qué es importante — especialmente para GEDmatch",
     "list": {
-      "matches": "Maximizar coincidencias de ADN: Más SNPs probados significa mejor precisión de coincidencia con parientes genéticos",
+      "matches": "Coincidencias más precisas: Una cobertura de SNPs más amplia da a los algoritmos de emparejamiento más datos para comparar, produciendo resultados de coincidencia más precisos",
       "gaps": "Llenar vacíos de pruebas: Las compañías prueban diferentes SNPs; fusionar proporciona una cobertura más amplia",
       "accuracy": "Comparar precisión de pruebas: El archivo de registro muestra dónde las compañías no estuvieron de acuerdo",
-      "tools": "Usar herramientas especializadas: Algunas herramientas de genealogía genética requieren SNPs específicos que solo ciertas compañías prueban"
+      "tools": "Listo para GEDmatch: El archivo fusionado se sube a GEDmatch como datos sin procesar estándar — un superkit completo en lugar de varios archivos parciales"
     }
   },
   "footer": "El algoritmo está diseñado para ser conservador y transparente, dándote confianza de que tu archivo de ADN fusionado representa con precisión tus datos genéticos mientras maximiza la integridad."

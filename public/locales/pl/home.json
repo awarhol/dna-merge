@@ -1,6 +1,23 @@
 {
   "title": "Scal pliki DNA",
-  "subtitle": "Prześlij 1-10 plików DNA do konwersji lub scalenia z rozwiązywaniem konfliktów opartym na priorytetach lub konsensusie",
+  "subtitle": "Połącz surowe dane DNA z AncestryDNA, 23andMe, MyHeritage, FTDNA i LivingDNA w jeden superkit — idealny do GEDmatch",
+  "why": {
+    "title": "Dlaczego warto scalać pliki DNA?",
+    "match_title": "Dokładniejsze dopasowania",
+    "match_text": "Każda firma testuje inny zestaw SNP. Scalony superkit daje algorytmom dopasowującym więcej danych do porównania, co przekłada się na dokładniejsze wyniki dopasowań.",
+    "kit_title": "Jeden kit zamiast wielu",
+    "kit_text": "Prześlij do GEDmatch jeden kompletny superkit zamiast kilku częściowych plików — jeden numer kitu do udostępniania i bardziej przejrzyste listy dopasowań.",
+    "gaps_title": "Koniec z brakami odczytów",
+    "gaps_text": "Brakujące wartości (\"--\") w jednym pliku są wypełniane prawdziwymi danymi z innego, maksymalizując pokrycie SNP.",
+    "log_title": "Przejrzyste rozwiązywanie konfliktów",
+    "log_text": "Gdy firmy nie zgadzają się co do SNP, to Ty decydujesz, jak rozwiązać konflikt — a szczegółowy dziennik pokazuje każdą decyzję."
+  },
+  "gedmatch": {
+    "title": "Użycie z GEDmatch",
+    "step1": "Scal pliki (lub przekonwertuj jeden) i pobierz wynik",
+    "step2": "Zaloguj się do GEDmatch i prześlij plik jako surowe dane autosomalne",
+    "step3": "GEDmatch akceptuje oba formaty wyjściowe: CSV MyHeritage i txt Ancestry DNA"
+  },
   "supported_input_formats": "Obsługiwane typy plików wejściowych:",
   "supported_output_formats": "Obsługiwane typy plików wyjściowych:",
   "github_badge": "Zobacz na GitHub",

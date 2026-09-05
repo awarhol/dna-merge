@@ -1,6 +1,6 @@
 {
   "section_title": "Jak działa algorytm scalania",
-  "intro": "To narzędzie pomaga połączyć wiele plików surowych danych DNA z różnych firm testujących (AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA) w jeden, kompleksowy profil genetyczny. Oto jak działa algorytm:",
+  "intro": "To narzędzie łączy wiele plików surowych danych DNA z różnych firm testujących (AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA) w jeden, kompleksowy profil genetyczny — idealny do przesłania do GEDmatch jako superkit. Oto jak działa algorytm:",
   "problem": {
     "title": "Jaki problem to rozwiązuje?",
     "description": "Kiedy wykonujesz testy w wielu firmach DNA, każda firma może:",
@@ -42,21 +42,13 @@
       "description": "Podczas scalania 3+ plików wybiera genotyp, który występuje najczęściej we wszystkich plikach, z remisami rozstrzyganymi przez priorytet pliku. To wykorzystuje wiele źródeł danych do poprawy dokładności."
     }
   },
-  "understanding_data": {
-    "title": "Zrozumienie Twoich danych DNA",
-    "description": "Każdy SNP (polimorfizm pojedynczego nukleotydu) zawiera:",
-    "rsid": "RSID: Unikalny identyfikator (np. \"rs3131972\")",
-    "chromosome": "Chromosom: Lokalizacja (1-22, X, Y lub MT dla mitochondrialnego)",
-    "position": "Pozycja: Dokładna lokalizacja pary zasad na tym chromosomie",
-    "genotype": "Genotyp: Twoje dwa allele w tej pozycji (np. \"AA\", \"GC\", \"TT\"). Dziedziczysz jeden od każdego rodzica"
-  },
   "why_matters": {
-    "title": "Dlaczego to ma znaczenie dla genealogii",
+    "title": "Dlaczego to ma znaczenie — zwłaszcza dla GEDmatch",
     "list": {
-      "matches": "Maksymalizuj dopasowania DNA: Więcej przetestowanych SNP oznacza lepszą dokładność dopasowania z krewnymi genetycznymi",
+      "matches": "Dokładniejsze dopasowania: Szersze pokrycie SNP daje algorytmom dopasowującym więcej danych do porównania, co przekłada się na dokładniejsze wyniki dopasowań",
       "gaps": "Wypełnij luki testowe: Firmy testują różne SNP; scalanie daje szersze pokrycie",
       "accuracy": "Porównaj dokładność testów: Plik dziennika pokazuje, gdzie firmy się nie zgadzały",
-      "tools": "Używaj specjalistycznych narzędzi: Niektóre narzędzia genealogii genetycznej wymagają określonych SNP, które testują tylko niektóre firmy"
+      "tools": "Gotowe do GEDmatch: Scalony plik przesyłasz do GEDmatch jako standardowe dane surowe — jeden kompletny superkit zamiast kilku częściowych plików"
     }
   },
   "footer": "Algorytm został zaprojektowany tak, aby był konserwatywny i przejrzysty, dając Ci pewność, że scalony plik DNA dokładnie reprezentuje Twoje dane genetyczne przy maksymalizacji kompletności."

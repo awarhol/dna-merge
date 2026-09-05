@@ -1,6 +1,23 @@
 {
   "title": "DNA-Dateien zusammenführen",
-  "subtitle": "Laden Sie 1-10 DNA-Dateien hoch, um sie zu konvertieren oder mit prioritätsbasierter oder konsensbasierter Konfliktlösung zusammenzuführen",
+  "subtitle": "Kombinieren Sie DNA-Rohdaten von AncestryDNA, 23andMe, MyHeritage, FTDNA & LivingDNA zu einem Superkit — ideal für GEDmatch",
+  "why": {
+    "title": "Warum Ihre DNA-Dateien zusammenführen?",
+    "match_title": "Genauere Übereinstimmungen",
+    "match_text": "Jedes Unternehmen testet einen anderen Satz von SNPs. Ein zusammengeführtes Superkit gibt Matching-Algorithmen mehr Daten zum Vergleich — für genauere Übereinstimmungsergebnisse.",
+    "kit_title": "Ein Kit statt vieler",
+    "kit_text": "Laden Sie ein einzelnes, vollständiges Superkit zu GEDmatch hoch statt mehrerer Teil-Dateien — eine Kit-Nummer zum Teilen und übersichtlichere Match-Listen.",
+    "gaps_title": "Schluss mit No-Calls",
+    "gaps_text": "Fehlende Werte (\"--\") in einer Datei werden durch echte Daten aus einer anderen aufgefüllt — für maximale SNP-Abdeckung.",
+    "log_title": "Transparente Konfliktlösung",
+    "log_text": "Wenn Unternehmen bei einem SNP nicht übereinstimmen, entscheiden Sie, wie der Konflikt gelöst wird — und das detaillierte Protokoll zeigt jede Entscheidung."
+  },
+  "gedmatch": {
+    "title": "Verwendung mit GEDmatch",
+    "step1": "Dateien zusammenführen (oder eine einzelne konvertieren) und das Ergebnis herunterladen",
+    "step2": "Bei GEDmatch anmelden und die Datei als rohe autosomale Daten hochladen",
+    "step3": "GEDmatch akzeptiert beide Ausgabeformate: MyHeritage CSV und Ancestry DNA txt"
+  },
   "supported_input_formats": "Unterstützte Eingabedateitypen:",
   "supported_output_formats": "Unterstützte Ausgabedateitypen:",
   "github_badge": "Auf GitHub ansehen",

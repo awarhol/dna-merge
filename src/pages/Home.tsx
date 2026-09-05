@@ -89,6 +89,115 @@ const Subtitle = styled.p`
   max-width: 600px;
 `
 
+const WhySection = styled.div`
+  width: 100%;
+  max-width: 900px;
+  margin-top: ${props => props.theme.spacing.xl};
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing.md};
+`
+
+const WhyTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: ${props => props.theme.colors.text};
+  text-align: center;
+  margin: 0;
+`
+
+const BenefitsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: ${props => props.theme.spacing.md};
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const BenefitCard = styled.div`
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md};
+
+  .icon {
+    font-size: 1.5rem;
+    margin-bottom: ${props => props.theme.spacing.xs};
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: ${props => props.theme.colors.text};
+    margin: 0 0 ${props => props.theme.spacing.xs} 0;
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: ${props => props.theme.colors.textSecondary};
+    margin: 0;
+    line-height: 1.5;
+  }
+`
+
+const GedmatchSection = styled.div`
+  width: 100%;
+  max-width: 900px;
+  margin-top: ${props => props.theme.spacing.xl};
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing.md};
+`
+
+const GedmatchTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: ${props => props.theme.colors.text};
+  text-align: center;
+  margin: 0;
+`
+
+const StepsRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: ${props => props.theme.spacing.md};
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+const StepCard = styled.div`
+  background: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md};
+  text-align: center;
+
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #10b981;
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: ${props => props.theme.spacing.sm};
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: ${props => props.theme.colors.textSecondary};
+    margin: 0;
+    line-height: 1.5;
+  }
+`
+
 const SupportedFormatsSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -401,6 +510,13 @@ const formatParsers: Record<
   '23andme': parse23andMeFileAsync,
   ftdna: parseFTDNAFileAsync,
 }
+
+const BENEFITS = [
+  { key: 'match', icon: '🎯' },
+  { key: 'kit', icon: '📦' },
+  { key: 'gaps', icon: '🧩' },
+  { key: 'log', icon: '🔍' },
+] as const
 
 export const Home = () => {
   const { t } = useTranslation(['home', 'common', 'algorithm'])
@@ -843,6 +959,33 @@ export const Home = () => {
           </ResultsSection>
         )}
 
+        <WhySection>
+          <WhyTitle>{t('home:why.title')}</WhyTitle>
+          <BenefitsGrid>
+            {BENEFITS.map(({ key, icon }) => (
+              <BenefitCard key={key}>
+                <div className="icon" aria-hidden="true">
+                  {icon}
+                </div>
+                <h3>{t(`home:why.${key}_title`)}</h3>
+                <p>{t(`home:why.${key}_text`)}</p>
+              </BenefitCard>
+            ))}
+          </BenefitsGrid>
+        </WhySection>
+
+        <GedmatchSection>
+          <GedmatchTitle>{t('home:gedmatch.title')}</GedmatchTitle>
+          <StepsRow>
+            {[1, 2, 3].map(step => (
+              <StepCard key={step}>
+                <div className="step-badge">{step}</div>
+                <p>{t(`home:gedmatch.step${step}`)}</p>
+              </StepCard>
+            ))}
+          </StepsRow>
+        </GedmatchSection>
+
         <DisclaimerBanner>
           <strong>{t('home:disclaimer.title')}</strong> {t('home:disclaimer.message')}
         </DisclaimerBanner>
@@ -891,23 +1034,6 @@ export const Home = () => {
               <li>
                 <strong>{t('algorithm:conflict_resolution.prefer_file.title')}</strong>{' '}
                 {t('algorithm:conflict_resolution.prefer_file.description')}
-              </li>
-            </DescriptionList>
-
-            <DescriptionSubtitle>{t('algorithm:understanding_data.title')}</DescriptionSubtitle>
-            <p>{t('algorithm:understanding_data.description')}</p>
-            <DescriptionList>
-              <li>
-                <strong>{t('algorithm:understanding_data.rsid')}</strong>
-              </li>
-              <li>
-                <strong>{t('algorithm:understanding_data.chromosome')}</strong>
-              </li>
-              <li>
-                <strong>{t('algorithm:understanding_data.position')}</strong>
-              </li>
-              <li>
-                <strong>{t('algorithm:understanding_data.genotype')}</strong>
               </li>
             </DescriptionList>
 

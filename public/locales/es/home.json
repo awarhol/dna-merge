@@ -1,6 +1,23 @@
 {
   "title": "Fusionar archivos de ADN",
-  "subtitle": "Sube de 1 a 10 archivos de ADN para convertir o fusionar con resolución de conflictos basada en prioridades o consenso",
+  "subtitle": "Combina datos de ADN sin procesar de AncestryDNA, 23andMe, MyHeritage, FTDNA y LivingDNA en un superkit — ideal para GEDmatch",
+  "why": {
+    "title": "¿Por qué fusionar tus archivos de ADN?",
+    "match_title": "Coincidencias más precisas",
+    "match_text": "Cada compañía prueba un conjunto diferente de SNPs. Un superkit fusionado da a los algoritmos de emparejamiento más datos para comparar, produciendo resultados de coincidencia más precisos.",
+    "kit_title": "Un kit en lugar de muchos",
+    "kit_text": "Sube un único superkit completo a GEDmatch en lugar de varios archivos parciales — un solo número de kit para compartir y listas de coincidencias más limpias.",
+    "gaps_title": "Adiós a los no-calls",
+    "gaps_text": "Los valores faltantes (\"--\") de un archivo se rellenan con datos reales de otro, maximizando la cobertura de SNPs.",
+    "log_title": "Resolución de conflictos transparente",
+    "log_text": "Cuando las compañías discrepan en un SNP, tú eliges cómo resolverlo — y el registro detallado muestra cada decisión."
+  },
+  "gedmatch": {
+    "title": "Uso con GEDmatch",
+    "step1": "Fusiona tus archivos (o convierte uno solo) y descarga el resultado",
+    "step2": "Inicia sesión en GEDmatch y sube el archivo como datos autosómicos sin procesar",
+    "step3": "GEDmatch acepta ambos formatos de salida: CSV de MyHeritage y txt de Ancestry DNA"
+  },
   "supported_input_formats": "Tipos de archivos de entrada admitidos:",
   "supported_output_formats": "Tipos de archivos de salida admitidos:",
   "github_badge": "Ver en GitHub",

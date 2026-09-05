@@ -1,6 +1,6 @@
 {
   "section_title": "Wie der Zusammenführungsalgorithmus funktioniert",
-  "intro": "Dieses Tool hilft Ihnen, mehrere DNA-Rohdatendateien von verschiedenen Testunternehmen (AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA) in ein einziges, umfassendes genetisches Profil zu kombinieren. So funktioniert der Algorithmus:",
+  "intro": "Dieses Tool kombiniert mehrere DNA-Rohdatendateien von verschiedenen Testunternehmen (AncestryDNA, MyHeritage, 23andMe, FamilyTreeDNA, LivingDNA) zu einem einzigen, umfassenden genetischen Profil — ideal zum Hochladen zu GEDmatch als Superkit. So funktioniert der Algorithmus:",
   "problem": {
     "title": "Welches Problem löst dies?",
     "description": "Wenn Sie bei mehreren DNA-Unternehmen testen, kann jedes Unternehmen:",
@@ -42,21 +42,13 @@
       "description": "Beim Zusammenführen von 3+ Dateien wird der Genotyp gewählt, der am häufigsten in allen Dateien vorkommt. Bei Unentschiedenheiten wird auf die Dateipriorität zurückgegriffen. Dies nutzt mehrere Datenquellen zur Verbesserung der Genauigkeit."
     }
   },
-  "understanding_data": {
-    "title": "Ihre DNA-Daten verstehen",
-    "description": "Jeder SNP (Einzelnukleotid-Polymorphismus) enthält:",
-    "rsid": "RSID: Eindeutige Kennung (z.B. \"rs3131972\")",
-    "chromosome": "Chromosom: Standort (1-22, X, Y oder MT für mitochondrial)",
-    "position": "Position: Exakte Basenpaarposition auf diesem Chromosom",
-    "genotype": "Genotyp: Ihre zwei Allele an dieser Position (z.B. \"AA\", \"GC\", \"TT\"). Sie erben eines von jedem Elternteil"
-  },
   "why_matters": {
-    "title": "Warum dies für die Genealogie wichtig ist",
+    "title": "Warum dies wichtig ist — besonders für GEDmatch",
     "list": {
-      "matches": "DNA-Übereinstimmungen maximieren: Mehr getestete SNPs bedeuten bessere Übereinstimmungsgenauigkeit mit genetischen Verwandten",
+      "matches": "Genauere Übereinstimmungen: Breitere SNP-Abdeckung gibt Matching-Algorithmen mehr Daten zum Vergleich — für genauere Übereinstimmungsergebnisse",
       "gaps": "Testlücken füllen: Unternehmen testen verschiedene SNPs; Zusammenführen bietet breitere Abdeckung",
       "accuracy": "Testgenauigkeit vergleichen: Die Protokolldatei zeigt, wo Unternehmen nicht übereinstimmten",
-      "tools": "Spezialisierte Tools verwenden: Einige genetische Genealogie-Tools erfordern spezifische SNPs, die nur bestimmte Unternehmen testen"
+      "tools": "GEDmatch-bereit: Die zusammengeführte Datei wird als Standard-Rohdaten zu GEDmatch hochgeladen — ein vollständiges Superkit statt mehrerer Teil-Dateien"
     }
   },
   "footer": "Der Algorithmus ist darauf ausgelegt, konservativ und transparent zu sein, und gibt Ihnen die Gewissheit, dass Ihre zusammengeführte DNA-Datei Ihre genetischen Daten genau darstellt und gleichzeitig die Vollständigkeit maximiert."

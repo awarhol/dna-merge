@@ -1,6 +1,23 @@
 {
   "title": "Merge DNA files",
-  "subtitle": "Upload 1-10 DNA files to convert or merge with priority-based conflict resolution",
+  "subtitle": "Combine DNA raw data from AncestryDNA, 23andMe, MyHeritage, FTDNA & LivingDNA into one superkit — ideal for GEDmatch",
+  "why": {
+    "title": "Why merge your DNA files?",
+    "match_title": "More accurate matches",
+    "match_text": "Each company tests a different set of SNPs. A merged superkit gives matching algorithms more data to compare, producing more accurate match results.",
+    "kit_title": "One kit instead of many",
+    "kit_text": "Upload a single, complete superkit to GEDmatch instead of several partial files — one kit number to share and cleaner match lists.",
+    "gaps_title": "No more no-calls",
+    "gaps_text": "Missing values (\"--\") in one file are filled with real data from another, maximizing SNP coverage.",
+    "log_title": "Transparent conflict resolution",
+    "log_text": "When companies disagree on a SNP, you choose how to resolve it — and the detailed log shows every decision."
+  },
+  "gedmatch": {
+    "title": "Using with GEDmatch",
+    "step1": "Merge your files (or convert a single one) and download the result",
+    "step2": "Log in to GEDmatch and upload the file as raw autosomal data",
+    "step3": "GEDmatch accepts both output formats: MyHeritage CSV and Ancestry DNA txt"
+  },
   "supported_input_formats": "Supported input file types:",
   "supported_output_formats": "Supported output file types:",
   "github_badge": "View on GitHub",
