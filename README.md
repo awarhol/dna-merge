@@ -1,5 +1,7 @@
 # Merge DNA files
 
+> **The site has moved to [dna-merge.vercel.app](https://dna-merge.vercel.app/).** The old GitHub Pages URL (awarhol.github.io/dna-merge) now serves a redirect page to the new address.
+
 A web-based tool for merging and converting DNA test files from consumer genealogy testing services. Process your raw genetic data from multiple DNA tests in one place with intelligent conflict resolution and detailed logging.
 
 ## What Does This Do?

@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://awarhol.github.io/dna-merge/sitemap.xml
+Sitemap: https://dna-merge.vercel.app/sitemap.xml

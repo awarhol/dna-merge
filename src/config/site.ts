@@ -5,7 +5,7 @@
  */
 
 // Full site URL for SEO and canonical links
-export const SITE_URL = import.meta.env.VITE_SITE_URL || 'https://YOUR_USERNAME.github.io/dna-merge'
+export const SITE_URL = import.meta.env.VITE_SITE_URL || 'https://dna-merge.vercel.app'
 
 // GitHub repository URL
 export const GITHUB_REPO =

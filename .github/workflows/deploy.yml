@@ -1,4 +1,7 @@
-name: Deploy to GitHub Pages
+name: Deploy redirect to GitHub Pages
+
+# The site has moved to https://dna-merge.vercel.app/ — GitHub Pages now only
+# serves a static redirect page to send old visitors and links to the new site.
 
 on:
   push:
@@ -22,21 +25,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --legacy-peer-deps
-
-      - name: Build
-        run: npm run build
-        env:
-          VITE_SITE_URL: ${{ secrets.VITE_SITE_URL }}
-          VITE_GITHUB_REPO: ${{ secrets.VITE_GITHUB_REPO }}
-          VITE_GA_MEASUREMENT_ID: ${{ secrets.VITE_GA_MEASUREMENT_ID }}
+      - name: Prepare redirect page
+        run: mkdir -p dist && cp -r redirect-page/* dist/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
